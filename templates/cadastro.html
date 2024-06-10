@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <title>Cadastro</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="description" content="Estoque de armações de óculos">
+	<meta name="robots" content="index, follow">
+	<meta name="author" content="Jefferson Henrique">
+	<meta name="theme-color" content="#00008b">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        button {
+            border-radius: 5px;
+        }
+
+
+    </style>
+</head>
+<body onoffline="offline();" style="background-color:#f4f4f4;">
+
+
+<div id="cadastro" >
+
+   <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 100px; margin-top:50px;">
+     	<br>
+    	<h1 class="w3-center">Cadastro</h1>
+
+       <form class="w3-container" method="POST" action="{{ url_for('cadastrar')}}">
+                 {{ form.csrf_token() }}
+            <div class="w3-section">
+
+              {{ form.nome.label(style="font-weight:900;") }}
+              {{ form.nome(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome completo") }}
+
+              {{ form.loja.label(style="font-weight:900;") }}
+              {{ form.loja(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome da loja") }}
+
+              {{ form.endereco.label(style="font-weight:900;") }}
+              {{ form.endereco(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja") }}
+
+              {{ form.cnpj.label(style="font-weight:900;") }}
+              {{ form.cnpj(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu CNPJ") }}
+
+              {{ form.celular.label(style="font-weight:900;") }}
+              {{ form.celular(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu celular") }}
+
+              {{ form.email.label(style="font-weight:900;") }}
+              {{ form.email(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da óptica") }}
+
+              {{ form.senha.label(style="font-weight:900;") }}
+              {{ form.senha(class="w3-input w3-border w3-margin-bottom", placeholder="Digite sua senha") }}
+
+              {{ form.senha2.label(style="font-weight:900;") }}
+              {{ form.senha2(class="w3-input w3-border w3-margin-bottom", placeholder="Confirme sua senha") }}
+
+                <button id="btcadastrar"  type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Me Cadastrar</button>
+            </div>
+      </form>
+    </div>
+
+</div>
+ {% if mensagem  %}
+      <div id="msg" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%;">
+        <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+          <p>{{ mensagem }}</p>
+          <script>
+                $("#msg").css("display", "flex");
+                $("#msg").css("opacity", "1");
+                setTimeout(()=>{
+                   $("#msg").css("opacity", "0");
+
+                   setTimeout(() => $("#msg").css("display", "none"),1000);
+                } ,4000);
+
+           </script>
+        </div>
+      </div>
+  {% endif %}
+
+
+
+    <script>
+
+
+
+
+        function telefone(element){
+            element.style.backgroundColor = "white";
+            element.addEventListener("input",function(e){
+                var val = this.value.split("");
+                var s = "";
+
+               if(val[val.length - 1].search("[0-9]") != -1 ){
+
+                   if(val.length == 1){
+                        val.splice(0,0, "(");
+                   }
+                   if(val.length == 4){
+                       val.splice(val.length -1,0, ")");
+                   }
+                   if(val.length == 10){
+                       val.splice(val.length - 1,0, "-");
+                   }
+                   if(val.length > 10){
+                       if(val[9] == "-"){
+
+                       }else{
+                            for(var i = 0; i < val.length; i++){
+                                if(val[i] == "-"){
+                                    val.splice(i,1);
+                                    val.splice(9,0, "-");
+
+                                }
+
+                           }
+                       }
+                   }
+                   if(val.length > 14){
+                       val.splice(val.length - 1,1);
+                   }
+
+                }else{
+
+                      val.splice(val.length - 1,1);
+
+
+                }
+
+                for(var i = 0; i < val.length; i++){
+                    s += val[i];
+
+               }
+
+                this.value = s;
+
+            });
+
+        }
+
+        function offline(){
+            alert("você está offline");
+            location.reload();
+        }
+
+    </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" itemprop="image" content="https://firebasestorage.googleapis.com/v0/b/minhas-lojas.appspot.com/o/minh%20loja.png?alt=media&amp;token=c3f3e950-a619-4b4c-a5a3-9e74e94ea251">
+    <meta property="og:description" content="Todas as lojas em suas mãos, pesquise o melhor preço sem sair de casa">
+    <meta property="og:title" content="Crie o seu site e entre nas pequisas da região">
+    <meta property="og:site_name" content="siteminhaloja.com">
+    <title>Minha loja</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" href="{{ loja.logo }}">
+    <style>
+        * {
+                box-sizing: border-box;
+        }
+        body{
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .myImg {
+          border-radius: 5px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        .myImg:hover {opacity: 0.7;}
+
+        .logo-conteiner{
+            text-align: center;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+
+        .banner-conteiner{
+            max-height: 750px;
+            overflow: hidden;
+            text-align: center;
+            margin-top: 0px;
+            background-color: #ccc;
+        }
+
+        .logo, .banner{
+            width: 100%;
+        }
+
+
+        /* The Modal (background) */
+        .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          padding-top: 90px; /* Location of the box */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 500px;
+        }
+
+        /* Caption of Modal Image */
+        #caption {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 700px;
+          text-align: center;
+          color: #ccc;
+          padding: 10px 0;
+          height: 150px;
+        }
+
+        /* Add Animation */
+        .modal-content, #caption {
+          -webkit-animation-name: zoom;
+          -webkit-animation-duration: 0.6s;
+          animation-name: zoom;
+          animation-duration: 0.6s;
+        }
+
+        /* The Close Button */
+        .close {
+          position: absolute;
+          top: 15px;
+          right: 35px;
+          color: #f1f1f1;
+          font-size: 40px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+          color: #bbb;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .conteudo{
+            width: 70%;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 12px;
+            padding: 10px;
+            margin:auto;
+        }
+
+        .sobre{
+            text-align: justify;
+            text-indent: 30px;
+        }
+
+        .lista{
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px 10% 0;
+            min-height: 300px;
+        }
+
+        .desc{
+        height: 80px;
+        overflow: auto;
+        color: rgb(37, 37, 37);
+
+        }
+
+        .p2{
+            height: 160px;
+            text-align: center;
+
+        }
+
+        .p2 p {
+            margin: 5px 0;
+            font-size: 12px;
+            text-overflow: ellipsis;
+
+        }
+
+        .suporte{
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          position: fixed;
+          bottom: 5px;
+          right: 5px;
+          text-align: center;
+          z-index: 50;
+          display: block;
+          font-size: 30px;
+          padding: 2px 0px;
+          color: white;
+          border: none;
+          background-color: #34af23;
+          box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subir{
+            background-color: #ccccec75;
+            color: black;
+            bottom: 60px;
+            z-index:0;
+        }
+
+        .carrinho{
+            background-color: #4CAF50;
+            color: black;
+            bottom: 5px;
+            z-index:0;
+        }
+
+        .cabecalho{
+            background-color: #305b37;
+            padding: 8px 0 0;
+        }
+
+        .logo img{
+            margin: auto;
+            display: block;
+        }
+
+        .nav ul{
+            margin: auto;
+            text-align: center;
+            padding: 0;
+            box-sizing: border-box;
+
+        }
+        .nav ul li{
+            display: inline-block;
+            cursor: pointer;
+            color: white;
+            width: 19%;
+            background-color: #0000005c;
+            border-radius: 5px;
+            padding:5px 0;
+            margin-bottom:5px;
+
+        }
+
+        .nav ul li:hover{
+           background-color: #aaa;
+           color: black;
+
+        }
+
+        .banner img{
+            width: 100%;
+        }
+
+        .sobre{
+            padding: 1% 10%;
+            text-align: center;
+            background-color: #305b37;
+            color: white;
+        }
+
+        .fotoLoja img{
+            width: 100%;
+            display: block;
+        }
+
+        .fotoLoja{
+            padding: 0 0 0 10px;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .novidades{
+            text-align: center;
+        }
+
+        .rodape{
+            height: 70px;
+            background-color: #305b37;
+        }
+
+        #galeria1, #galeria2, #galeria3, #galeria4{
+            display: none;
+            text-align: center;
+        }
+
+
+
+        #loading {
+          position: fixed; /* Fixo na tela */
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+          display: flex; /* Alinha os elementos */
+          justify-content: center; /* Centraliza horizontalmente */
+          align-items: center; /* Centraliza verticalmente */
+          z-index: 100; /* Acima do conteúdo */
+        }
+
+        .loading-spinner {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          border: 5px solid #ccc; /* Cor da borda */
+          border-color: #ccc transparent #ccc transparent; /* Cor da animação */
+          animation: spin 1.2s linear infinite; /* Animação de rotação */
+        }
+
+         @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        #content {
+          display: none; /* Esconde o conteúdo até carregar */
+        }
+
+        #pagina {
+          display: none; /* Esconde o conteúdo até carregar */
+        }
+
+        .row::after {
+          content: "";
+          clear: both;
+          display: table;
+        }
+
+        .column {
+          float: left;
+          width: 33.3%;
+          margin-bottom: 16px;
+          padding: 0 8px;
+        }
+
+        .social div{
+            display: inline;
+            font-size: 30px;
+        }
+
+        .social div a i{
+
+            text-shadow: 2px 2px 2px  rgba(0,0,0,0.8);
+            cursor: pointer;
+
+        }
+        .social div i a i:hover{
+            color: black;
+            text-shadow: 2px 2px 2px  #9c27b0;
+        }
+
+        .column_escolher{
+            width: 100% !important;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            background-color: #000000e3;
+            z-index: 1;
+        }
+
+        .card {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          height:510px;
+          background-color:white;
+          position:relative;
+          max-width:300px;
+          margin-bottom: 5px;
+          margin:auto;
+          padding:0;
+          font-zise:13px
+        }
+
+        .overlay {
+          position: absolute;
+          background-color: white;
+          overflow: hidden;
+          width: 0;
+          height:100%;
+          transition: .3s ease;
+          transition-delay: 0.5s;
+          box-shadow: 5px 5px 10px #00000040;
+          z-index:1;
+        }
+
+        .card_escolher{
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            border-radius:5px;
+        }
+        .overlay_escolher{
+            height: 100%;
+            left:none;
+            bottom:none;
+            top: 0;
+            left: 99%;
+            width: 85%;
+            z-index: -1;
+            border-radius:0 5px 5px 0;
+            left:none;
+        }
+
+          .input-with-bottom-border {
+            position: relative;
+            padding-bottom: 8px;
+            width: 200px; /* Define a largura do input */
+          }
+
+          .input-with-bottom-border input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: transparent;
+          }
+
+          .input-with-bottom-border::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70%;
+            height: 2px;
+            background-color: #ccc; /* Define a cor da borda */
+          }
+
+          .input-with-bottom-border input:focus {
+            outline: none;
+          }
+
+          .input-with-bottom-border::before {
+            background-color: #{{ loja.cor }}; /* Define a cor da borda ao focar */
+          }
+
+        @media  screen and (max-width: 850px) {
+            .sobre{
+                padding: 1% 2%;
+            }
+
+        }
+
+        /* 100% Image Width on Smaller Screens */
+        @media only screen and (max-width: 700px){
+          .modal-content {
+                width: 90%;
+          }
+
+
+          .card_escolher{
+               left: 28%;
+
+            }
+        }
+
+         @media screen and (max-width: 650px) {
+          .column {
+            width: 50%;
+            display: block;
+            padding: 0;
+          }
+          .card {
+            margin: 0 1%;
+            font-zise:14px
+          }
+        }
+
+        @media screen and (max-width: 600px){
+            .lista{
+                padding: 10px 3% 0;
+            }
+        }
+
+        @media  screen and (max-width: 500px) {
+            .nav ul li{
+                display: inline-block;
+                cursor: pointer;
+                color: white;
+                width: 31%;
+                font-size: 13px;
+                padding: 4px 0;
+            }
+            .log img{
+                width: 200px;
+            }
+            .card {
+                height:470px !important;
+            }
+
+            .conteudo{
+                width: 95%;
+            }
+            .fotoLoja{
+                padding: 0;
+            }
+
+
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+    <div id="pagina">
+
+        <div class="cabecalho" style="background-color: #{{ loja.cor }};">
+            <div class="logo-conteiner">
+                <div style="position: relative; display: inline-block; margin: auto; max-height: 100px; width:25%;">
+                    <img class="logo" src="{{ loja.logo }}">
+                </div>
+
+            </div>
+            <div class="nav">
+
+                <ul>
+                    <li id="op1" class="fonte" onclick="galerias('inicio')" style="color: #{{ loja.fonte }};">Início</li>
+
+                    <li id="op2"  class="fonte" onclick="galerias('Galeria1','1')" style="color: #{{ loja.fonte }};">Femenino</li>
+
+                    <li id="op3"  class="fonte" onclick="galerias('Galeria2','2')" style="color: #{{ loja.fonte }};">Maculino</li>
+
+                    <li id="op4"  class="fonte" onclick="galerias('Galeria3','3')" style="color: #{{ loja.fonte }};">Infantil</li>
+
+                    <li id="op5"  class="fonte" onclick="galerias('Galeria4','4')" style="color: #{{ loja.fonte }};">Solar</li>
+
+                </ul>
+
+            </div>
+        </div>
+        <div id="inicio" style="display: block;">
+            <div class="banner-conteiner">
+                <div style="position: relative; display: inline-block; margin: auto; width:100%;">
+                    <img class="banner" src="{{ loja.banner }}">
+                </div>
+
+            </div>
+            <div class="sobre" style="background-color: #{{ loja.cor }};">
+                <div>
+                    <h3 class="fonte" style="text-align: center; color: #{{ loja.fonte }};"><b>Sobre Nós:</b></h3>
+                    <p id="historiaR" class="fonte" style="color: #{{ loja.fonte }}; text-align:justify;">{{ loja.sobre }}</p>
+                </div>
+                <br>
+                <div class="w3-row">
+                    <div class="w3-half fotoLoja" style="background: url('{{ loja.foto }}') no-repeat center; position: relative; max-height: 300px;">
+
+                    </div>
+
+                    <div class="w3-half" style="display: inline-block; text-align: center;">
+                        <h3 class="fonte" style="color: #{{ loja.fonte }};"><b>Contatos:</b></h3>
+                        <div style="text-align:left; display:inline-block;">
+
+
+                            <div class="fonte" style="color: #{{ loja.fonte }}; margin:15px 0;">Endereço: <p id="enderecoR" style="display:inline;">{{ loja.endereco }}</p></div>
+
+                            <div  class="fonte" style="color: #{{ loja.fonte }};  margin:15px 0;">Aberto: <p id="funcionamentoR" style="display:inline;">{{ loja.aberto}}</p></div>
+
+                            <div class="social">
+                                {% if loja.facebook != "" %}
+                                    <div class="social__list__item"><a href="{{ loja.facebook }}" target="_blank" style="border-bottom: none;color:#3b5998;"><i class="fa fa-facebook-official" aria-hidden="true"></i></a></div>
+                                {% endif %}
+                                {% if loja.instagram != "" %}
+                                    <div class="social__list__item"><a href="{{ loja.instagram }}" target="_blank" style="border-bottom: none; color:#d6249f;"><i class="fa fa-instagram" aria-hidden="true"></i></a></div>
+                                {% endif %}
+                                {% if loja.whatsapp != "" %}
+                                    <div class="social__list__item"><a href="http://api.whatsapp.com/send?phone={{ loja.whatsapp }}" target="_blank" style="border-bottom: none; color:#34af23;"><i class="fa fa-whatsapp" aria-hidden="true"></i></a></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="novidades" style="min-height:500px">
+                <h3><b>Novidades</b></h3>
+                <div class="row" style="font-size:13px !important;">
+
+                    {% for i in range(-3, 0) %}
+
+                            <div class="column" style="transition: background-color 0.5s ease;">
+                                <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                    <img class="myImg" src="{{ armacoes[i][1]['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                        <div style="font-zise:13px;">
+                                          <div style="padding:0 3px">
+                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacoes[i][1]['preco'] }}</b></p>
+                                              <p style="margin: 3px">Código: <b>{{ armacoes[i][1]['codigo'] }}</b></p>
+                                              <p style="margin: 3px">Dimensções <b>{{ armacoes[i][1]['dimensoes'] }}</b></p>
+                                              <p style="margin: 3px">Seção: <b>{{ armacoes[i][1]['secao'] }}</b></p>
+                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacoes[i][1]['descricao'] }}</b></p>
+                                          </div>
+                                        </div>
+
+                                    </div>
+                                    <div  class="overlay" style="">
+                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                            <div class="row" style="padding-left:6px;">
+
+                                                {%  for c in armacoes[i][1]['cores'] %}
+                                                    {% if 'C10' not in c %}
+                                                        <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>{{c}}: </b>
+                                                            <span class="input-with-bottom-border">
+                                                                <input class="" id="{{c}}" max="{{armacoes[i][1]['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                            </span>
+                                                            / <span  class="quant">{{armacoes[i][1]['cores'][c]}}</span>
+                                                        </p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if 'C10' in armacoes[i][1]['cores'] %}
+                                                     <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
+                                                        <span class="input-with-bottom-border">
+                                                            <input class="" id="C10" max="{{armacoes[i][1]['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        </span>
+                                                         / <span class="quant">{{armacoes[i][1]['cores']['C10']}}</span>
+                                                     </p>
+                                                {% endif %}
+                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                            </div>
+                                        <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                        </div>
+                                    <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                    <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
+
+                                </div>
+                            </div>
+
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+        <div id="galeria1" style="display: none;">
+            <h3><b>Feminino</b></h3>
+
+           <div class="row" style="min-height:400px; font-size:13px !important;">
+
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Feminino' %}
+                            <div class="column" style="transition: background-color 0.5s ease;">
+                                <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                    <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                        <div style="font-zise:13px;">
+                                          <div style="padding:0 3px">
+                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                              <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                              <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                              <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                          </div>
+                                        </div>
+
+                                    </div>
+                                    <div  class="overlay" style="">
+                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                            <div class="row" style="padding-left:6px;">
+
+                                                {%  for c in armacao['cores'] %}
+                                                    {% if 'C10' not in c %}
+                                                        <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>{{c}}: </b>
+                                                            <span class="input-with-bottom-border">
+                                                                <input class="" id="{{c}}" max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                            </span>
+                                                            / <span  class="quant">{{armacao['cores'][c]}}</span>
+                                                        </p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if 'C10' in armacao['cores'] %}
+                                                     <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
+                                                        <span class="input-with-bottom-border">
+                                                            <input class="" id="C10" max="{{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        </span>
+                                                         / <span class="quant">{{armacao['cores']['C10']}}</span>
+                                                     </p>
+                                                {% endif %}
+                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                            </div>
+                                        <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                        </div>
+                                    <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                    <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
+
+                                </div>
+                            </div>
+                    {% endif %}
+
+               {% endfor %}
+
+           </div>
+            <a href="#galeria1" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+        </div>
+
+        <div id="galeria2" style="display: none;">
+            <h3><b>Masculino</b></h3>
+
+            <div class="row" style="min-height:400px; font-size:13px !important;">
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Masculino' %}
+                        <div class="column" style="transition: background-color 0.5s ease;">
+                            <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                    <div style="font-zise:13px;">
+                                      <div style="padding:0 3px">
+                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                      </div>
+                                    </div>
+
+                                </div>
+                                <div  class="overlay" style="">
+                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                        <div class="row" style="padding-left:6px;">
+
+                                            {%  for c in armacao['cores'] %}
+                                                {% if 'C10' not in c %}
+                                                    <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>{{c}}: </b>
+                                                        <span class="input-with-bottom-border">
+                                                            <input class="" id="{{c}}" max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        </span>
+                                                        / <span  class="quant">{{armacao['cores'][c]}}</span>
+                                                    </p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if 'C10' in armacao['cores'] %}
+                                                 <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
+                                                    <span class="input-with-bottom-border">
+                                                        <input class="" id="C10" max="{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                    </span>
+                                                     / <span class="quant">{{armacao['cores']['C10']}}</span>
+                                                 </p>
+                                            {% endif %}
+                                            <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                        </div>
+                                    <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                    </div>
+                                <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
+
+                            </div>
+                        </div>
+                    {% endif %}
+
+               {% endfor %}
+
+            </div>
+            <a href="#galeria2" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+
+        </div>
+
+        <div id="galeria3" style="display: none;">
+            <h3><b>Infantil</b></h3>
+
+            <div class="row" style="min-height:400px; font-size:13px !important;">
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Infantil' %}
+                       <div class="column" style="transition: background-color 0.5s ease;">
+                            <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                    <div style="font-zise:13px;">
+                                      <div style="padding:0 3px">
+                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                      </div>
+                                    </div>
+
+                                </div>
+                                <div  class="overlay" style="">
+                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                        <div class="row" style="padding-left:6px;">
+
+                                            {%  for c in armacao['cores'] %}
+                                                {% if 'C10' not in c %}
+                                                    <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>{{c}}: </b>
+                                                        <span class="input-with-bottom-border">
+                                                            <input class="" id="{{c}}" max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        </span>
+                                                        / <span  class="quant">{{armacao['cores'][c]}}</span>
+                                                    </p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if 'C10' in armacao['cores'] %}
+                                                 <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
+                                                    <span class="input-with-bottom-border">
+                                                        <input class="" id="C10" max="{{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                    </span>
+                                                     / <span class="quant">{{armacao['cores']['C10']}}</span>
+                                                 </p>
+                                            {% endif %}
+                                            <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                        </div>
+                                    <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                    </div>
+                                <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
+
+                            </div>
+                        </div>
+                    {% endif %}
+
+               {% endfor %}
+
+            </div>
+            <a href="#galeria3" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+
+        </div>
+
+        <div id="galeria4" style="display: none;">
+            <h3><b>Solar</b></h3>
+
+             <div class="row" style="min-height:400px; font-size:13px !important;">
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Solar' %}
+                        <div class="column" style="transition: background-color 0.5s ease;">
+                            <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                    <div style="font-zise:13px;">
+                                      <div style="padding:0 3px">
+                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                      </div>
+                                    </div>
+
+                                </div>
+                                <div  class="overlay" style="">
+                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                        <div class="row" style="padding-left:6px;">
+
+                                            {%  for c in armacao['cores'] %}
+                                                {% if 'C10' not in c %}
+                                                    <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>{{c}}: </b>
+                                                        <span class="input-with-bottom-border">
+                                                            <input class="" id="{{c}}" max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        </span>
+                                                        / <span  class="quant">{{armacao['cores'][c]}}</span>
+                                                    </p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if 'C10' in armacao['cores'] %}
+                                                 <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
+                                                    <span class="input-with-bottom-border">
+                                                        <input class="" id="C10" max="{{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                    </span>
+                                                     / <span class="quant">{{armacao['cores']['C10']}}</span>
+                                                 </p>
+                                            {% endif %}
+                                            <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                        </div>
+                                    <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                    </div>
+                                <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
+
+                            </div>
+                        </div>
+                    {% endif %}
+
+               {% endfor %}
+
+            </div>
+            <a href="#galeria4" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+
+        </div>
+        <a href="{{ url_for('carinho') }}" class="w3-card-4 suporte carrinho" ><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <span class="close" onclick="fecharImagem()">&times;</span>
+  <img class="modal-content" id="img01" src="">
+
+</div>
+
+<script>
+
+    function escolher(elemento){
+        elemento.parentNode.parentNode.classList.add('column_escolher');
+        elemento.parentNode.classList.add('card_escolher');
+        elemento.nextElementSibling.style.display = "inline-block";
+        elemento.style.display = "none";
+        overlay = elemento.previousElementSibling;
+        overlay.style.transition = "0.3s ease 0.3s";
+        overlay.classList.add("overlay_escolher");
+        lista = overlay.getElementsByClassName("quant")
+        var total = 0;
+        for(var i = 0; i < lista.length; i++){
+            total += parseInt(lista[i].textContent)
+
+        }
+        overlay.getElementsByClassName("total")[0].textContent = total
+
+    }
+
+    function fecharOverlay(elemento){
+        elemento.parentNode.parentNode.parentNode.classList.remove('column_escolher');
+        elemento.parentNode.parentNode.classList.remove('card_escolher');
+        elemento.parentNode.nextElementSibling.style.display = "inline-block";
+        elemento.parentNode.nextElementSibling.nextElementSibling.style.display = "none";
+        elemento.parentNode.classList.remove("overlay_escolher");
+        elemento.parentNode.style.transition = "none";
+    }
+
+    function adicionar(elemento){
+        elemento.parentNode.parentNode.classList.remove('column_escolher');
+        elemento.parentNode.classList.remove('card_escolher');
+        elemento.previousElementSibling.style.display = "inline-block";
+        elemento.previousElementSibling.previousElementSibling.style.transition = "none";
+        elemento.previousElementSibling.previousElementSibling.classList.remove("overlay_escolher");
+        elemento.style.display = "none";
+
+
+    }
+
+    window.onload = function() {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("pagina").style.display = "block";
+    };
+
+
+    function galerias(galeria,valor){
+        switch(galeria){
+            case "inicio":
+                console.log("***************" + galeria);
+                $("#galeria").val("");
+                $("#galeria1, #galeria2, #galeria3, #galeria4").css("display", "none");
+                $("#inicio").css("display", "block");
+                $("#op1").css("background-color", "#b2b2bbb8");
+                $("#op2, #op3, #op4, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria1":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria2, #galeria3, #galeria4").css("display", "none");
+                $("#galeria1").css("display", "block");
+                $("#op2").css("background-color", "#b2b2bbb8");
+                $("#op1, #op3, #op4, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria2":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria1, #galeria3, #galeria4").css("display", "none");
+                $("#galeria2").css("display", "block");
+                $("#op3").css("background-color", "#b2b2bbb8");
+                $("#op2, #op1, #op4, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria3":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria1, #galeria2, #galeria4").css("display", "none");
+                $("#galeria3").css("display", "block");
+                $("#op4").css("background-color", "#b2b2bbb8");
+                $("#op2, #op3, #op1, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria4":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria1, #galeria2, #galeria3").css("display", "none");
+                $("#galeria4").css("display", "block");
+                $("#op5").css("background-color", "#b2b2bbb8");
+                $("#op2, #op3, #op4, #op1").css("background-color", "#0000005c");
+                break;
+
+        }
+    }
+
+
+
+
+    function fecharImagem() {
+      var modal = document.getElementById("myModal");
+      modal.style.display = "none";
+    }
+
+    function abrirImagem(elemento){
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+      var modal = document.getElementById("myModal");
+      var modalImg = document.getElementById("img01");
+
+      modal.style.display = "block";
+      modalImg.src = elemento.src;
+
+    }
+
+
+
+
+    function fecharCores(elemento){
+
+        pai = elemento.parentNode;
+        overlay = pai.parentNode;
+        overlay.style.bottom = "100%";
+        overlay.style.height = "0";
+
+    }
+
+
+    function mensagemR(msg){
+        document.getElementById("mensagemR").textContent = msg
+         $("#msg2").css("display", "flex");
+            $("#msg2").css("opacity", "1");
+            setTimeout(()=>{
+               $("#msg2").css("opacity", "0");
+
+               setTimeout(() => $("#msg2").css("display", "none"),1000);
+            } ,4000);
+
+    }
+
+
+
+</script>
+{% if mensagem  %}
+      <div id="msg" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%;">
+        <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+          <p>{{ mensagem }}</p>
+          <script>
+                $("#msg").css("display", "flex");
+                $("#msg").css("opacity", "1");
+                setTimeout(()=>{
+                   $("#msg").css("opacity", "0");
+
+                   setTimeout(() => $("#msg").css("display", "none"),1000);
+                } ,4000);
+
+           </script>
+        </div>
+      </div>
+  {% endif %}
+
+<div id="msg2" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%; display:none;">
+    <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+      <p id="mensagemR"></p>
+    </div>
+</div>
+
+</body>
+</html>

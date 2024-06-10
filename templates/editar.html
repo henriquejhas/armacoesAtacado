@@ -1,0 +1,248 @@
+{% extends "template.html" %}
+{% block conteudo %}
+
+<style>
+    .cores{
+    display:inline-block;
+    }
+
+    .cores input{
+    display:inline-block;
+
+    }
+
+</style>
+
+<div id="adicionar">
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px;">
+
+    	<h2 style="text-align:center; padding-top:10px;">Adicionar Armação</h2>
+
+       <form class="w3-container" method="POST" action="{{ url_for('editar', chave=chave)}}" enctype="multipart/form-data" onsubmit="preencher()">
+           <figure style="text-align:center; overflow:hidden; padding-bottom:10px; margin-bottom:0px;">
+                <img style="height:300px;" src="{{ armacao['imagem']}}">
+                <input type="hidden" value="{{ armacao['imagem']}}" id="imagem" name="imagem">
+                <figcaption>
+                    <label class="fileContainer"  style="background-color: #3498db; border-radius: 5px; color: #fff; cursor: pointer; margin: 10px; padding: 6px 20px">
+                        Mudar Capa
+                        <input type="file" name="arquivo" accept=".jpg" style=" display: none">
+
+                    </label>
+                </figcaption>
+            </figure>
+
+                 {{ form.csrf_token() }}
+            <div class="w3-section">
+                {%if form.codigo.errors%}
+                    {{ form.codigo(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o modelo da armação") }}
+                    <div style="display:block; border: 1px solid red">
+                        {%for error in form.codigo.errors%}
+                          <span>{{error}}</span>
+                        {%endfor%}
+                    </div>
+                {%else%}
+                    {{ form.codigo.label(style="font-weight:900;") }}
+                    {{ form.codigo(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o modelo da armação") }}
+                {%endif%}
+
+
+                {{ form.dimensoes.label(style="font-weight:900;") }}
+                {{ form.dimensoes(class="w3-input w3-border w3-margin-bottom", placeholder="Digite as dimensões da armação") }}
+
+                <label for="secao" style="font-weight:900;">Seção</label>
+                <select name="secao" id="secao" class="w3-input w3-border w3-margin-bottom">
+                    {% if armacao['secao'] == 'Feminino' %}
+                        <option selected value="Feminino">Feminino</option>
+                    {% else %}
+                        <option selected value="Feminino">Feminino</option>
+                    {% endif%}
+
+                    {% if armacao['secao'] == 'Masculino' %}
+                        <option selected value="Maculino">Masculino</option>
+                    {% else %}
+                        <option value="Maculino">Masculino</option>
+                    {% endif%}
+
+                    {% if armacao['secao'] == 'Infantil' %}
+                        <option selected value="Infantil">Infantil</option>
+                    {% else %}
+                        <option value="Infantil">Infantil</option>
+                    {% endif%}
+
+                    {% if armacao['secao'] == 'Solar' %}
+                        <option selected value="Solar">Solar</option>
+                    {% else %}
+                        <option value="Solar">Solar</option>
+                    {% endif%}
+
+
+
+                </select>
+
+                {{ form.preco.label(style="font-weight:900;") }}
+                {{ form.preco(id="dinheiro", class="w3-input w3-border w3-margin-bottom", placeholder="Digite o preço da armação") }}
+                <fieldset >
+                    <legend>Quantidade por cor</legend>
+                    <div style="display:ruby-text;">
+                            <div class="cores" >
+                                <label for="c1" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C1</label><br>
+                                <input class="w3-border w3-margin-bottom" id="c1" max="1000" min="0" name="c1"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C1'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c2" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C2</label><br>
+                                <input class="w3-border w3-margin-bottom" id="c2" max="1000" min="0" name="c2"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C2'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c3" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C3</label><br>
+                                <input class="w3-border w3-margin-bottom" id="c3" max="1000" min="0" name="c3"  style="width: 60px; padding:4px 2px; " type="number" value="{{ armacao['C3'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c4" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C4</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c4" max="1000" min="0" name="c4"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C4'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c5" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C5</label><br>
+                                <input class="w3-border w3-margin-bottom" id="c5" max="1000" min="0" name="c5"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C5'] }}">
+                            </div><br>
+                            <div class="cores" >
+                                <label for="c6" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C6</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c6" max="1000" min="0" name="c6"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C6'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c7" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C7</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c7" max="1000" min="0" name="c7"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C7'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c8" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C8</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c8" max="1000" min="0" name="c8"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C8'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c9" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C9</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c9" max="1000" min="0" name="c9"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C9'] }}">
+                            </div>
+                            <div class="cores" >
+                                <label for="c10" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C10</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c10" max="1000" min="0" name="c10"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C10'] }}">
+                            </div>
+
+
+
+
+                    </div>
+
+
+                </fieldset>
+
+
+
+
+              {{ form.descricao.label(style="font-weight:900;") }}
+              {{ form.descricao(class="w3-input", style="height: 120px; resize: none; width: 100%;", placeholder="Digite uma breve descrição da armação") }}
+
+                <button type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Salvar alterações</button>
+            </div>
+       </form>
+
+    </div>
+    <a href="{{url_for('deletar', chave=chave)}}" style="text-decoration:none;"><button type="submit" class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir modelo</button></a>
+
+</div>
+
+<script>
+    var opcao = document.getElementById("op2");
+    opcao.style.backgroundColor = "#a9a9a9";
+
+    $('form input[type="file"]').change(event => {
+      let arquivos = event.target.files;
+      if (arquivos.length === 0) {
+        console.log('sem imagem pra mostrar')
+      } else {
+          if(arquivos[0].type == 'image/jpeg') {
+            $('img').remove();
+            let imagem = $('<img style="height:300px;">');
+            imagem.attr('src', window.URL.createObjectURL(arquivos[0]));
+            $('figure').prepend(imagem);
+          } else {
+            alert('Formato não suportado')
+          }
+      }
+    });
+
+
+    function moeda3(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+
+
+                    if(val.length == 2){
+                        val.splice(val.length -1,0, ",");
+                    }else if( val.length > 2){
+                        val.splice(val.length -2,0, ",");
+                    }
+
+
+            }else{
+
+                  val.splice(val.length - 1,1);
+
+
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+
+            }
+
+            this.value = s;
+
+        });
+
+    }
+
+
+    function dimens(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+
+
+                    if(val.length == 3){
+                        val.splice(val.length -1,0," ", "-", " ");
+                    }else if( val.length == 8){
+                        val.splice(val.length -1,0," ", "-", " ");
+                    }
+
+
+            }else{
+
+                  val.splice(val.length - 1,1);
+
+
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+
+            }
+
+            this.value = s;
+
+        });
+
+    }
+
+
+
+
+     dimens(document.getElementById("dimensoes"));
+     moeda3(document.getElementById("dinheiro"));
+</script>
+
+{% endblock %}

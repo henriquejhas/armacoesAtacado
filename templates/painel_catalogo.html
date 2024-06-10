@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" itemprop="image" content="https://firebasestorage.googleapis.com/v0/b/minhas-lojas.appspot.com/o/minh%20loja.png?alt=media&amp;token=c3f3e950-a619-4b4c-a5a3-9e74e94ea251">
+    <meta property="og:description" content="Todas as lojas em suas mãos, pesquise o melhor preço sem sair de casa">
+    <meta property="og:title" content="Crie o seu site e entre nas pequisas da região">
+    <meta property="og:site_name" content="siteminhaloja.com">
+    <title>Minha loja</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" href="{{ loja.logo }}">
+    <style>
+        * {
+                box-sizing: border-box;
+        }
+
+        body{
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        #busca{
+            background-color: white;
+        }
+
+        #cidades{
+            background-color: white;
+        }
+        .atencao{
+            position: relative;
+        }
+
+        .atencao i{
+            position: absolute;
+            right: -10px;
+            top: -7px;
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            padding: 2px 2px 0 0;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 50%;
+            background-color: red;
+        }
+
+        .myImg {
+          border-radius: 5px;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        .myImg:hover {opacity: 0.7;}
+
+
+        #fake{
+            background-color: #182945;
+        }
+
+        nav{
+            color: white;
+            background-color: #182945;
+            font-size: 15px;
+            padding: 0;
+            font-weight: 700;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0px;
+            width: 100%;
+            z-index: 120;
+            overflow: hidden;
+            height: 100px;
+            transition: height 0.5s;
+            box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.5);
+
+        }
+
+
+        nav img{
+            width: 100px;
+
+        }
+
+        .bar{
+
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            margin: 0;
+        }
+
+        .bar li,.sidebar ul li{
+            display: inline-block;
+            margin: 6px 12px;
+            position: relative;
+            cursor: pointer;
+        }
+        .bar li:before, .sidebar ul li:before{
+            content: "";
+            width: 0;
+            height: 2px;
+            background-color: #46a5e5;;
+            position: absolute;
+            left: -10px;
+            bottom: 0;
+            transition: 0.5s;
+        }
+
+        .bar li:hover:before, .sidebar ul li:hover:before{
+            width: calc(100% + 20px);
+        }
+
+        .menu {
+            display: none;
+            cursor: pointer;
+            z-index: 100;
+            position: absolute;
+            top: 0px;
+            left: 10px;
+        }
+
+        #barra1, #barra2, #barra3{
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 6px 0;
+            transition: 0.5s;
+        }
+
+        .clicou #barra1{
+            transform: rotate(-45deg) translate(-7px, 4px);
+        }
+        .clicou #barra2{opacity: 0;}
+
+        .clicou #barra3{
+            transform: rotate(45deg) translate(-9px,-5px);
+        }
+
+        .sobrePor{
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            position: fixed;
+            top: 0px;
+            z-index: 105;
+        }
+
+        .sidebar{
+            width: 0px;
+            overflow: hidden;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: 0.5s;
+            display: none;
+            opacity: 0.9;
+            z-index: 110;
+        }
+
+        .sidebar ul{
+            list-style: none;
+            text-align: center;
+            padding: 0;
+            margin-top: 150px;
+        }
+
+        .sidebar ul li{
+            display: block;
+            padding: 6px 0;
+        }
+
+        .bar li a, .sidebar ul a{
+            color: white;
+            text-decoration: none;
+        }
+
+        .clicou2{
+            width: 250px;
+            padding:  50px 20px;
+        }
+
+
+        .pesquisa{
+
+            text-align: center;
+            display: flex;
+            width: 60%;
+        }
+        .pesquisa input{
+            width: 80%;
+        }
+
+        .pesquisa button{
+            width: 20%;
+        }
+
+        form{
+            display: flex;
+            width: 80%;
+            margin: auto;
+            flex-wrap: wrap;
+        }
+
+        .imagem{
+            width: 20%;
+        }
+
+        #cidades{
+            width: 20%;
+        }
+
+        .pesquisa{
+            width: 60%;
+        }
+
+
+
+        @media screen and (max-width: 925px){
+
+            nav{
+                padding: 0;
+                padding-bottom: 10px;
+            }
+            .menu{
+                display: inline-block;
+                margin-top: 8px;
+                position: absolute;
+            }
+
+            .bar{
+                display: none;
+            }
+
+            nav img{
+                display: block;
+                margin: auto;
+            }
+            .sidebar{
+                display: block;
+            }
+
+            .clicou3{
+                display: block;
+            }
+
+            form{
+                width: 100%;
+            }
+
+            .pesquisa{
+                margin: 10px 0px 0;
+
+            }
+
+            .imagem {
+                width: 100%;
+            }
+
+            .pesquisa{
+                width: 79%;
+                margin-right: 1%;
+            }
+
+            #cidades{
+                width: 19%;
+                height: 30px;
+                margin-top: 10px;
+                margin-left: 1%;
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            .pesquisa{
+                width: 100%;
+                margin-top: 5px;
+            }
+
+            #cidades{
+                width: 60%;
+                margin: auto;
+            }
+
+
+        }
+
+        footer{
+            color: white;
+            background-color: #182945;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 10px 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo-conteiner{
+            text-align: center;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+
+        .banner-conteiner{
+            max-height: 750px;
+            overflow: hidden;
+            text-align: center;
+            margin-top: 0px;
+            background-color: #ccc;
+        }
+
+        .logo, .banner{
+            width: 100%;
+        }
+
+        .addLogo{
+            position: absolute;
+            top: 0px;
+            right: -80px;
+        }
+
+        .addBanner,.addFoto{
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+
+        .fotoLoja img{
+            width: 100%;
+            display: block;
+        }
+
+        .fotoLoja{
+            padding: 0 0 0 10px;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        /* The Modal (background) */
+        .modal {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          padding-top: 100px; /* Location of the box */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 500px;
+        }
+
+        /* Caption of Modal Image */
+        #caption {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 700px;
+          text-align: center;
+          color: #ccc;
+          padding: 10px 0;
+          height: 150px;
+        }
+
+        /* Add Animation */
+        .modal-content, #caption {
+          -webkit-animation-name: zoom;
+          -webkit-animation-duration: 0.6s;
+          animation-name: zoom;
+          animation-duration: 0.6s;
+        }
+
+
+        }
+
+        /* 100% Image Width on Smaller Screens */
+        @media only screen and (max-width: 700px){
+          .modal-content {
+            width: 90%;
+          }
+        }
+
+        /* The Close Button */
+        .close {
+          position: absolute;
+          top: 15px;
+          right: 35px;
+          color: #f1f1f1;
+          font-size: 40px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+          color: #bbb;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .conteudo{
+            width: 70%;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 12px;
+            padding: 10px;
+            margin:auto;
+        }
+
+        .campoCaixa{
+        padding: 2px 4px;
+        border:1px solid #ccc;
+        border-radius: 6px;
+        height: 35px;
+        width: 100%;
+        }
+
+        .botaoCaixa{
+        font-size: 18px;
+        font-weight: 900;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 8px 8px;
+
+        border:none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 10px 0;
+        display: inline-block;
+        }
+
+        .bgVerde{
+            background-color: #a1c436;
+        }
+
+        .bgVerde:hover{
+            background-color: #829e2d;
+        }
+
+        .fundo{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 111;
+
+        }
+
+        .f{
+            z-index: 112;
+        }
+
+        .sobre{
+            text-align: justify;
+            text-indent: 30px;
+        }
+
+        .lista{
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px 10% 0;
+            min-height: 300px;
+        }
+
+        .btGostei{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        position: absolute;
+        top: 20px;
+        right: 5px;
+        text-align: center;
+        padding: 0;
+        z-index: 50;
+        display: block;
+        font-size: 30px;
+        padding: 4px 0px;
+        color: transparent;
+        text-shadow: 0px 0px 4px rgba(0,0,0,0.5);
+        border: none;
+        cursor: pointer;
+        /* color: rgb(206, 0, 0); */
+        }
+
+        .btGostei:hover{
+            background-color: #ccc;
+        }
+
+        .gostei{
+            color: #ba3333;
+        }
+
+        .conteiner-foto{
+            display: flex;
+            overflow: hidden;
+            height: 22vw;
+        }
+
+
+        .desc{
+        height: 80px;
+        overflow: auto;
+        color: rgb(37, 37, 37);
+
+        }
+
+        .p2{
+            height: 160px;
+            text-align: center;
+
+        }
+
+        .p2 p {
+            margin: 5px 0;
+            font-size: 12px;
+            text-overflow: ellipsis;
+
+        }
+
+        .suporte, .compartilhar{
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          position: fixed;
+          bottom: 5px;
+          right: 5px;
+          text-align: center;
+          z-index: 50;
+          display: block;
+          font-size: 30px;
+          padding: 2px 0px;
+          color: white;
+          border: none;
+          background-color: #34af23;
+          box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .voltar{
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          position: fixed;
+          bottom: 5px;
+          left: 5px;
+          text-align: center;
+          z-index: 50;
+          display: block;
+          font-size: 30px;
+          padding: 2px 0px;
+          color: white;
+          border: none;
+          background-color: #34af23;
+          box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+          cursor: pointer;
+          bottom: 5px;
+          background-color: rgb(177 15 15);
+
+        }
+
+        .compartilhar{
+            cursor: pointer;
+            bottom: 65px;
+            background-color: rgb(115, 113, 113);
+        }
+
+        .subir{
+            background-color: #ccccec75;
+            color: black;
+            bottom: 60px;
+        }
+
+        .desativada{
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.474);
+            top: 0px;
+            z-index: 105;
+        }
+
+        .desativada p{
+            color: #fff;
+            font-size: 5vw;
+            text-align: center;
+        }
+
+        .desativada p span{
+
+            font-size: 2vw;
+
+        }
+
+        @media screen and (max-width: 600px){
+            .conteiner-foto{
+                height: 85vw;
+            }
+
+            .lista{
+                padding: 10px 3% 0;
+            }
+
+            .desativada p{
+                color: #fff;
+                font-size: 7vw;
+                text-align: center;
+            }
+
+            .desativada p span{
+
+                font-size: 4vw;
+
+            }
+        }
+
+
+
+
+        @media screen and (max-width: 500px) {
+
+            .conteudo{
+                width: 95%;
+            }
+
+            .fotoLoja{
+                padding: 0;
+            }
+
+        }
+
+
+
+        .cabecalho{
+            background-color: #305b37;
+            padding: 8px 0 0;
+        }
+
+        .logo img{
+            margin: auto;
+            display: block;
+        }
+
+        .nav ul{
+            margin: auto;
+            text-align: center;
+            padding: 0;
+            box-sizing: border-box;
+
+        }
+        .nav ul li{
+            display: inline-block;
+            cursor: pointer;
+            color: white;
+            width: 19%;
+            background-color: #0000005c;
+            border-radius: 5px;
+            padding:5px 0;
+            margin-bottom:5px;
+
+        }
+
+        .nav ul li:hover{
+           background-color: #aaa;
+           color: black;
+
+        }
+
+        .banner img{
+            width: 100%;
+        }
+
+        .sobre{
+            padding: 1% 10%;
+            text-align: center;
+            background-color: #305b37;
+            color: white;
+        }
+
+        .novidades{
+            text-align: center;
+        }
+
+        .rodape{
+            height: 70px;
+            background-color: #305b37;
+        }
+
+        #galeria1, #galeria2, #galeria3, #galeria4{
+            display: none;
+            text-align: center;
+        }
+
+        @media  screen and (max-width: 850px) {
+            .sobre{
+                padding: 1% 2%;
+            }
+
+        }
+
+        @media  screen and (max-width: 500px) {
+            .nav ul li{
+                display: inline-block;
+                cursor: pointer;
+                color: white;
+                width: 31%;
+                font-size: 13px;
+                padding: 4px 0;
+
+            }
+
+            .log img{
+                width: 200px;
+            }
+
+        }
+
+        .row::after {
+          content: "";
+          clear: both;
+          display: table;
+        }
+
+        .column {
+          float: left;
+          width: 33.3%;
+          margin-bottom: 16px;
+          padding: 0 8px;
+        }
+
+
+
+        .card {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          height:510px;
+          background-color:white;
+          position:relative;
+          max-width:300px;
+          margin-bottom: 5px;
+          margin:auto;
+          padding:0;
+          font-zise:13px
+        }
+
+        .overlay {
+          position: absolute;
+          bottom: 100%;
+          left: 0;
+          right: 0;
+          background-color: white;
+          overflow: hidden;
+          width: 100%;
+          height:0;
+          transition: .5s ease;
+          box-shadow: 5px 5px 10px #00000040;
+          z-index:1;
+        }
+
+        @media screen and (max-width: 650px) {
+          .column {
+            width: 50%;
+            display: block;
+            padding: 0;
+          }
+          .card {
+            margin: 0 1%;
+            font-zise:14px
+          }
+        }
+
+         @media screen and (max-width: 500px) {
+          .card {
+            height:470px !important;
+          }
+        }
+
+        .editar{
+            border: none;
+            padding: 3px 10px;
+            box-shadow: 2px 2px 2px #00000042;
+            border-radius:5px;
+            background-color: #629fcf;
+            color: white;
+
+        }
+        button{
+            border-radius:5px;
+        }
+
+        #loading {
+          position: fixed; /* Fixo na tela */
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+          display: flex; /* Alinha os elementos */
+          justify-content: center; /* Centraliza horizontalmente */
+          align-items: center; /* Centraliza verticalmente */
+          z-index: 100; /* Acima do conteúdo */
+        }
+
+        .loading-spinner {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          border: 5px solid #ccc; /* Cor da borda */
+          border-color: #ccc transparent #ccc transparent; /* Cor da animação */
+          animation: spin 1.2s linear infinite; /* Animação de rotação */
+        }
+
+         @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        #content {
+          display: none; /* Esconde o conteúdo até carregar */
+        }
+
+        #pagina {
+          display: none; /* Esconde o conteúdo até carregar */
+        }
+
+    </style>
+
+</head>
+
+
+
+<body >
+
+    <div id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+    <div id="pagina">
+
+        <div class="cabecalho" style="background-color: #{{ loja.cor }};">
+            <div class="logo-conteiner">
+                <div style="position: relative; display: inline-block; margin: auto; max-height: 100px; width:25%;">
+                    <img class="logo" src="{{ loja.logo }}">
+                    <button style="font-size: 12px;" class="addLogo editar ">Editar logo</button>
+                </div>
+
+
+
+            </div>
+            <div class="nav">
+
+                <ul>
+                    <li id="op1" class="fonte" onclick="galerias('inicio')" style="color: #{{ loja.fonte }};">Início</li>
+
+                    <li id="op2"  class="fonte" onclick="galerias('Galeria1','1')" style="color: #{{ loja.fonte }};">Femenino</li>
+
+                    <li id="op3"  class="fonte" onclick="galerias('Galeria2','2')" style="color: #{{ loja.fonte }};">Maculino</li>
+
+                    <li id="op4"  class="fonte" onclick="galerias('Galeria3','3')" style="color: #{{ loja.fonte }};">Infantil</li>
+
+                    <li id="op5"  class="fonte" onclick="galerias('Galeria4','4')" style="color: #{{ loja.fonte }};">Solar</li>
+
+                </ul>
+
+            </div>
+        </div>
+        <div id="inicio" style="display: block;">
+            <div class="banner-conteiner">
+                <div style="position: relative; display: inline-block; margin: auto; width:100%;">
+                    <img class="banner" src="{{ loja.banner }}">
+                    <button style="font-size: 12px;" class="addBanner editar ">Editar Banner</button>
+                </div>
+
+            </div>
+            <div class="sobre" style="background-color: #{{ loja.cor }};">
+                <div>
+                    <h3 class="fonte" style="text-align: center; color: #{{ loja.fonte }};"><b>Sobre Nós:</b> <button class="addHistoria editar " style="font-size: 12px;">Editar História</button></h3>
+                    <p id="historiaR" class="fonte" style="color: #{{ loja.fonte }}; text-align:justify;">{{ loja.sobre }}</p>
+                </div>
+                <br>
+                <div class="w3-row">
+                    <div class="w3-half fotoLoja" style="background: url('{{ loja.foto }}') no-repeat center; position: relative; max-height: 300px;">
+
+                        <button style="font-size: 12px;" class="addFoto editar ">Editar Foto</button>
+                    </div>
+
+                    <div class="w3-half" style="display: inline-block; text-align: center;">
+                        <h3 class="fonte" style="color: #{{ loja.fonte }};"><b>Contatos:</b></h3>
+                        <div style="text-align:left; display:inline-block;">
+
+                            <p class="fonte" style="color: #{{ loja.fonte }};">Whatsapp:
+                                <a id="whatsappR" href="http://api.whatsapp.com/send?phone={{ loja.whatsapp }}" target="_blank"> {{ loja.whatsapp }}</a>
+                                <button style="font-size: 12px;" class="addWhatsapp editar">Editar </button>
+                            </p>
+
+                            <p class="fonte" style="color: #{{ loja.fonte }};">Instagram:
+                                <a id="instagramR" href="{{ loja.instagram }}" target="_blank">{{ loja.instagram }}</a>
+                                <button style="font-size: 12px;" class="addInstagram editar ">Editar</button>
+                            </p>
+
+                            <p class="fonte" style="color: #{{ loja.fonte }};">Facebook:
+                                <a id="facebookR" href="{{ loja.facebook }}" target="_blank">{{ loja.facebook }}</a>
+                                <button style="font-size: 12px;" class="addFacebook editar ">Editar </button>
+                            </p>
+
+                            <p class="fonte" style="color: #{{ loja.fonte }};">Youtube:
+                                <a id="youtubeR" href="{{ loja.youtube }}" target="_blank">{{ loja.youtube }}</a>
+                                <button style="font-size: 12px;" class="addYoutube editar ">Editar </button>
+                            </p>
+                            <div class="fonte" style="color: #{{ loja.fonte }}; margin:15px 0;">Endereço: <p id="enderecoR" style="display:inline;">{{ loja.endereco }}</p> <button style="font-size: 12px;" class="addEndereco editar ">Editar </button></div>
+
+                            <div  class="fonte" style="color: #{{ loja.fonte }};  margin:15px 0;">Aberto: <p id="funcionamentoR" style="display:inline;">{{ loja.aberto}}</p> <button style="font-size: 12px;" class="addAberto editar ">Editar </button></div>
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="novidades" style="min-height:500px">
+                <h3><b>Novidades</b></h3>
+                <div class="row" style="font-size:13px !important;">
+
+                    {% for i in range(-3, 0) %}
+
+                            <div class="column">
+                                <div class="card" style="border-radius:5px;">
+                                    <img class="myImg" src="{{ armacoes[i][1]['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                        <div style="font-zise:13px;">
+                                          <div style="padding:0 3px">
+                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacoes[i][1]['preco'] }}</b></p>
+                                              <p style="margin: 3px">Código: <b>{{ armacoes[i][1]['codigo'] }}</b></p>
+                                              <p style="margin: 3px">Dimensções <b>{{ armacoes[i][1]['dimensoes'] }}</b></p>
+                                              <p style="margin: 3px">Seção: <b>{{ armacoes[i][1]['secao'] }}</b></p>
+                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacoes[i][1]['descricao'] }}</b></p>
+                                          </div>
+                                        </div>
+                                        <div  class="overlay" style="">
+                                            <p style="position:absolute; top:0; right:0;"><i onclick="fecharCores(this)" style="padding:0; margin: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                            <div class="row">
+                                                {%  for c in armacoes[i][1]['cores'] %}
+                                                    {% if 'C10' not in c %}
+                                                        <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">{{c}}:<b class="quant">{{armacoes[i][1]['cores'][c]}}</b></p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if 'C10' in armacoes[i][1]['cores'] %}
+                                                    <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">C10:<b class="quant">{{armacoes[i][1]['cores']['C10']}}</b></p>
+                                                {% endif %}
+                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="abrirCores(this)" style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                </div>
+                            </div>
+
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="galeria1" style="display: none;">
+            <h3><b>Feminino</b></h3>
+
+           <div class="row" style="min-height:400px; font-size:13px !important;">
+
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Feminino' %}
+                            <div class="column">
+                                <div class="card" style="border-radius:5px;">
+                                    <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                        <div style="font-zise:13px;">
+                                          <div style="padding:0 3px">
+                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                              <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                              <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                              <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                          </div>
+
+                                        </div>
+                                        <div  class="overlay" style="">
+                                            <p style="position:absolute; top:0; right:0;"><i onclick="fecharCores(this)" style="padding:0; margin: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                            <div class="row">
+                                                {%  for c in armacao['cores'] %}
+                                                    {% if 'C10' not in c %}
+                                                        <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">{{c}}:<b class="quant">{{armacao['cores'][c]}}</b></p>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if 'C10' in armacao['cores'] %}
+                                                    <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">C10:<b class="quant">{{armacao['cores']['C10']}}</b></p>
+                                                {% endif %}
+                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="abrirCores(this)" style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-green w3-padding w3-large">Cores</button>
+                                </div>
+                            </div>
+                    {% endif %}
+
+               {% endfor %}
+
+           </div>
+            <a href="#galeria1" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+        </div>
+
+        <div id="galeria2" style="display: none;">
+            <h3><b>Masculino</b></h3>
+
+            <div class="row" style="min-height:400px; font-size:13px !important;">
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Masculino' %}
+                        <div class="column">
+                            <div class="card" style="border-radius:5px;">
+                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                    <div style="font-zise:13px;">
+                                      <div style="padding:0 3px">
+                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                      </div>
+
+                                    </div>
+                                    <div  class="overlay" style="">
+                                        <p style="position:absolute; top:0; right:0;"><i onclick="fecharCores(this)" style="padding:0; margin: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                        <div class="row">
+                                            {%  for c in armacao['cores'] %}
+                                                {% if 'C10' not in c %}
+                                                    <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">{{c}}:<b class="quant">{{armacao['cores'][c]}}</b></p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if 'C10' in armacao['cores'] %}
+                                                <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">C10:<b class="quant">{{armacao['cores']['C10']}}</b></p>
+                                            {% endif %}
+                                            <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="abrirCores(this)" style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-green w3-padding w3-large">Cores</button>
+                            </div>
+                        </div>
+                    {% endif %}
+
+               {% endfor %}
+
+            </div>
+            <a href="#galeria2" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+
+        </div>
+
+        <div id="galeria3" style="display: none;">
+            <h3><b>Infantil</b></h3>
+
+            <div class="row" style="min-height:400px; font-size:13px !important;">
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Infantil' %}
+                        <div class="column">
+                            <div class="card" style="border-radius:5px;">
+                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                    <div style="font-zise:13px;">
+                                      <div style="padding:0 3px">
+                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                      </div>
+
+                                    </div>
+                                    <div  class="overlay" style="">
+                                        <p style="position:absolute; top:0; right:0;"><i onclick="fecharCores(this)" style="padding:0; margin: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                        <div class="row">
+                                            {%  for c in armacao['cores'] %}
+                                                {% if 'C10' not in c %}
+                                                    <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">{{c}}:<b class="quant">{{armacao['cores'][c]}}</b></p>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if 'C10' in armacao['cores'] %}
+                                                <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">C10:<b class="quant">{{armacao['cores']['C10']}}</b></p>
+                                            {% endif %}
+                                            <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="abrirCores(this)" style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-green w3-padding w3-large">Cores</button>
+                            </div>
+                        </div>
+                    {% endif %}
+
+               {% endfor %}
+
+            </div>
+            <a href="#galeria3" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+
+        </div>
+
+        <div id="galeria4" style="display: none;">
+            <h3><b>Solar</b></h3>
+
+             <div class="row" style="min-height:400px; font-size:13px !important;">
+               {% for chave, armacao in armacoes %}
+                    {% if armacao['secao'] == 'Solar' %}
+                               <div class="column">
+                                    <div class="card" style="border-radius:5px;">
+                                        <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                        <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                            <div style="font-zise:13px;">
+                                              <div style="padding:0 3px">
+                                                  <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                                  <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                                  <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                                  <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                                  <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                              </div>
+
+                                            </div>
+                                            <div  class="overlay" style="">
+                                                <p style="position:absolute; top:0; right:0;"><i onclick="fecharCores(this)" style="padding:0; margin: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+                                                <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                                <div class="row">
+                                                    {%  for c in armacao['cores'] %}
+                                                        {% if 'C10' not in c %}
+                                                            <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">{{c}}:<b class="quant">{{armacao['cores'][c]}}</b></p>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if 'C10' in armacao['cores'] %}
+                                                        <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">C10:<b class="quant">{{armacao['cores']['C10']}}</b></p>
+                                                    {% endif %}
+                                                    <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button onclick="abrirCores(this)" style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-green w3-padding w3-large">Cores</button>
+                                    </div>
+                                </div>
+                    {% endif %}
+
+               {% endfor %}
+
+            </div>
+            <a href="#galeria4" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
+
+        </div>
+
+        <div class="rodape" style="background-color: #{{ loja.cor }};">
+            <form>
+                <label class="fonte" style="color: #{{ loja.fonte }};">Cor do site: </label><input type="color" value="#{{loja.cor}}" id="cor" name="cor">
+
+                <label class="fonte" style="color: #{{ loja.fonte }};">Cor das Letras: </label><input type="color" value="#{{loja.fonte}}" id="corFonte" name="corFonte">
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+        <div class="modal" id="formLogo">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Alterar Logo</p>
+                <p>A imagem(.jpg, .png) será redimensionada para 600 x 200 px</p>
+                <form action="{{url_for('add_logo')}}" method="post" enctype="multipart/form-data" id="logo">
+                    {{ form.csrf_token() }}
+                    <div id="fotoTLogo" style="text-align: left; width: 100%; overflow: hidden;">
+                        {{ form.arquivo(accept="image/png, image/jpeg") }}
+                    </div>
+                    <div style="text-align: center; width: 100%;">
+                        <p>{{ form.enviar(class="botaoCaixa bgVerde") }}</p>
+                    </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoLogo"></div>
+        </div>
+
+        <div class="modal" id="formBanner">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Alterar Banner</p>
+                <p>A imagem(jpg) será redimensionada para 1000 x 400 px</p>
+                <form action="{{url_for('add_banner')}}" method="post" enctype="multipart/form-data" id="banner">
+                    {{ form.csrf_token() }}
+                    <div id="fotoTBanner" style="text-align: left; width: 100%; overflow: hidden;">
+                        {{ form.arquivo(accept="image/jpeg") }}
+                    </div>
+
+                    <div style="text-align: center; width: 100%;">
+                        <p>{{ form.enviar(class="botaoCaixa bgVerde") }}</p>
+                    </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoBanner"></div>
+        </div>
+
+        <div class="modal" id="formFoto">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Alterar Foto</p>
+                <p>A imagem(jpg) será redimensionada para 700 x 300 px</p>
+                <form action="{{url_for('add_foto')}}" method="post" enctype="multipart/form-data" id="fotoform">
+                    {{ form.csrf_token() }}
+                    <div id="fotoTFoto" style="text-align: left; width: 100%; overflow: hidden;">
+                        {{ form.arquivo(accept="image/jpeg") }}
+                    </div>
+                    <div style="text-align: center; width: 100%;">
+                         <p>{{ form.enviar(class="botaoCaixa bgVerde") }}</p>
+                    </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoFoto"></div>
+        </div>
+
+        <div class="modal" id="formHistoria">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Adicionar História</p>
+                <form action="" method="post" id="historia" style="display:block;">
+                    <div>
+                        <label style="width: 49%;display: inline-block; text-align: left;">Sua história:</label>
+                        <div style="width: 49%; display: inline-block;text-align: right;"> <div id="charCount" style="display:inline;">0</div> <p style="display:inline;">/500</p></div>
+                    </div>
+
+                    <textarea onkeyup="updateCounter()" autocomplete="false"  class="campoCaixa nome6" id="hi" maxlength="500" minlength="1" name="sobre" placeholder="Fale um pouco sobre sua loja" required="" style="height: 200px;width: 507px;resize: none;"></textarea>
+                    <div style="text-align: center; width: 100%;">
+                    <span onclick="enviarDados('/historia','hi')" class="botaoCaixa bgVerde">Adicionar</span>
+                    </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoHistoria"></div>
+        </div>
+
+        <div class="modal" id="formWhatsapp">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Adicionar Whatsapp</p>
+                <form action="" method="post" id="whatsapp">
+                    <label> Número do Whatsapp:</label>
+                    <input autocomplete="false" class="campoCaixa nome6" id="wa" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+
+                    <div style="text-align: center; width: 100%;">
+                    <span onclick="enviarDados('/whatsapp?what=','wa')" class="botaoCaixa bgVerde">Adicionar</span>
+                    </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoWhatsapp"></div>
+        </div>
+
+        <div class="modal" id="formInstagram">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Adicionar Instagram</p>
+                <form action="" method="post" id="instagram">
+                    <label>Link do Instagram:</label>
+                    <input autocomplete="false" class="campoCaixa nome6" id="in" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+
+                    <div style="text-align: center; width: 100%;">
+                    <span onclick="enviarDados('/instagram?inst=','in')" class="botaoCaixa bgVerde">Adicionar</span>
+                  </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoInstagram"></div>
+        </div>
+
+        <div class="modal" id="formFacebook">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Adicionar Facebook</p>
+                <form action="" method="post" id="facebook">
+                    <label>Link Facebook</label>
+                    <input autocomplete="false" class="campoCaixa nome6" id="fc" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+
+                    <div style="text-align: center; width: 100%;">
+                    <span onclick="enviarDados('/facebook?face=','fc')" class="botaoCaixa bgVerde">Adicionar</span>
+                  </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoFacebook"></div>
+        </div>
+
+        <div class="modal" id="formYoutube">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Adicionar Youtube</p>
+                <form action="" method="post" id="youtube">
+                    <label>Link do Youtube:</label>
+                    <input autocomplete="false" class="campoCaixa nome6" id="yo" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+
+                    <div style="text-align: center; width: 100%;">
+                    <span onclick="enviarDados('/youtube?yout=','yo')" class="botaoCaixa bgVerde">Adicionar</span>
+                    </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoYoutube"></div>
+        </div>
+
+        <div class="modal" id="formEndereco">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Adicionar Endereço</p>
+                <form action="" method="post" id="endereco">
+                    <label>Endereço:</label>
+                    <input autocomplete="false" class="campoCaixa nome6" id="en" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+
+                    <div style="text-align: center; width: 100%;">
+                    <span onclick="enviarDados('/endereco?ende=','en')" class="botaoCaixa bgVerde">Adicionar</span>
+                    </div>
+
+                </form>
+            </div>
+            <div class="fundo" id="fundoEndereco"></div>
+        </div>
+
+        <div class="modal" id="formAberto">
+            <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+                <p>Adicionar horário de funcionamento</p>
+                <form action="" method="post" id="aberto">
+                    <label>Horário:</label>
+                    <input autocomplete="false" class="campoCaixa nome6" id="fu" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+
+                    <div style="text-align: center; width: 100%;">
+                    <span onclick="enviarDados('/funcionamento?func=','fu')" class="botaoCaixa bgVerde">Adicionar</span>
+                    </div>
+                </form>
+            </div>
+            <div class="fundo" id="fundoAberto"></div>
+        </div>
+
+
+
+
+
+
+
+
+    <a href="{{ url_for('dashboard')}}"><button class="w3-card-4 voltar" id="voltar" ><i class="fa fa-arrow-left" aria-hidden="true"></i></button></a>
+    <a href="http://api.whatsapp.com/send?phone=5582987333558&amp;text=Ol%C3%A1%20suporte%20Minha%20Loja" class="w3-card-4 suporte" id="suporte"><i class="fa fa-whatsapp"></i></a>
+   <!-- <button class="w3-card-4 compartilhar" id="compartilhar" onclick="compartilhar(&#39;Minha Loja&#39;)"><i class="fa fa-share-alt"></i></button> -->
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <span class="close" onclick="fecharImagem()">&times;</span>
+  <img class="modal-content" id="img01" src="">
+
+</div>
+
+<script>
+
+    window.onload = function() {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("pagina").style.display = "block";
+    };
+
+    $(".cabecalho").css("background-color", $("#cor").val());
+    $(".sobre").css("background-color", $("#cor").val());
+    $(".rodape").css("background-color", $("#cor").val());
+
+    $(".fonte").css("color", $("#corFonte").val())
+
+    $(".addLogo").on("click", function(){
+        $("#formLogo").css("display", "flex");
+    });
+
+    $(".addBanner").on("click", function(){
+        $("#formBanner").css("display", "flex");
+    });
+
+    $(".addFoto").on("click", function(){
+        $("#formFoto").css("display", "flex");
+    });
+
+    $(".addHistoria").on("click", function(){
+        $("#formHistoria").css("display", "flex");
+        $(".nome3").focus()
+    });
+
+    $(".addWhatsapp").on("click", function(){
+        $("#formWhatsapp").css("display", "flex");
+        $(".nome4").focus()
+    });
+
+    $(".addInstagram").on("click", function(){
+        $("#formInstagram").css("display", "flex");
+        $(".nome5").focus()
+    });
+
+    $(".addFacebook").on("click", function(){
+        $("#formFacebook").css("display", "flex");
+        $(".nome6").focus()
+    });
+
+    $(".addYoutube").on("click", function(){
+        $("#formYoutube").css("display", "flex");
+        $(".nome7").focus()
+    });
+
+    $(".addEndereco").on("click", function(){
+        $("#formEndereco").css("display", "flex");
+        $(".nome8").focus()
+    });
+    $(".addLocal").on("click", function(){
+        $("#formLocal").css("display", "flex");
+        $(".nome9").focus()
+    });
+
+    $(".addAberto").on("click", function(){
+        $("#formAberto").css("display", "flex");
+        $(".nome11").focus()
+    });
+
+    $("#fundoLogo").on("click", function(){
+        $("#formLogo").css("display", "none");
+    });
+
+    $("#fundoBanner").on("click", function(){
+        $("#formBanner").css("display", "none");
+    });
+
+    $("#fundoFoto").on("click", function(){
+        $("#formFoto").css("display", "none");
+    });
+
+    $("#fundoHistoria").on("click", function(){
+        $("#formHistoria").css("display", "none");
+    });
+
+    $("#fundoWhatsapp").on("click", function(){
+        $("#formWhatsapp").css("display", "none");
+    });
+
+    $("#fundoInstagram").on("click", function(){
+        $("#formInstagram").css("display", "none");
+    });
+
+    $("#fundoFacebook").on("click", function(){
+        $("#formFacebook").css("display", "none");
+    });
+
+    $("#fundoYoutube").on("click", function(){
+        $("#formYoutube").css("display", "none");
+    });
+
+    $("#fundoEndereco").on("click", function(){
+        $("#formEndereco").css("display", "none");
+    });
+    $("#fundoLocal").on("click", function(){
+        $("#formLocal").css("display", "none");
+    });
+
+    $("#fundoAberto").on("click", function(){
+        $("#formAberto").css("display", "none");
+    });
+
+
+
+
+    $(document).ready(function(){
+        $(".menu").click(function(){
+            this.classList.toggle('clicou');
+            $('.sidebar').toggleClass('clicou2');
+            $(".sobrePor").toggleClass('clicou3');
+        });
+
+        $(".sobrePor").click(function(){
+            $(".menu").toggleClass('clicou');
+            $('.sidebar').toggleClass('clicou2');
+            $(".sobrePor").toggleClass('clicou3');
+        });
+
+        $("#busca").on("keypress", function(e) {
+            if (e.keyCode == 13) {
+              document.getElementById("pesquisar").submit();
+            }
+          });
+    });
+
+    function galerias(galeria,valor){
+        switch(galeria){
+            case "inicio":
+                console.log("***************" + galeria);
+                $("#galeria").val("");
+                $("#galeria1, #galeria2, #galeria3, #galeria4").css("display", "none");
+                $("#inicio").css("display", "block");
+                $("#op1").css("background-color", "#b2b2bbb8");
+                $("#op2, #op3, #op4, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria1":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria2, #galeria3, #galeria4").css("display", "none");
+                $("#galeria1").css("display", "block");
+                $("#op2").css("background-color", "#b2b2bbb8");
+                $("#op1, #op3, #op4, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria2":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria1, #galeria3, #galeria4").css("display", "none");
+                $("#galeria2").css("display", "block");
+                $("#op3").css("background-color", "#b2b2bbb8");
+                $("#op2, #op1, #op4, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria3":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria1, #galeria2, #galeria4").css("display", "none");
+                $("#galeria3").css("display", "block");
+                $("#op4").css("background-color", "#b2b2bbb8");
+                $("#op2, #op3, #op1, #op5").css("background-color", "#0000005c");
+                break;
+            case "Galeria4":
+                console.log("***************" + galeria);
+                $("#galeria").val(valor);
+                $("#inicio, #galeria1, #galeria2, #galeria3").css("display", "none");
+                $("#galeria4").css("display", "block");
+                $("#op5").css("background-color", "#b2b2bbb8");
+                $("#op2, #op3, #op4, #op1").css("background-color", "#0000005c");
+                break;
+
+        }
+    }
+
+
+
+    function compartilhar(loja){
+        if (navigator.share !== undefined) {
+            navigator.share({
+                title: 'Minha Loja',
+                text: 'Crie o seu site e entre nas pequisas da região.\nPesquise o melhor preço sem sair de casa.',
+                url: '{{url_for('painel_catalogo')}}' //+ loja.toLowerCase().replace(new RegExp(" ","g"),"")
+            }).then(() => console.log('Successful share')).catch((error) => console.log('Error sharing', error));
+        }
+    }
+
+    function fecharImagem() {
+      var modal = document.getElementById("myModal");
+      modal.style.display = "none";
+    }
+
+    function abrirImagem(elemento){
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+      var modal = document.getElementById("myModal");
+      var modalImg = document.getElementById("img01");
+
+      modal.style.display = "block";
+      modalImg.src = elemento.src;
+
+    }
+
+
+    function abrirCores(elemento){
+
+        irmao = elemento.previousElementSibling
+        overlay = irmao.children[1];
+        overlay.style.bottom = "0" ;
+        overlay.style.height = "100%";
+        lista = overlay.getElementsByClassName("quant")
+        var total = 0;
+        for(var i = 0; i < lista.length; i++){
+            total += parseInt(lista[i].textContent)
+
+        }
+        overlay.getElementsByClassName("total")[0].textContent = total
+    }
+
+    function fecharCores(elemento){
+
+        pai = elemento.parentNode;
+        overlay = pai.parentNode;
+        overlay.style.bottom = "100%";
+        overlay.style.height = "0";
+
+    }
+
+    function enviarDados(funcao, elemento){
+
+         var dado = document.getElementById(elemento);
+         fetch(funcao , {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                'dado': dado.value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            tipo = document.getElementById(data["tipo"] + "R")
+            if(tipo.tagName == "A" ){
+                if(data["tipo"] == "whatsapp"){
+                    tipo.href = "http://api.whatsapp.com/send?phone=" + data["dados"]
+                    tipo.textContent = data["dados"]
+                }else{
+                    tipo.href = data["dados"]
+                    tipo.textContent = data["dados"]
+                }
+
+                if(data["mensagem"] == true){
+                    mensagemR("Alteração realizada com sucesso!")
+                }else{
+                    mensagemR("Alteração não realizada!")
+                }
+
+            }else if(tipo.tagName == "P"){
+                tipo.textContent = data["dados"]
+                if(data["mensagem"] == true){
+                    mensagemR("Alteração realizada com sucesso!")
+                }else{
+                    mensagemR("Alteração não realizada!")
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+
+        pai = dado.parentNode.parentNode.parentNode;
+        pai.style.display = "none"
+    }
+
+     $("#cor").on("change", function(e){
+        enviarCor("/cor","cor");
+    });
+
+    $("#corFonte").on("change", function(e){
+        enviarCor("/fonte","corFonte")
+    });
+
+    function enviarCor(funcao, elemento){
+
+         var dado = document.getElementById(elemento).value;
+         dado = dado.replace("#","");
+
+         fetch(funcao, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                'dado': dado
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if(elemento  == "cor" ){
+                $(".cabecalho").css("background-color", "#" + data['dados']);
+                $(".sobre").css("background-color", "#" + data['dados']);
+                $(".rodape").css("background-color", "#" + data['dados']);
+
+                if(data["mensagem"] == true){
+                    mensagemR("Alteração realizada com sucesso!")
+                }else{
+                    mensagemR("Alteração não realizada!")
+                }
+
+            }else if(elemento == "corFonte"){
+                $(".fonte").css("color", "#" + data['dados'])
+                if(data["mensagem"] == true){
+                    mensagemR("Alteração realizada com sucesso!")
+                }else{
+                    mensagemR("Alteração não realizada!")
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+
+    }
+
+    function updateCounter() {
+      var textArea = document.getElementById("hi");
+      var charCount = document.getElementById("charCount");
+      charCount.textContent = textArea.value.length;
+    }
+
+    function mensagemR(msg){
+        document.getElementById("mensagemR").textContent = msg
+         $("#msg2").css("display", "flex");
+            $("#msg2").css("opacity", "1");
+            setTimeout(()=>{
+               $("#msg2").css("opacity", "0");
+
+               setTimeout(() => $("#msg2").css("display", "none"),1000);
+            } ,4000);
+
+    }
+
+
+
+</script>
+{% if mensagem  %}
+      <div id="msg" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%;">
+        <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+          <p>{{ mensagem }}</p>
+          <script>
+                $("#msg").css("display", "flex");
+                $("#msg").css("opacity", "1");
+                setTimeout(()=>{
+                   $("#msg").css("opacity", "0");
+
+                   setTimeout(() => $("#msg").css("display", "none"),1000);
+                } ,4000);
+
+           </script>
+        </div>
+      </div>
+  {% endif %}
+
+<div id="msg2" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%; display:none;">
+    <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+      <p id="mensagemR"></p>
+    </div>
+</div>
+
+</body>
+</html>

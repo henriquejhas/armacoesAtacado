@@ -1,0 +1,53 @@
+{% extends "template.html" %}
+{% block conteudo %}
+
+<div id="pesquisar">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:800px; margin-bottom: 100px;border-radius:5px;">
+        <h2 style="text-align:center; padding-top:10px;">Pesquisar</h2>
+        <form class="w3-container" action="{{ url_for('pesquisar') }}" method="post">
+            <fieldset >
+                <legend>Pesquisar por</legend>
+                <div>
+                    <div style="display: ruby-text; ">
+                        <div style="display: inline-block; text-align: center;">
+                            <input type="radio" name="tipo"  checked="" id="codigo" value="codigo"><label for="codigo">Código</label>
+                        </div>
+                        <div style="display: inline-block; text-align: center;">
+                            <input type="radio" name="tipo" id="dimensoes"  value="dimensoes"><label for="dimensoes">Dimensões</label>
+                        </div>
+                        <div style="display: inline-block; text-align: center;">
+                            <input type="radio" name="tipo" id="secao" value="secao"><label for="secao">Seção</label>
+                        </div>
+                        <div style="display: inline-block; text-align:center;">
+                            <input  type="radio" name="tipo" id="descricao" value="descricao"><label for="descricao">Descrição</label>
+                        </div>
+                        <div style="display: inline-block; text-align:center;">
+                            <input  type="radio" name="tipo" id="todos" value="todos"><label for="todos">Todos</label>
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+            {{ form.csrf_token() }}
+
+            {{ form.busca.label(style="font-weight:900;") }}
+            {{ form.busca(autocomplete="false", class="w3-input w3-border w3-margin-bottom", placeholder="Digite sua pesquisa") }}
+            <button type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Pesquisar</button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    var opcao = document.getElementById("op2");
+    opcao.style.backgroundColor = "#a9a9a9";
+
+    var todos = document.getElementById("todos")
+    todos.onclick = function() {
+        var busca = document.getElementById("busca")
+        busca.value = "Todos"
+    }
+</script>
+
+
+{% endblock %}
