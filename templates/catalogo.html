@@ -481,13 +481,13 @@
             line-height: 40px;
             width: 40px;
             height: 40px;
-            display: none;
             font-size: 35px;
             position: absolute;
             top: 0;
             left: 0;
             cursor:pointer;
             color: #{{ loja.cor }};
+            margin: 15px;
         }
 
         .cart {
@@ -495,6 +495,7 @@
         }
 
         .cart--area {
+            min-height:440px;
             padding: 0px 10px 30px 15px;
         }
 
@@ -588,16 +589,18 @@
 
         }
 
-
+        .show{
+            width: 450px;
+        }
 
         aside {
             display: block;
             background-color: #fff;
             position: absolute;
             border-radius: 15px 0 0 15px;
-            width: 0%;
             height: 95%;
             right: 0px;
+            width: 0px;
             top:2.5%;
             overflow-x: hidden;
             box-shadow: 0px 5px 10px rgba(0, 0, 0, .02);
@@ -605,9 +608,7 @@
 
         .cart--details{
             padding: 0px 10px 30px 15px;
-            position: absolute;
             width: 100%;
-            bottom: 0;
         }
 
         .pop{
@@ -628,14 +629,16 @@
             font-size: 9px;
             width: 13px;
             height: 13px;
+            display: none;
 
         }
 
 
 
-        @media  screen and (max-width: 820px) {
+        @media  screen and (max-width: 550px) {
             aside.show {
                 z-index: 99;
+                width:95%;
             }
             .cart--item--qtarea button {
                 padding: 0px 10px;
@@ -649,11 +652,6 @@
 
             .cart--item--qtarea {
                 height: 30px;
-            }
-
-            .menu-closer {
-                display: block;
-                margin: 15px;
             }
 
             .cart--area {
@@ -1012,12 +1010,12 @@
                                 <div  class="overlay" style="">
                                         <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
                                         <div class="row" style="padding-left:6px;">
-                                            <input type="hidden" value="{{chave}}">
+                                            <input class="codigo-chave" type="hidden" value="{{chave}}">
                                             <input type="hidden" value="{{ armacao['preco'] }}">
                                             <input type="hidden" value="{{ armacao['codigo'] }}">
                                             {%  for c in armacao['cores'] %}
                                                 {% if 'C10' not in c %}
-                                                    <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>{{c}}: </b>
+                                                    <p  class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="w3-red pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
                                                         <span class="input-with-bottom-border">
                                                             <input class="" id="{{c}}" max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
                                                         </span>
@@ -1026,7 +1024,7 @@
                                                 {% endif %}
                                             {% endfor %}
                                             {% if 'C10' in armacao['cores'] %}
-                                                 <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="w3-red pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
+                                                 <p  class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="w3-red pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
                                                     <span class="input-with-bottom-border">
                                                         <input class="" id="C10" max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
                                                     </span>
@@ -1068,7 +1066,7 @@
     </div>
 
 <div class="fundo-aside">
-    <aside class="show" style="">
+    <aside  style="">
         <div class="menu-closer" onclick="fecharCarrinho(this)">
             <i class="fa fa-arrow-left" aria-hidden="true"></i>
         </div>
@@ -1076,46 +1074,14 @@
 
       <h2 style="text-align:center;">Carrinho</h2>
       <div class="cart">
-          <div class="cart--item cart--totalitem">
-              <div>
-                  <img src="images/atum.png">
-              </div>
-              <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">
-                  <div class="cart--item-nome">Atum (G)</div>
-                  <div class="cart--item--qtarea">
-                    <button class="cart--item-qtmenos">-</button>
-                    <div class="cart--item--qt">1</div>
-                    <button class="cart--item-qtmais">+</button>
-                  </div>
-                  <div class="cart--item-subtotal">
-                      <div>Subtotal: <span>R$&nbsp;85,47</span></div>
-                  </div>
-              </div>
 
-
-         </div><div class="cart--item cart--totalitem">
-      <img src="images/camarao-c-catupiry.png">
-      <div class="cart--item-nome">Camarão c/ catupiry (G)</div>
-      <div class="cart--item--qtarea">
-        <button class="cart--item-qtmenos">-</button>
-        <div class="cart--item--qt">1</div>
-        <button class="cart--item-qtmais">+</button>
       </div>
-    </div><div class="cart--item cart--totalitem">
-      <img src="images/frango-catupiry.png">
-      <div class="cart--item-nome">Frango c/ catupiry (G)</div>
-      <div class="cart--item--qtarea">
-        <button class="cart--item-qtmenos">-</button>
-        <div class="cart--item--qt">1</div>
-        <button class="cart--item-qtmais">+</button>
-      </div>
-    </div></div>
 
     </div>
         <div class="cart--details">
             <div class="cart--totalitem total big">
               <span>Total</span>
-              <span>R$&nbsp;85,47</span>
+              <span>R$ <span id="total">0</span></span>
             </div>
             <button onclick="enviarPedido()" style="border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Enviar Pedido</button>
         </div>
@@ -1123,7 +1089,7 @@
 
 </div>
 <!-- The Modal -->
-<div id="myModal" class="modal">
+<div id="myModal" class="modal w3-animate-zoom">
   <span class="close" onclick="fecharImagem()">&times;</span>
   <img class="modal-content" id="img01" src="">
 
@@ -1132,110 +1098,218 @@
 <script>
 
     if(localStorage.getItem("carrinho") == null){
-        alert("nao tem");
-        var carrinho = [];
-        localStorage.setItem("carrinho",JSON.stringify(carrinho));
+        var carrinhoInicio = [];
+        localStorage.setItem("carrinho",JSON.stringify(carrinhoInicio));
 
     }else{
         var objetoJSON = localStorage.getItem("carrinho");
+        var carrinhoInicio = JSON.parse(objetoJSON);
+        document.getElementById("notificacao").textContent = carrinhoInicio.length;
+    }
+
+    function abrirCarrinho(){
+        var total = parseFloat(0);
+        var objetoJSON = localStorage.getItem("carrinho");
         var carrinho = JSON.parse(objetoJSON);
-        document.getElementById("notificacao").textContent = carrinho.length;
+
+        for(var i = 0; i < carrinho.length; i++){
+            var keys = Object.keys(carrinho[i]["cores"]);
+            for(var j = 0; j < keys.length; j++){
+                total += (carrinho[i].preco * carrinho[i].cores[keys[j]]);
+                $(".cart").append('<div class="cart--item cart--totalitem"> \
+                                  <div> \
+                                      <img src="' + carrinho[i].img +  '" onclick="abrirImagem(this)">\
+                                  </div>\
+                                  <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
+                                      <div class="cart--item-nome"> ' + carrinho[i].codigo + ' | ' + keys[j] + '</div>\
+                                      <div class="cart--item--qtarea">\
+                                        <button class="cart--item-qtmenos" onclick="diminuir(this,\'' + carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
+                                        <div class="cart--item--qt">' + carrinho[i].cores[keys[j]] + '</div>\
+                                        <button class="cart--item-qtmais" onclick="aumentar(this,\'' + carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
+                                      </div>\
+                                      <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
+                                            <div style="inline-block; text-align: left;">valor:R$ ' + carrinho[i].preco.toFixed(2) + '</div>\
+                                            <div style="inline-block;">Subtotal: R$<span class="subtotal"> ' + (carrinho[i].preco * carrinho[i].cores[keys[j]]).toFixed(2) + '</span></div>\
+                                      </div>\
+                                  </div>\
+                             </div>');
+            }
+
+
+        }
+
+        document.getElementById("total").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        var fundo = document.getElementsByClassName("fundo-aside")[0];
+        fundo.style.transition = "background 0.5s ease";
+        fundo.style.width = "100%";
+        fundo.style.backgroundColor = "#000000e3";
+        var carrinho = document.getElementsByTagName("ASIDE")[0];
+        carrinho.style.transition = "width 0.3s ease 0.3s";
+        carrinho.classList.add("show");
+        setTimeout(() => document.getElementById("pagina").style.display = "none",500);
+
     }
 
 
-    //JSON.stringify(): objeto para json
-    //const objeto = JSON.parse(jsonString); string para json
+    function aumentar(elemento, chave, cor){
+        var total = parseFloat(0);
+        var objetoJSON = localStorage.getItem("carrinho");
+        var carrinho = JSON.parse(objetoJSON);
+        carrinho.filter((armacao) =>{
+            if(armacao.chave == chave){
+                armacao.cores[cor] += 1;
+                elemento.previousElementSibling.textContent = armacao.cores[cor];
+                elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor] * armacao.preco));
+            }
+            var keys = Object.keys(armacao["cores"]);
+            for(var i = 0; i < Object.keys(armacao["cores"]).length; i++){
+                total += (armacao["cores"][keys[i]]  * armacao.preco) ;
+            }
 
+        });
+        document.getElementById("total").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        localStorage.setItem("carrinho",JSON.stringify(carrinho));
+    }
+
+    function diminuir(elemento, chave, cor){
+        var total = parseFloat(0);
+        var objetoJSON = localStorage.getItem("carrinho");
+        var carrinho = JSON.parse(objetoJSON);
+        carrinho.filter((armacao) =>{
+            if(armacao.chave == chave){
+                if(armacao.cores[cor] > 0){
+                    armacao.cores[cor] -= 1;
+                    elemento.nextElementSibling.textContent = armacao.cores[cor];
+                    elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor] * armacao.preco));
+
+                }
+             }
+            var keys = Object.keys(armacao["cores"]);
+            for(var i = 0; i < Object.keys(armacao["cores"]).length; i++){
+                total += (armacao["cores"][keys[i]]  * armacao.preco) ;
+            }
+
+        });
+        document.getElementById("total").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        localStorage.setItem("carrinho",JSON.stringify(carrinho));
+    }
 
     function adicionar(elemento){
 
         var overlay = elemento.previousElementSibling.previousElementSibling;
-
+        var ok = false;
         lista = overlay.getElementsByTagName("INPUT");
         var objetoJSON = localStorage.getItem("carrinho");
         var carrinho = JSON.parse(objetoJSON);
 
-        addNoCarrinho(lista,carrinho);
-
-        elemento.parentNode.parentNode.classList.remove('column_escolher');
-        elemento.parentNode.classList.remove('card_escolher');
-        elemento.previousElementSibling.style.display = "inline-block";
-        overlay.style.transition = "none";
-        overlay.classList.remove("overlay_escolher");
-        elemento.style.display = "none";
-
-    }
-
-    function acrescentar(){
-
-
-    }
-
-    function addNoCarrinho(lista,carrinho){
         var chave = lista[0].value;
         var preco = parseFloat((lista[1].value).replace(",","."));
         var codigo = lista[2].value;
+        var img = overlay.previousElementSibling.previousElementSibling.src;
         var armacao = {};
-        armacao["chave"] = chave;
-        armacao["codigo"] = codigo;
-        if(typeof preco === 'number' && !isNaN(preco)){
-            armacao["preco"] = preco;
-        }
-        armacao["cores"] = {};
-        for(var i = 3; i < lista.length; i++){
-            if(lista[i].value != "" && lista[i].value != "0"){
-                var quantidade = Math.abs(parseInt(lista[i].value));
-                if(typeof quantidade === 'number' && !isNaN(quantidade)){
-                    armacao.cores[lista[i].name] = parseInt(quantidade);
+        var tem = carrinho.filter((obj) => obj.chave === lista[0].value);
+        if(tem.length){
+
+            armacao = tem[0];
+            for(var i = 3; i < lista.length; i++){
+                if(lista[i].value != "" && lista[i].value != "0"){
+                    ok = true;
+                    var quantidade = Math.abs(parseInt(lista[i].value));
+                    if(typeof quantidade === 'number' && !isNaN(quantidade)){
+                        if(armacao.cores[lista[i].name]!= undefined){
+                            armacao.cores[lista[i].name] += parseInt(quantidade);
+
+                        }else{
+                            armacao.cores[lista[i].name] = parseInt(quantidade);
+                        }
+                    }
+                    lista[i].value = "0";
 
                 }
-                lista[i].value = "0";
-
             }
+        }else{
+            armacao["chave"] = chave;
+            armacao["codigo"] = codigo;
+            armacao["img"] = img;
+            if(typeof preco === 'number' && !isNaN(preco)){
+                armacao["preco"] = preco;
+            }
+            armacao["cores"] = {};
+            for(var i = 3; i < lista.length; i++){
+                if(lista[i].value != "" && lista[i].value != "0"){
+                    ok = true;
+                    var quantidade = Math.abs(parseInt(lista[i].value));
+                    if(typeof quantidade === 'number' && !isNaN(quantidade)){
+                        armacao.cores[lista[i].name] = parseInt(quantidade);
+
+                    }
+                    lista[i].value = "0";
+
+                }
+            }
+            carrinho.push(armacao);
+
         }
 
-        carrinho.push(armacao);
-        localStorage.setItem("carrinho",JSON.stringify(carrinho));
-        document.getElementById("notificacao").textContent = carrinho.length;
+        if(!ok){
+            mensagemR("Nenhuma quantidade informada!");
+        }else{
+            localStorage.setItem("carrinho",JSON.stringify(carrinho));
+            document.getElementById("notificacao").textContent = carrinho.length;
+
+            elemento.parentNode.parentNode.classList.remove('column_escolher');
+            elemento.parentNode.classList.remove('card_escolher');
+            elemento.previousElementSibling.style.display = "inline-block";
+            overlay.style.transition = "none";
+            overlay.classList.remove("overlay_escolher");
+            elemento.style.display = "none";
+        }
+    }
+
+    function escolher(elemento){
+        var objetoJSON = localStorage.getItem("carrinho");
+        var carrinho = JSON.parse(objetoJSON);
+        overlay = elemento.previousElementSibling;
+        var listaTem = overlay.getElementsByClassName("C");
+        var codigoChave = overlay.getElementsByClassName("codigo-chave")[0];
+        var armacao = "";
+        var tem = carrinho.filter((obj) => obj.chave === codigoChave.value);
+        if(tem.length){
+            armacao = tem[0];
+            for(var i = 0; i < listaTem.length; i++){
+                if(listaTem[i].childNodes[0].textContent.replace(": ","") in armacao["cores"]){
+                    listaTem[i].childNodes[0].childNodes[0].style.display = "block";
+                }
+            }
+        }
+        overlay.style.transition = "0.3s ease 0.3s";
+        overlay.classList.add("overlay_escolher");
+        lista = overlay.getElementsByClassName("quant")
+        var total = 0;
+        for(var i = 0; i < lista.length; i++){
+
+            total += parseInt(lista[i].textContent)
+
+        }
+        overlay.getElementsByClassName("total")[0].textContent = total
+
+        elemento.parentNode.parentNode.classList.add('column_escolher');
+        elemento.parentNode.classList.add('card_escolher');
+        elemento.nextElementSibling.style.display = "inline-block";
+        elemento.style.display = "none";
+
 
     }
 
     function fecharCarrinho(elemento){
 
         elemento.parentNode.style.transition = "all 0.5s ease";
-        elemento.parentNode.style.width = "0px";
+        elemento.parentNode.classList.remove("show");
         elemento.parentNode.parentNode.style.transition = "width 0.5s ease 0.4s,background 0.5s ease";
         elemento.parentNode.parentNode.style.backgroundColor = "#0000";
         elemento.parentNode.parentNode.style.width = "0px";
-    }
-
-    function abrirCarrinho(){
-        var fundo = document.getElementsByClassName("fundo-aside")[0];
-        fundo.style.transition = "background 0.5s ease";
-        fundo.style.width = "100%";
-        fundo.style.backgroundColor = "#000000e3";
-        var carrinho = document.getElementsByClassName("show")[0];
-        carrinho.style.transition = "width 0.3s ease 0.3s";
-        carrinho.style.width = "95%";
-    }
-
-
-    function escolher(elemento){
-        elemento.parentNode.parentNode.classList.add('column_escolher');
-        elemento.parentNode.classList.add('card_escolher');
-        elemento.nextElementSibling.style.display = "inline-block";
-        elemento.style.display = "none";
-        overlay = elemento.previousElementSibling;
-        overlay.style.transition = "0.3s ease 0.3s";
-        overlay.classList.add("overlay_escolher");
-        lista = overlay.getElementsByClassName("quant")
-        var total = 0;
-        for(var i = 0; i < lista.length; i++){
-            total += parseInt(lista[i].textContent)
-
-        }
-        overlay.getElementsByClassName("total")[0].textContent = total
-
+        $(".cart").text("");
+        document.getElementById("pagina").style.display = "block"
     }
 
     function fecharOverlay(elemento){
@@ -1246,7 +1320,7 @@
         elemento.parentNode.classList.remove("overlay_escolher");
         var overlay = elemento.parentNode;
         lista = lista = overlay.getElementsByTagName("INPUT");
-        for(var i = 0; i < lista.length; i++){
+        for(var i = 3; i < lista.length; i++){
             lista[i].value = "0";
         }
         elemento.parentNode.style.transition = "none";
@@ -1348,12 +1422,11 @@
             } ,4000);
 
     }
-
-
-
 </script>
+
+
 {% if mensagem  %}
-      <div id="msg" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%;">
+      <div id="msg" style="z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%;">
         <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
           <p>{{ mensagem }}</p>
           <script>
@@ -1370,8 +1443,8 @@
       </div>
   {% endif %}
 
-<div id="msg2" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%; display:none;">
-    <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+<div id="msg2" style="margin: auto; left: 0; right: 0; z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:60%; height:80px; position:fixed;bottom:10%; display:none;">
+    <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
       <p id="mensagemR"></p>
     </div>
 </div>
