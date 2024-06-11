@@ -10,7 +10,9 @@
     <meta property="og:title" content="Crie o seu site e entre nas pequisas da região">
     <meta property="og:site_name" content="siteminhaloja.com">
     <title>Minha loja</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -18,6 +20,7 @@
     <style>
         * {
                 box-sizing: border-box;
+                font-family: "Montserrat", sans-serif;
         }
         body{
             background-color: rgba(0, 0, 0, 0.05);
@@ -182,6 +185,7 @@
             color: black;
             bottom: 5px;
             z-index:0;
+            cursor:pointer;
         }
 
         .cabecalho{
@@ -470,6 +474,198 @@
         }
     </style>
 
+    <style>
+
+        .menu-closer {
+            text-align: center;
+            line-height: 40px;
+            width: 40px;
+            height: 40px;
+            display: none;
+            font-size: 35px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor:pointer;
+            color: #{{ loja.cor }};
+        }
+
+        .cart {
+            margin-bottom: 20px;
+        }
+
+        .cart--area {
+            padding: 0px 10px 30px 15px;
+        }
+
+        .cart--item {
+            display: flex;
+            align-items: center;
+        }
+
+        .cart--item img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            cursor:pointer;
+        }
+
+        .cart--item img:hover {
+            opacity: 0.7;
+        }
+
+        .cart--item--qtarea {
+            display: inline-flex;
+            background-color: #eee;
+            border-radius: 10px;
+            height: 30px;
+        }
+
+        .cart--item-nome {
+            line-height:2;
+        }
+
+        .cart--item--qt {
+            line-height: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .cart--item--qtarea button {
+            border: 0;
+            background-color: rgba(0, 0, 0, 0);
+            font-size: 17px;
+            outline: 0;
+            cursor: pointer;
+            padding: 0px 10px;
+            color: #333;
+        }
+
+        .cart--totalitem {
+            border-top: 1px solid #ddd;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding-top:4px;
+        }
+
+
+
+        .cart--totalitem.big {
+            font-size: 20px;
+            color: #000;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-top:5px;
+        }
+
+        .cart--item-subtotal{
+            width: 100%;
+            text-align: right;
+        }
+
+        .cart--finalizar {
+            padding: 20px 30px;
+            border-radius: 13px;
+            background-color: #48d05f;
+            color: #fff;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 20px;
+            transition: all ease .2s;
+        }
+
+        .fundo-aside{
+            width: 0px ;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right:0;
+            background-color: "#0000";
+            z-index: 1;
+
+        }
+
+
+
+        aside {
+            display: block;
+            background-color: #fff;
+            position: absolute;
+            border-radius: 15px 0 0 15px;
+            width: 0%;
+            height: 95%;
+            right: 0px;
+            top:2.5%;
+            overflow-x: hidden;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, .02);
+        }
+
+        .cart--details{
+            padding: 0px 10px 30px 15px;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .pop{
+            font-size: 14px;
+            display: inline-block;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            line-height: 1.5;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .mini{
+            top: -5px;
+            left: -12px;
+            font-size: 9px;
+            width: 13px;
+            height: 13px;
+
+        }
+
+
+
+        @media  screen and (max-width: 820px) {
+            aside.show {
+                z-index: 99;
+            }
+            .cart--item--qtarea button {
+                padding: 0px 10px;
+            }
+            .cart--item--qt {
+                line-height: 32px;
+                width: 50px;
+                text-align: center;
+                display: inline-block;
+            }
+
+            .cart--item--qtarea {
+                height: 30px;
+            }
+
+            .menu-closer {
+                display: block;
+                margin: 15px;
+            }
+
+            .cart--area {
+                width: 100%;
+            }
+
+
+
+        }
+
+    </style>
+
 </head>
 <body>
 
@@ -584,7 +780,7 @@
                                                 {% if 'C10' in armacoes[i][1]['cores'] %}
                                                      <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
                                                         <span class="input-with-bottom-border">
-                                                            <input class="" id="C10" max="{{armacoes[i][1]['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                            <input class="" id="C10" max="{{armacoes[i][1]['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
                                                         </span>
                                                          / <span class="quant">{{armacoes[i][1]['cores']['C10']}}</span>
                                                      </p>
@@ -645,7 +841,7 @@
                                                 {% if 'C10' in armacao['cores'] %}
                                                      <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
                                                         <span class="input-with-bottom-border">
-                                                            <input class="" id="C10" max="{{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                            <input class="" id="C10" max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
                                                         </span>
                                                          / <span class="quant">{{armacao['cores']['C10']}}</span>
                                                      </p>
@@ -706,7 +902,7 @@
                                             {% if 'C10' in armacao['cores'] %}
                                                  <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
                                                     <span class="input-with-bottom-border">
-                                                        <input class="" id="C10" max="{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        <input class="" id="C10" max="{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
                                                     </span>
                                                      / <span class="quant">{{armacao['cores']['C10']}}</span>
                                                  </p>
@@ -768,7 +964,7 @@
                                             {% if 'C10' in armacao['cores'] %}
                                                  <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
                                                     <span class="input-with-bottom-border">
-                                                        <input class="" id="C10" max="{{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        <input class="" id="C10" max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
                                                     </span>
                                                      / <span class="quant">{{armacao['cores']['C10']}}</span>
                                                  </p>
@@ -816,7 +1012,9 @@
                                 <div  class="overlay" style="">
                                         <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
                                         <div class="row" style="padding-left:6px;">
-
+                                            <input type="hidden" value="{{chave}}">
+                                            <input type="hidden" value="{{ armacao['preco'] }}">
+                                            <input type="hidden" value="{{ armacao['codigo'] }}">
                                             {%  for c in armacao['cores'] %}
                                                 {% if 'C10' not in c %}
                                                     <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>{{c}}: </b>
@@ -828,9 +1026,9 @@
                                                 {% endif %}
                                             {% endfor %}
                                             {% if 'C10' in armacao['cores'] %}
-                                                 <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b>C10: </b>
+                                                 <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="w3-red pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
                                                     <span class="input-with-bottom-border">
-                                                        <input class="" id="C10" max="{{armacao['cores'][c]}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                        <input class="" id="C10" max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
                                                     </span>
                                                      / <span class="quant">{{armacao['cores']['C10']}}</span>
                                                  </p>
@@ -853,9 +1051,77 @@
             <a href="#galeria4" class="w3-card-4 suporte subir" ><i class="fa fa-angle-double-up"></i></a>
 
         </div>
-        <a href="{{ url_for('carinho') }}" class="w3-card-4 suporte carrinho" ><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+        <a onclick="abrirCarrinho()" class="w3-card-4 suporte carrinho" ><span id="notificacao" class="w3-red pop">0</span><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+
 </div>
 
+<div class="modal" id="mensagem">
+        <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
+            <p>Essa armação já esta no carrinho!<br>Você quer adicionar novament?</p>
+            <div style="display:flex; justify-content: space-between;">
+                <button onclick="acrescentar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Sim</button>
+                <button onclick="escolher(this)" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Não</button>
+
+            </div>
+        </div>
+        <div class="fundo" id="fundoInstagram"></div>
+    </div>
+
+<div class="fundo-aside">
+    <aside class="show" style="">
+        <div class="menu-closer" onclick="fecharCarrinho(this)">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </div>
+    <div class="cart--area">
+
+      <h2 style="text-align:center;">Carrinho</h2>
+      <div class="cart">
+          <div class="cart--item cart--totalitem">
+              <div>
+                  <img src="images/atum.png">
+              </div>
+              <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">
+                  <div class="cart--item-nome">Atum (G)</div>
+                  <div class="cart--item--qtarea">
+                    <button class="cart--item-qtmenos">-</button>
+                    <div class="cart--item--qt">1</div>
+                    <button class="cart--item-qtmais">+</button>
+                  </div>
+                  <div class="cart--item-subtotal">
+                      <div>Subtotal: <span>R$&nbsp;85,47</span></div>
+                  </div>
+              </div>
+
+
+         </div><div class="cart--item cart--totalitem">
+      <img src="images/camarao-c-catupiry.png">
+      <div class="cart--item-nome">Camarão c/ catupiry (G)</div>
+      <div class="cart--item--qtarea">
+        <button class="cart--item-qtmenos">-</button>
+        <div class="cart--item--qt">1</div>
+        <button class="cart--item-qtmais">+</button>
+      </div>
+    </div><div class="cart--item cart--totalitem">
+      <img src="images/frango-catupiry.png">
+      <div class="cart--item-nome">Frango c/ catupiry (G)</div>
+      <div class="cart--item--qtarea">
+        <button class="cart--item-qtmenos">-</button>
+        <div class="cart--item--qt">1</div>
+        <button class="cart--item-qtmais">+</button>
+      </div>
+    </div></div>
+
+    </div>
+        <div class="cart--details">
+            <div class="cart--totalitem total big">
+              <span>Total</span>
+              <span>R$&nbsp;85,47</span>
+            </div>
+            <button onclick="enviarPedido()" style="border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Enviar Pedido</button>
+        </div>
+  </aside>
+
+</div>
 <!-- The Modal -->
 <div id="myModal" class="modal">
   <span class="close" onclick="fecharImagem()">&times;</span>
@@ -864,6 +1130,95 @@
 </div>
 
 <script>
+
+    if(localStorage.getItem("carrinho") == null){
+        alert("nao tem");
+        var carrinho = [];
+        localStorage.setItem("carrinho",JSON.stringify(carrinho));
+
+    }else{
+        var objetoJSON = localStorage.getItem("carrinho");
+        var carrinho = JSON.parse(objetoJSON);
+        document.getElementById("notificacao").textContent = carrinho.length;
+    }
+
+
+    //JSON.stringify(): objeto para json
+    //const objeto = JSON.parse(jsonString); string para json
+
+
+    function adicionar(elemento){
+
+        var overlay = elemento.previousElementSibling.previousElementSibling;
+
+        lista = overlay.getElementsByTagName("INPUT");
+        var objetoJSON = localStorage.getItem("carrinho");
+        var carrinho = JSON.parse(objetoJSON);
+
+        addNoCarrinho(lista,carrinho);
+
+        elemento.parentNode.parentNode.classList.remove('column_escolher');
+        elemento.parentNode.classList.remove('card_escolher');
+        elemento.previousElementSibling.style.display = "inline-block";
+        overlay.style.transition = "none";
+        overlay.classList.remove("overlay_escolher");
+        elemento.style.display = "none";
+
+    }
+
+    function acrescentar(){
+
+
+    }
+
+    function addNoCarrinho(lista,carrinho){
+        var chave = lista[0].value;
+        var preco = parseFloat((lista[1].value).replace(",","."));
+        var codigo = lista[2].value;
+        var armacao = {};
+        armacao["chave"] = chave;
+        armacao["codigo"] = codigo;
+        if(typeof preco === 'number' && !isNaN(preco)){
+            armacao["preco"] = preco;
+        }
+        armacao["cores"] = {};
+        for(var i = 3; i < lista.length; i++){
+            if(lista[i].value != "" && lista[i].value != "0"){
+                var quantidade = Math.abs(parseInt(lista[i].value));
+                if(typeof quantidade === 'number' && !isNaN(quantidade)){
+                    armacao.cores[lista[i].name] = parseInt(quantidade);
+
+                }
+                lista[i].value = "0";
+
+            }
+        }
+
+        carrinho.push(armacao);
+        localStorage.setItem("carrinho",JSON.stringify(carrinho));
+        document.getElementById("notificacao").textContent = carrinho.length;
+
+    }
+
+    function fecharCarrinho(elemento){
+
+        elemento.parentNode.style.transition = "all 0.5s ease";
+        elemento.parentNode.style.width = "0px";
+        elemento.parentNode.parentNode.style.transition = "width 0.5s ease 0.4s,background 0.5s ease";
+        elemento.parentNode.parentNode.style.backgroundColor = "#0000";
+        elemento.parentNode.parentNode.style.width = "0px";
+    }
+
+    function abrirCarrinho(){
+        var fundo = document.getElementsByClassName("fundo-aside")[0];
+        fundo.style.transition = "background 0.5s ease";
+        fundo.style.width = "100%";
+        fundo.style.backgroundColor = "#000000e3";
+        var carrinho = document.getElementsByClassName("show")[0];
+        carrinho.style.transition = "width 0.3s ease 0.3s";
+        carrinho.style.width = "95%";
+    }
+
 
     function escolher(elemento){
         elemento.parentNode.parentNode.classList.add('column_escolher');
@@ -889,19 +1244,15 @@
         elemento.parentNode.nextElementSibling.style.display = "inline-block";
         elemento.parentNode.nextElementSibling.nextElementSibling.style.display = "none";
         elemento.parentNode.classList.remove("overlay_escolher");
+        var overlay = elemento.parentNode;
+        lista = lista = overlay.getElementsByTagName("INPUT");
+        for(var i = 0; i < lista.length; i++){
+            lista[i].value = "0";
+        }
         elemento.parentNode.style.transition = "none";
     }
 
-    function adicionar(elemento){
-        elemento.parentNode.parentNode.classList.remove('column_escolher');
-        elemento.parentNode.classList.remove('card_escolher');
-        elemento.previousElementSibling.style.display = "inline-block";
-        elemento.previousElementSibling.previousElementSibling.style.transition = "none";
-        elemento.previousElementSibling.previousElementSibling.classList.remove("overlay_escolher");
-        elemento.style.display = "none";
 
-
-    }
 
     window.onload = function() {
       document.getElementById("loading").style.display = "none";
