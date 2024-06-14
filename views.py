@@ -65,7 +65,7 @@ def catalogo(nome):
         else:
             form = FormularioUpload()
             mensagem = request.args.get('mensagem')
-            return render_template('catalogo.html', loja=loja,armacoes=armacoes, mensagem=mensagem, form=form)
+            return render_template('catalogo.html', loja=loja,armacoes=armacoes, mensagem=mensagem, form=form, nome=nome)
     else:
         return render_template('catalogo_nao_encontrado.html',mensagem='Erro ao ler os dados do catálogo!')
 
@@ -354,6 +354,34 @@ def add_foto():
             return redirect(url_for('painel_catalogo', mensagem="Imagem salva com sucesso!!"))
     else:
         return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/carrinho', methods=['POST'])
+def carrinho():
+    print('passou aqui1')
+    global loja
+    lojas = ref.child('lojas').get()
+    dadoJson = request.get_json()
+    nome = dadoJson['loja']
+    print('passou aqui1')
+    if nome in lojas:
+        print('passou aqui2')
+        chave = lojas[nome]
+        carrinho = dadoJson['carrinho']
+        print(carrinho)
+        try:
+
+            res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
+        except:
+            return jsonify({'mensagem': False})
+        else:
+            if res in ref.child(f'estoques/{chave}/pedidos').get():
+                return jsonify(dadoJson)
+            else:
+                return jsonify({'mensagem': False})
+    else:
+        print('passou aqui3')
+        return jsonify({'mensagem': False})
 
 
 def conferir_cookie():

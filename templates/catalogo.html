@@ -54,7 +54,7 @@
 
 
         /* The Modal (background) */
-        .modal {
+        .modal, .modal-excluir {
           display: none; /* Hidden by default */
           position: fixed; /* Stay in place */
           z-index: 1; /* Sit on top */
@@ -66,6 +66,11 @@
           overflow: auto; /* Enable scroll if needed */
           background-color: rgb(0,0,0); /* Fallback color */
           background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        .modal-excluir{
+            padding-top: 200px;
+
         }
 
         /* Modal Content (image) */
@@ -115,7 +120,7 @@
         }
 
         .conteudo{
-            width: 70%;
+            width: 50%;
             text-align: center;
             font-size: 18px;
             border-radius: 12px;
@@ -410,6 +415,16 @@
             background-color: #{{ loja.cor }}; /* Define a cor da borda ao focar */
           }
 
+
+          .campoCaixa{
+            padding: 2px 4px;
+            border:1px solid #ccc;
+            border-radius: 6px;
+            height: 35px;
+            width: 100%;
+            margin-bottom: 10px;
+          }
+
           .acima::before{
             content: '';
             position: absolute;
@@ -423,6 +438,9 @@
         @media  screen and (max-width: 850px) {
             .sobre{
                 padding: 1% 2%;
+            }
+            .conteudo{
+                width: 70%;
             }
 
         }
@@ -540,7 +558,6 @@
         .cart--item--qt {
             line-height: 30px;
             font-size: 14px;
-            font-weight: bold;
             color: #000;
         }
 
@@ -596,7 +613,6 @@
             top: 0;
             right:0;
             background-color: "#0000";
-            z-index: 1;
 
         }
 
@@ -630,8 +646,8 @@
             height: 20px;
             line-height: 1.5;
             position: absolute;
-            top: 0;
-            left: 0;
+            top: -4px;
+            left: -4px;
         }
 
         .mini{
@@ -1089,17 +1105,7 @@
 
 </div>
 
-<div class="modal" id="mensagem">
-        <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
-            <p>Essa armação já esta no carrinho!<br>Você quer adicionar novament?</p>
-            <div style="display:flex; justify-content: space-between;">
-                <button onclick="acrescentar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Sim</button>
-                <button onclick="escolher(this)" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Não</button>
 
-            </div>
-        </div>
-        <div class="fundo" id="fundoInstagram"></div>
-    </div>
 
 <div class="fundo-aside">
     <aside  style="">
@@ -1115,12 +1121,20 @@
 
     </div>
         <div class="cart--details">
-            <div class="cart--totalitem total big">
-              <span>Total</span>
-              <span>R$ <span id="total">0</span></span>
-            </div>
-            <button onclick="enviarPedido()" style="border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Enviar Pedido</button>
+            <form action="" method="post" id="instagram">
+                <div class="cart--totalitem total big">
+                  <span>Total</span>
+                  <span>R$ <span id="total">0</span></span>
+                </div>
+                {{ form.csrf_token() }}
+                    <input autocomplete="false" class="campoCaixa" id="nome" maxlength="100" minlength="1" name="nome" placeholder="Digite o seu nome" required="" type="text" value="">
+
+                    <input autocomplete="false" class="campoCaixa" id="whatsapp" maxlength="14" minlength="1" name="whatsapp" placeholder="Digite seu Whatsapp" required="" type="text" value="">
+
+                <div onclick="enviarPedido()" style="border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Enviar Pedido</div>
+            </form>
         </div>
+
   </aside>
 
 </div>
@@ -1143,11 +1157,104 @@
         document.getElementById("notificacao").textContent = carrinhoInicio.length;
     }
 
+
+    function enviarPedido(){
+
+         var objetoJSON = localStorage.getItem("carrinho");
+         var carrinho = JSON.parse(objetoJSON);
+
+         cliente = $("#nome").val();
+         celular = $("#whatsapp").val();
+         console.log(celular)
+         if(cliente != "" && celular.length == 14){
+             fetch('{{url_for('carrinho')}}' , {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': {{ csrf_token()|tojson }},
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    'cliente': cliente,
+                    'celular': celular,
+                    'loja': '{{nome}}',
+                    'carrinho': carrinho
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                pedido = 'http://api.whatsapp.com/send?phone=5582987333558&text=Olá%20meu%20nome%20é%20' + cliente + '.%0A' +
+                'Esse%20é%20o%20meu%20pedido:%0A'
+                for(var i = 0; i < carrinho.length; i++){
+                   cores = Object.keys(carrinho[i].cores);
+                   for(var j = 0; j < cores.length; j++){
+                        var codigo = '*' +carrinho[i].codigo + '*%20-%20*' + cores[j] + '*%20%20'
+                        codigo = codigo + '-'.repeat(40 - codigo.length);
+                        pedido += codigo + '%20%20%20quant:%20*' + carrinho[i].cores[cores[j]][0] + '*%0A'
+                   }
+                }
+                document.location = pedido;
+            })
+            .catch(error => {
+                console.log('Erro:', error);
+                mensagemR("Erro ao enviar pedido!");
+            });
+         }else if(cliente == ""){
+            mensagemR("O Campo nome deve ser preechido!");
+
+         }else if(celular.length < 14){
+            mensagemR("Número do whatsapp incompleto!")
+         }
+
+
+
+    }
+
+
+    function chamarExcluir(chave, cor){
+        $(".cart").append('<div class="modal-excluir" id="mensagem" style="display:block;   ">\
+        <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">\
+            <p>Você que excluir esse item do carrinho?</p>\
+            <div style="display:flex; justify-content: space-between;">\
+                <button onclick="excluir(\'' + chave + '\',\'' + cor + '\')" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Sim</button>\
+                <button onclick="naoExcluir(this)" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Não</button>\
+            </div>\
+        </div>\
+        <div class="fundo" id="fundoInstagram"></div>\
+        </div>');
+    }
+
+    function naoExcluir(elemento){
+        $("#mensagem").remove()
+    }
+
+    function excluir(chave, cor){
+        var objetoJSON = localStorage.getItem("carrinho");
+        var carrinho = JSON.parse(objetoJSON);
+
+        for(var i = 0; i < carrinho.length; i++){
+            if(carrinho[i].chave == chave){
+                if( Object.keys(carrinho[i].cores).length > 1){
+                    console.log("passou aqui1, " + Object.keys(carrinho[i].cores).length)
+                    delete carrinho[i].cores[cor]
+                }else{
+                    console.log("passou aqui2, " + Object.keys(carrinho[i].cores).length)
+                    carrinho.splice(i, 1);
+                }
+
+            }
+
+        }
+        localStorage.setItem("carrinho",JSON.stringify(carrinho));
+        $("#mensagem").remove()
+        abrirCarrinho();
+    }
+
     function abrirCarrinho(){
         var total = parseFloat(0);
         var objetoJSON = localStorage.getItem("carrinho");
         var carrinho = JSON.parse(objetoJSON);
-
+        $(".cart").empty();
         for(var i = 0; i < carrinho.length; i++){
             var keys = Object.keys(carrinho[i]["cores"]);
             for(var j = 0; j < keys.length; j++){
@@ -1160,7 +1267,7 @@
                                       <div class="cart--item-nome"> ' + carrinho[i].codigo + ' | ' + keys[j] + '</div>\
                                       <div class="cart--item--qtarea">\
                                         <button class="cart--item-qtmenos" onclick="diminuir(this,\'' + carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
-                                        <div class="cart--item--qt">' + carrinho[i].cores[keys[j]][0] + '/' + carrinho[i].cores[keys[j]][1] + '</div>\
+                                        <div class="cart--item--qt"><b>' + carrinho[i].cores[keys[j]][0] + '</b>/' + carrinho[i].cores[keys[j]][1] + '</div>\
                                         <button class="cart--item-qtmais" onclick="aumentar(this,\'' + carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
                                       </div>\
                                       <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
@@ -1215,12 +1322,15 @@
         var carrinho = JSON.parse(objetoJSON);
         carrinho.filter((armacao) =>{
             if(armacao.chave == chave){
-                if(armacao.cores[cor][0] > 0){
+                if(armacao.cores[cor][0] > 1){
 
                     armacao.cores[cor][0] -= 1;
                     elemento.nextElementSibling.textContent = armacao.cores[cor][0] + "/" + armacao.cores[cor][1];
                     elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor][0] * armacao.preco));
 
+                }else if(armacao.cores[cor][0] == 1){
+
+                    chamarExcluir(chave, cor);
                 }
              }
             var keys = Object.keys(armacao["cores"]);
@@ -1478,6 +1588,45 @@
             } ,4000);
 
     }
+
+    function celular(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+
+
+                    if(val.length == 3){
+                        val.splice(0,0,"(");
+                        val.splice(val.length -1,0,")");
+                    }else if( val.length == 10){
+                        val.splice(val.length -1,0, "-");
+                    }
+
+
+            }else{
+
+                  val.splice(val.length - 1,1);
+
+
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+
+            }
+
+            this.value = s;
+
+        });
+
+    }
+
+     celular(document.getElementById("whatsapp"))
+    //document.location = 'http://api.whatsapp.com/send?phone=5582987333558&text=Olá%20meu%20nome%20é%20' + data.nome + ',%20moro%20no%20endereço:%20'+ data.endereco +',%20eu%20gostaria%20de%20comprar%20a%20armação%20'+ data.oculos;
+
 </script>
 
 
