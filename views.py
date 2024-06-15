@@ -358,30 +358,67 @@ def add_foto():
 
 @app.route('/carrinho', methods=['POST'])
 def carrinho():
-    print('passou aqui1')
-    global loja
-    lojas = ref.child('lojas').get()
-    dadoJson = request.get_json()
-    nome = dadoJson['loja']
-    print('passou aqui1')
-    if nome in lojas:
-        print('passou aqui2')
-        chave = lojas[nome]
-        carrinho = dadoJson['carrinho']
-        print(carrinho)
-        try:
 
-            res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
+    global loja, res
+    dadoJson = request.get_json()
+    lojas = ref.child('lojas').get()
+    nome = dadoJson['loja']
+
+    if nome in lojas:
+        chave = lojas[nome]
+
+        try:
+            resNumero = ref.child(f'estoques/{chave}/pedidos').child('contador').get()
+            print(resNumero)
+            if resNumero != None:
+                ref.child(f'estoques/{chave}/pedidos').update({'contador': (resNumero + 1)})
+                dadoJson['numero'] = (resNumero + 1)
+                dadoJson['ativo'] = True
+                res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
+            else:
+                resNumero = 0;
+                ref.child(f'estoques/{chave}/pedidos').update({'contador': 1})
+                dadoJson['numero'] = 1
+                dadoJson['ativo'] = True
+                res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
         except:
             return jsonify({'mensagem': False})
         else:
-            if res in ref.child(f'estoques/{chave}/pedidos').get():
-                return jsonify(dadoJson)
+            if res.key in ref.child(f'estoques/{chave}/pedidos').get():
+                return jsonify({'mensagem': True, 'numero': (resNumero + 1)})
             else:
                 return jsonify({'mensagem': False})
     else:
         print('passou aqui3')
         return jsonify({'mensagem': False})
+
+
+@app.route('/pedidos', methods=['POST', 'GET'])
+def pedidos():
+    global loja
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        if request.method == 'GET':
+            try:
+                listaPedidos = []
+                pedidos = ref.child(f'estoques/{cookie['uid']}/pedidos').get()
+            except:
+                return render_template('pedidos.html', pedidos=[], mensagem='Erro ao ler dos pedidos!')
+
+            else:
+                for chave in pedidos:
+                    if chave != 'contador':
+                        pedido = pedidos[chave]
+                        listaPedidos.append((chave, pedido))
+
+                return render_template('pedidos.html', pedidos=listaPedidos)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
 
 
 def conferir_cookie():

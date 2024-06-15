@@ -1165,6 +1165,7 @@
 
          cliente = $("#nome").val();
          celular = $("#whatsapp").val();
+         total = $("#total").text();
          console.log(celular)
          if(cliente != "" && celular.length == 14){
              fetch('{{url_for('carrinho')}}' , {
@@ -1177,23 +1178,33 @@
                     'cliente': cliente,
                     'celular': celular,
                     'loja': '{{nome}}',
-                    'carrinho': carrinho
+                    'carrinho': carrinho,
+                    'total': total
                 })
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                pedido = 'http://api.whatsapp.com/send?phone=5582987333558&text=Olá%20meu%20nome%20é%20' + cliente + '.%0A' +
-                'Esse%20é%20o%20meu%20pedido:%0A'
-                for(var i = 0; i < carrinho.length; i++){
-                   cores = Object.keys(carrinho[i].cores);
-                   for(var j = 0; j < cores.length; j++){
-                        var codigo = '*' +carrinho[i].codigo + '*%20-%20*' + cores[j] + '*%20%20'
-                        codigo = codigo + '-'.repeat(40 - codigo.length);
-                        pedido += codigo + '%20%20%20quant:%20*' + carrinho[i].cores[cores[j]][0] + '*%0A'
-                   }
+                if(data.mensagem == true){
+                    var numero = data.numero;
+                    numero = '0'.repeat(5 - numero.toString().length) + numero;
+                    pedido = 'http://api.whatsapp.com/send?phone=5582987333558&text=Olá,%20meu%20nome%20é%20' + cliente + '.%0A' +
+                    'Esse%20é%20o%20meu%20pedido%20' + numero + ':%0A'
+                    for(var i = 0; i < carrinho.length; i++){
+                       cores = Object.keys(carrinho[i].cores);
+                       for(var j = 0; j < cores.length; j++){
+                            var codigo = '*' +carrinho[i].codigo + '*%20-%20*' + cores[j] + '*%20%20'
+                            codigo = codigo + '-'.repeat(40 - codigo.length);
+                            pedido += codigo + '%20%20%20quant:%20*' + carrinho[i].cores[cores[j]][0] + '*%0A'
+                       }
+                    }
+                    $("#nome").val("");
+                    $("#whatsapp").val("");
+                    localStorage["carrinho"] = "[]";
+                    document.getElementById("notificacao").textContent = 0;
+                    document.location = pedido;
+
                 }
-                document.location = pedido;
+
             })
             .catch(error => {
                 console.log('Erro:', error);
@@ -1377,8 +1388,6 @@
                             }else{
                                 armacao.cores[lista[i].name] = [parseInt(quantidade),parseInt(lista[i].max)];
                             }
-
-
                     }
                 }
                 lista[i].value = "0";
