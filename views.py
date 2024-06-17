@@ -67,6 +67,31 @@ def catalogo(nome):
             mensagem = request.args.get('mensagem')
             return render_template('catalogo.html', loja=loja,armacoes=armacoes, mensagem=mensagem, form=form, nome=nome)
     else:
+        if nome == '0':
+            cookie, mensagem = conferir_cookie()
+
+            if cookie:
+                try:
+                    armacoes = []
+                    produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                    for produto in produtos:
+                        armacao = produtos[produto]
+                        armacoes.append((produto, armacao))
+
+                    loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
+
+                except:
+                    return render_template('catalogo.html', loja=loja, mensagem='Erro ao ler os dados do catálogo!')
+                else:
+                    form = FormularioUpload()
+                    mensagem = request.args.get('mensagem')
+                    return render_template('catalogo.html', loja=loja, armacoes=armacoes, mensagem=mensagem, form=form,
+                                           nome=nome)
+
+
+            else:
+                session['usuario_logado'] = None
+                return redirect(url_for('logout', mensagem=mensagem))
         return render_template('catalogo_nao_encontrado.html',mensagem='Erro ao ler os dados do catálogo!')
 
 
@@ -369,27 +394,27 @@ def carrinho():
 
         try:
             resNumero = ref.child(f'estoques/{chave}/pedidos').child('contador').get()
-            print(resNumero)
             if resNumero != None:
                 ref.child(f'estoques/{chave}/pedidos').update({'contador': (resNumero + 1)})
-                dadoJson['numero'] = (resNumero + 1)
+                dadoJson['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
                 dadoJson['ativo'] = True
                 res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
             else:
                 resNumero = 0;
                 ref.child(f'estoques/{chave}/pedidos').update({'contador': 1})
-                dadoJson['numero'] = 1
+                dadoJson['numero'] = ('0' * (5 - len(str(1)))) + str(1)
                 dadoJson['ativo'] = True
                 res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
-        except:
-            return jsonify({'mensagem': False})
+
+        except Exception as erro:
+            print(erro)
+            return jsonify({'mensagem': False,'erro': str(erro)})
         else:
             if res.key in ref.child(f'estoques/{chave}/pedidos').get():
                 return jsonify({'mensagem': True, 'numero': (resNumero + 1)})
             else:
                 return jsonify({'mensagem': False})
     else:
-        print('passou aqui3')
         return jsonify({'mensagem': False})
 
 
@@ -405,7 +430,7 @@ def pedidos():
                 listaPedidos = []
                 pedidos = ref.child(f'estoques/{cookie['uid']}/pedidos').get()
             except:
-                return render_template('pedidos.html', pedidos=[], mensagem='Erro ao ler dos pedidos!')
+                return render_template('pedidos.html', pedidos=[], mensagem='Erro ao ler os pedidos!')
 
             else:
                 for chave in pedidos:

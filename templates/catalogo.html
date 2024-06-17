@@ -1166,7 +1166,12 @@
          cliente = $("#nome").val();
          celular = $("#whatsapp").val();
          total = $("#total").text();
-         console.log(celular)
+         var dataAtual = new Date();
+         var dia = dataAtual.getDate();
+         var mes = dataAtual.getMonth() + 1;
+         var ano = dataAtual.getFullYear();
+         var dataCliente =`${dia}/${mes}/${ano}`;
+         console.log(dataCliente);
          if(cliente != "" && celular.length == 14){
              fetch('{{url_for('carrinho')}}' , {
                 method: 'POST',
@@ -1179,11 +1184,13 @@
                     'celular': celular,
                     'loja': '{{nome}}',
                     'carrinho': carrinho,
-                    'total': total
+                    'total': total,
+                    'data': dataCliente
                 })
             })
             .then(response => response.json())
             .then(data => {
+                console.log(data)
                 if(data.mensagem == true){
                     var numero = data.numero;
                     numero = '0'.repeat(5 - numero.toString().length) + numero;
@@ -1203,6 +1210,8 @@
                     document.getElementById("notificacao").textContent = 0;
                     document.location = pedido;
 
+                }else{
+                    mensagemR("Erro ao enviar pedido!" + data.erro);
                 }
 
             })

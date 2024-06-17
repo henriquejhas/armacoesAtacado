@@ -137,7 +137,7 @@
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  height:510px;
+  height:300px;
   background-color:white;
   position:relative;
   max-width:300px;
@@ -147,8 +147,14 @@
   font-zise:13px;
   border-radius:5px;
   postion:relative;
-  padding: 5px;
+  padding: 12px;
 }
+
+.card p{
+    font-size:15px;
+    margin:6px 0;
+}
+
 
 .overlay {
   position: absolute;
@@ -172,13 +178,15 @@
   }
   .card {
     margin: 0 1%;
-    font-zise:14px
   }
+  .card p{
+    font-size:13px;
+}
 }
 
  @media screen and (max-width: 500px) {
   .card {
-    height:470px !important;
+    height:300px !important;
   }
 }
 
@@ -202,12 +210,20 @@
 
             <div class="column">
                 <div class="card">
+                    <p style="text-align:center; margin:0;"><b>Pedido número: {{ pedido.numero}}</b><br><span style="font-size:12px;">{{pedido.data}}</span></p>
+                    <p><span>Nome: </span><b>{{pedido.cliente}}</b></p>
+                    <p><span>Whatsapp: </span><b style="white-space: nowrap;">{{pedido.celular}}</b></p>
+                    <p><span>Valor: </span><b style="white-space: nowrap;">R$ {{pedido.total}}</b></p>
+                    {% if pedido.ativo %}
+                        <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-red">Em Processo</span><br>
+                            <span style="font-size:12px;">Esse pedido não foi dado baixa!</span>
+                        </p>
+                    {% else %}
+                        <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-green">Concluido</span><br>
+                            <span style="font-size:12px;">Esse pedido já foi dado baixa!</span>
+                        </p>
+                    {% endif %}
 
-
-                    <p>Nome: {{pedido.cliente}}</p>
-                    <p>Pedido: {{pedido.numero}}</p>
-                    <p>Whatsapp: {{pedido.celular}}</p>
-                    <p>Valor: {{pedido.total}}</p>
                     <a href="{{url_for('editar', chave=chave)}}"><button style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-blue  w3-large">Visualizar</button></a>
                 </div>
             </div>
