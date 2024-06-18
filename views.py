@@ -413,9 +413,9 @@ def carrinho():
             if res.key in ref.child(f'estoques/{chave}/pedidos').get():
                 return jsonify({'mensagem': True, 'numero': dadoJson['numero']})
             else:
-                return jsonify({'mensagem': False})
+                return jsonify({'mensagem': False,'erro': '1'})
     else:
-        return jsonify({'mensagem': False})
+        return jsonify({'mensagem': False,'erro': '2'})
 
 
 @app.route('/pedidos', methods=['POST', 'GET'])

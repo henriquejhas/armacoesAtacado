@@ -89,6 +89,56 @@
             transition: all ease .2s;
         }
 
+        /*======================= Checkbox ==============*/
+
+ 	    /* Create a custom checkbox */
+				.checkmark2 {
+				  position: absolute;
+				  top: -15px;
+				  left: 0px;
+				  height: 20px;
+				  width: 20px;
+				  border: 1px solid #ccc;
+                  border-radius: 3px;
+				}
+
+
+				/* On mouse-over, add a grey background color */
+				.container:hover input ~ .checkmark2 {
+				  background-color: #999;
+				}
+
+				/* When the checkbox is checked, add a blue background */
+				.container input:checked ~ .checkmark2 {
+				  background-color:  #4CAF50;
+				  border-radius: 3px;
+				}
+ 	    		/* Create the checkmark/indicator (hidden when not checked) */
+				.checkmark2:after {
+				  content: "";
+				  position: absolute;
+				  display: none;
+				}
+
+				/* Show the checkmark when checked */
+				.container input:checked ~ .checkmark2:after {
+				  display: block;
+				}
+
+				/* Style the checkmark/indicator */
+				.container .checkmark2:after {
+				  left: 5px;
+				  top: 2px;
+				  width: 8px;
+				  height: 13px;
+				  border: solid white;
+				  border-width: 0 3px 3px 0;
+				  -webkit-transform: rotate(45deg);
+				  -ms-transform: rotate(45deg);
+				  transform: rotate(45deg);
+				}
+ 	    /*======================== Checkbox ===========================*/
+
         @media  screen and (max-width: 550px) {
             aside.show {
                 z-index: 99;
@@ -136,26 +186,11 @@
                 <p>Nome: <b>{{ pedido.cliente }}</b></p>
                 <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
                 <p>Valor: <b>{{ pedido.total }}</b></p>
-                <div>
-                    <h4 style="text-align:center;" ><b>Armações</b></h4>
-
+                <h4 style="text-align:center;" ><b>Armações</b></h4>
+                <div id="lista">
                         {% for armacao in pedido.carrinho %}
                             {% for cor in armacao['cores'] %}
-                                <div class="cart--item cart--totalitem">
-                                      <div>
-                                          <img src="{{ armacao.img }}" onclick="abrirImagem(this)">
-                                      </div>
-                                      <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">
-                                          <div class="cart--item-nome">{{ armacao.codigo}} | {{ cor }} </div>
-                                          <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">
-                                              {% if '.' in armacao.preco | string %}
-                                                    <div style="inline-block; text-align: left;">valor:R$ {{ armacao.preco }}</div>
-                                              {% else %}
-                                                    <div style="inline-block; text-align: left;">valor:R$ {{ armacao.preco }},00</div>
-                                              {% endif %}
-                                          </div>
-                                      </div>
-                                 </div>
+
                             {% endfor %}
                         {% endfor %}
                 </div>
@@ -182,6 +217,10 @@
     var opcao = document.getElementById("op4");
     opcao.style.backgroundColor = "#a9a9a9";
 
+
+
+
+
     fetch('{{url_for('carregar_pedido', chave=chave)}}' , {
         method: 'GET',
         headers: {
@@ -193,8 +232,35 @@
     .then(data => {
         if(data.chave != false){
 
-            console.log(data)
+
             localStorage["{{chave}}"] = JSON.stringify(data)
+            pedido = JSON.parse(localStorage["{{chave}}"])
+            for(var i = 0; i < pedido.carrinho.length; i++){
+                var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                for(var j = 0; j < keys.length; j++){
+                    $("#lista").append('<div class="cart--item cart--totalitem"> \
+                                      <div>\
+                                        <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
+                                            <input type="hidden" value="{{chave}}">\
+                                            <input type="checkbox" style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
+                                            <span class="checkmark2" style="text-align: center;"></span>\
+                                        </label>\
+                                    </div>\
+                                      <div> \
+                                          <img src="' + pedido.carrinho[i].img +  '" onclick="abrirImagem(this)">\
+                                      </div>\
+                                      <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
+                                          <div class="cart--item-nome"> ' + pedido.carrinho[i].codigo + ' | ' + keys[j] + '</div>\
+                                          <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
+                                                <div style="inline-block; text-align: left;">valor:R$ ' + pedido.carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
+                                          </div>\
+                                      </div>\
+                                      <div>\
+                                          <div class="w3-button w3-red" style="font-size: 10px; font-weight: bold;padding:4px 8px; border-radius: 5px;">Cancelar</div>\
+                                      </div>\
+                                 </div>');
+                }
+            }
         }else{
             mensagemR("Erro ao carergar pedido!");
         }
@@ -205,8 +271,40 @@
         mensagemR("Erro ao carregar pedido pedido!");
     });
 
+    function verificar(elemento){
+        alert(elemento.checked + " - " + elemento.name + " - " + elemento.value);
+        var pedido = JSON.parse(localStorage[elemento.previousElementSibling.value])
+
+        for(var i = 0; i < pedido.carrinho.length; i++){
+            if(pedido.carrinho[i].chave == elemento.name){
+                if(pedido.carrinho[i].cores[elemento.value][2] === undefined){
+                    pedido.carrinho[i].cores[elemento.value][2] = true;
+                }else{
+                    pedido.carrinho[i].cores[elemento.value][2] = !(pedido.carrinho[i].cores[elemento.value][2]);
+                }
+
+            }
+        }
+        localStorage[elemento.previousElementSibling.value] = JSON.stringify(pedido)
+    }
 
 
+    function mensagemR(msg){
+        document.getElementById("mensagemR").textContent = msg
+         $("#msg2").css("display", "flex");
+            $("#msg2").css("opacity", "1");
+            setTimeout(()=>{
+               $("#msg2").css("opacity", "0");
+
+               setTimeout(() => $("#msg2").css("display", "none"),1000);
+            } ,4000);
+    }
 </script>
+
+<div id="msg2" style="margin: auto; left: 0; right: 0; z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:60%; height:80px; position:fixed;bottom:10%; display:none;">
+    <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+      <p id="mensagemR"></p>
+    </div>
+</div>
 
 {% endblock %}

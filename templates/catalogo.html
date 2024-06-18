@@ -1171,7 +1171,12 @@
          var mes = dataAtual.getMonth() + 1;
          var ano = dataAtual.getFullYear();
          var dataCliente =`${dia}/${mes}/${ano}`;
-         console.log(dataCliente);
+         var loja = "{{nome}}";
+         if(loja == "0"){
+            loja = "{{loja.nomeLoja}}";
+            loja = loja.toLowerCase().replace(/\s/g, '');
+            console.log(loja)
+         }
          if(cliente != "" && celular.length == 14){
              fetch('{{url_for('carrinho')}}' , {
                 method: 'POST',
@@ -1182,7 +1187,7 @@
                 body:JSON.stringify({
                     'cliente': cliente,
                     'celular': celular,
-                    'loja': '{{nome}}',
+                    'loja': loja,
                     'carrinho': carrinho,
                     'total': total,
                     'data': dataCliente
@@ -1296,8 +1301,6 @@
                                   </div>\
                              </div>');
             }
-
-
         }
 
         document.getElementById("total").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
