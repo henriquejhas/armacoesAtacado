@@ -1,10 +1,212 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "template.html" %}
+{% block conteudo %}
 
-</body>
-</html>
+<style>
+    .cores{
+    display:inline-block;
+    }
+
+    .cores input{
+    display:inline-block;
+
+    }
+
+    .cart--item {
+            display: flex;
+            align-items: center;
+        }
+
+        .cart--item img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            cursor:pointer;
+        }
+
+        .cart--item img:hover {
+            opacity: 0.7;
+        }
+
+        .cart--item--qtarea {
+            display: inline-flex;
+            background-color: #eee;
+            border-radius: 10px;
+            height: 30px;
+        }
+
+        .cart--item-nome {
+            line-height:2;
+        }
+
+        .cart--item--qt {
+            line-height: 30px;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .cart--item--qtarea button {
+            border: 0;
+            background-color: rgba(0, 0, 0, 0);
+            font-size: 17px;
+            outline: 0;
+            cursor: pointer;
+            padding: 0px 10px;
+            color: #333;
+        }
+
+        .cart--totalitem {
+            border-top: 1px solid #ddd;
+            color: #555;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding-top:4px;
+        }
+
+
+
+        .cart--totalitem.big {
+            font-size: 20px;
+            color: #000;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-top:5px;
+        }
+
+        .cart--item-subtotal{
+            width: 100%;
+            text-align: right;
+        }
+
+        .cart--finalizar {
+            padding: 20px 30px;
+            border-radius: 13px;
+            background-color: #48d05f;
+            color: #fff;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 20px;
+            transition: all ease .2s;
+        }
+
+        @media  screen and (max-width: 550px) {
+            aside.show {
+                z-index: 99;
+                width:95%;
+            }
+            .cart--item--qtarea button {
+                padding: 0px 10px;
+            }
+            .cart--item--qt {
+                line-height: 32px;
+                min-width: 50px;
+                text-align: center;
+                display: inline-block;
+            }
+
+            .cart--item--qtarea {
+                height: 30px;
+            }
+
+            .cart--area {
+                width: 100%;
+            }
+
+
+
+        }
+
+
+
+</style>
+
+<div id="visualizar">
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px;">
+
+    	<h2 style="text-align:center; padding-top:10px; margin-bottom:0;">Pedido Número {{pedido.numero}}</h2>
+        <p style="text-align:center; margin:0;">{{ pedido.data }}</p>
+        {% if pedido.ativo %}
+            <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-red">Em Processo</span></p>
+        {% else %}
+            <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-green">Concluído</span></p>
+        {% endif %}
+
+       <form class="w3-container" method="POST" action="{{ url_for('visualizar', chave=chave)}}" enctype="multipart/form-data" onsubmit="preencher()">
+            <div>
+                <p>Nome: <b>{{ pedido.cliente }}</b></p>
+                <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
+                <p>Valor: <b>{{ pedido.total }}</b></p>
+                <div>
+                    <h4 style="text-align:center;" ><b>Armações</b></h4>
+
+                        {% for armacao in pedido.carrinho %}
+                            {% for cor in armacao['cores'] %}
+                                <div class="cart--item cart--totalitem">
+                                      <div>
+                                          <img src="{{ armacao.img }}" onclick="abrirImagem(this)">
+                                      </div>
+                                      <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">
+                                          <div class="cart--item-nome">{{ armacao.codigo}} | {{ cor }} </div>
+                                          <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">
+                                              {% if '.' in armacao.preco | string %}
+                                                    <div style="inline-block; text-align: left;">valor:R$ {{ armacao.preco }}</div>
+                                              {% else %}
+                                                    <div style="inline-block; text-align: left;">valor:R$ {{ armacao.preco }},00</div>
+                                              {% endif %}
+                                          </div>
+                                      </div>
+                                 </div>
+                            {% endfor %}
+                        {% endfor %}
+                </div>
+
+
+            </div>
+            <div>
+                {% if pedido.ativo %}
+                    <button type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Dar baixa</button>
+
+                {% else %}
+                    <button disabled class="w3-button w3-block w3-green w3-section w3-padding w3-large">Esse pedido já foi dado baixa!</button>
+
+                {% endif %}
+            </div>
+       </form>
+
+    </div>
+    <a href="{{url_for('deletar', chave=chave)}}" style="text-decoration:none;"><button type="submit" class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir modelo</button></a>
+
+</div>
+
+<script>
+    var opcao = document.getElementById("op4");
+    opcao.style.backgroundColor = "#a9a9a9";
+
+    fetch('{{url_for('carregar_pedido', chave=chave)}}' , {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': {{ csrf_token()|tojson }},
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.chave != false){
+
+            console.log(data)
+            localStorage["{{chave}}"] = JSON.stringify(data)
+        }else{
+            mensagemR("Erro ao carergar pedido!");
+        }
+
+    })
+    .catch(error => {
+        console.log('Erro:', error);
+        mensagemR("Erro ao carregar pedido pedido!");
+    });
+
+
+
+</script>
+
+{% endblock %}

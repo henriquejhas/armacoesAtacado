@@ -400,7 +400,7 @@ def carrinho():
                 dadoJson['ativo'] = True
                 res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
             else:
-                resNumero = 0;
+                resNumero = 0
                 ref.child(f'estoques/{chave}/pedidos').update({'contador': 1})
                 dadoJson['numero'] = ('0' * (5 - len(str(1)))) + str(1)
                 dadoJson['ativo'] = True
@@ -411,7 +411,7 @@ def carrinho():
             return jsonify({'mensagem': False,'erro': str(erro)})
         else:
             if res.key in ref.child(f'estoques/{chave}/pedidos').get():
-                return jsonify({'mensagem': True, 'numero': (resNumero + 1)})
+                return jsonify({'mensagem': True, 'numero': dadoJson['numero']})
             else:
                 return jsonify({'mensagem': False})
     else:
@@ -444,6 +444,46 @@ def pedidos():
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem=mensagem))
 
+@app.route('/visualizar/<string:chave>', methods=['GET', 'POST'])
+def visualizar(chave):
+    global loja
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        if request.method == 'GET':
+            try:
+                pedido = ref.child(f'estoques/{cookie['uid']}/pedidos').child(chave).get()
+            except:
+                return render_template('visualizarPedido.html', pedido=[], mensagem='Erro ao ler os pedidos!')
+
+            else:
+                return render_template('visualizarPedido.html', pedido=pedido, chave=chave)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/carregar/<string:chave>', methods=['GET', 'POST'])
+def carregar_pedido(chave):
+    global loja
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        if request.method == 'GET':
+            try:
+                pedido = ref.child(f'estoques/{cookie['uid']}/pedidos').child(chave).get()
+            except:
+                return jsonify({'chave': False})
+
+            else:
+                return jsonify(pedido)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
 
 
 def conferir_cookie():

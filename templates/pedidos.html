@@ -219,12 +219,12 @@
                             <span style="font-size:12px;">Esse pedido não foi dado baixa!</span>
                         </p>
                     {% else %}
-                        <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-green">Concluido</span><br>
+                        <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-green">Concluído</span><br>
                             <span style="font-size:12px;">Esse pedido já foi dado baixa!</span>
                         </p>
                     {% endif %}
 
-                    <a href="{{url_for('editar', chave=chave)}}"><button style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-blue  w3-large">Visualizar</button></a>
+                    <a href="{{url_for('visualizar', chave=chave)}}"><button style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-blue  w3-large">Visualizar</button></a>
                 </div>
             </div>
 

@@ -1193,7 +1193,6 @@
                 console.log(data)
                 if(data.mensagem == true){
                     var numero = data.numero;
-                    numero = '0'.repeat(5 - numero.toString().length) + numero;
                     pedido = 'http://api.whatsapp.com/send?phone=5582987333558&text=Olá,%20meu%20nome%20é%20' + cliente + '.%0A' +
                     'Esse%20é%20o%20meu%20pedido%20' + numero + ':%0A'
                     for(var i = 0; i < carrinho.length; i++){
@@ -1291,8 +1290,8 @@
                                         <button class="cart--item-qtmais" onclick="aumentar(this,\'' + carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
                                       </div>\
                                       <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
-                                            <div style="inline-block; text-align: left;">valor:R$ ' + carrinho[i].preco.toFixed(2) + '</div>\
-                                            <div style="inline-block;">Subtotal: R$<span class="subtotal"> ' + (carrinho[i].preco * carrinho[i].cores[keys[j]][0]).toFixed(2) + '</span></div>\
+                                            <div style="inline-block; text-align: left;">valor:R$ ' + carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
+                                            <div style="inline-block;">Subtotal: R$<span class="subtotal"> ' + (carrinho[i].preco * carrinho[i].cores[keys[j]][0]).toFixed(2).replace(".",",") + '</span></div>\
                                       </div>\
                                   </div>\
                              </div>');
