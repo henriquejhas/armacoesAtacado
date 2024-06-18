@@ -66,7 +66,7 @@
 
 
         .cart--totalitem.big {
-            font-size: 20px;
+            font-size: 17px;
             color: #000;
             font-weight: bold;
             margin-bottom: 12px;
@@ -187,12 +187,23 @@
                 <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
                 <p>Valor: <b>{{ pedido.total }}</b></p>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
+                <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px; margin-bottom:5px;">
+                    <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" id="tudo">
+                    <span class="checkmark2" style="text-align: center;"></span>
+                </label><label for="tudo">Selecionar tudo</label>
                 <div id="lista">
-                        {% for armacao in pedido.carrinho %}
-                            {% for cor in armacao['cores'] %}
 
-                            {% endfor %}
-                        {% endfor %}
+                </div>
+                <div class="cart--details">
+                    <div class="cart--totalitem total big" style="font-size:15px;">
+                      <span>Total</span>
+                      <span>R$ <span id="total">0</span></span>
+                    </div>
+                    <div class="cart--totalitem total big">
+                      <span>Subtotal</span>
+                      <span>R$ <span id="subtotal">0</span></span>
+                    </div>
+
                 </div>
 
 
@@ -237,7 +248,14 @@
             pedido = JSON.parse(localStorage["{{chave}}"])
             for(var i = 0; i < pedido.carrinho.length; i++){
                 var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                const index = keys.indexOf("C10");
+                if (index !== -1) {
+                    keys.splice(index, 1);
+                    keys.push("C10");
+                }
+
                 for(var j = 0; j < keys.length; j++){
+                    pedido.carrinho[i].cores[keys[j]][2] = false;
                     $("#lista").append('<div class="cart--item cart--totalitem"> \
                                       <div>\
                                         <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
@@ -256,11 +274,13 @@
                                           </div>\
                                       </div>\
                                       <div>\
-                                          <div class="w3-button w3-red" style="font-size: 10px; font-weight: bold;padding:4px 8px; border-radius: 5px;">Cancelar</div>\
+                                          <div>quant:<b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b></div>\
                                       </div>\
                                  </div>');
                 }
             }
+            $("#total").text(pedido.total);
+            localStorage["{{chave}}"] = JSON.stringify(pedido)
         }else{
             mensagemR("Erro ao carergar pedido!");
         }
@@ -272,9 +292,8 @@
     });
 
     function verificar(elemento){
-        alert(elemento.checked + " - " + elemento.name + " - " + elemento.value);
         var pedido = JSON.parse(localStorage[elemento.previousElementSibling.value])
-
+        var total = 0;
         for(var i = 0; i < pedido.carrinho.length; i++){
             if(pedido.carrinho[i].chave == elemento.name){
                 if(pedido.carrinho[i].cores[elemento.value][2] === undefined){
@@ -282,12 +301,23 @@
                 }else{
                     pedido.carrinho[i].cores[elemento.value][2] = !(pedido.carrinho[i].cores[elemento.value][2]);
                 }
-
             }
         }
+        for(var i = 0; i < pedido.carrinho.length; i++){
+            var keys = Object.keys(pedido.carrinho[i]["cores"]);
+            for(var j = 0; j < keys.length; j++){
+                if(pedido.carrinho[i].cores[keys[j]][2] == true){
+                    total += (pedido.carrinho[i].cores[keys[j]][0] * pedido.carrinho[i].preco);
+                }
+            }
+        }
+        $("#subtotal").text(total.toFixed(2).replace(".", ","));
         localStorage[elemento.previousElementSibling.value] = JSON.stringify(pedido)
     }
 
+    function verificarTodos(elemento){
+
+    }
 
     function mensagemR(msg){
         document.getElementById("mensagemR").textContent = msg
