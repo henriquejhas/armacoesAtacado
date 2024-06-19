@@ -142,6 +142,34 @@
 				}
  	    /*======================== Checkbox ===========================*/
 
+ 	    .modal-adicionar{
+ 	        display: none;
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 100%;
+ 	    }
+
+ 	    .adicionar{
+            position: absolute;
+            z-index: 1;
+            width: 90%;
+            left: 0;
+            right: 0;
+            margin: auto;
+            top: 35%;
+            border-radius: 5px;
+            padding: 10px;
+ 	    }
+
+ 	    .fundo-adicionar{
+ 	        width:100%;
+ 	        height:100%;
+ 	        background-color: #000000c7;
+ 	        position:absolute;
+ 	        top:0;
+ 	    }
+
         @media  screen and (max-width: 550px) {
             aside.show {
                 z-index: 99;
@@ -190,10 +218,19 @@
                 <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
                 <p>Valor: <b>{{ pedido.total }}</b></p>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
-                <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px; margin-bottom:5px;">
-                    <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
-                    <span class="checkmark2" style="text-align: center;"></span>
-                </label><label for="tudo">Selecionar tudo</label>
+                <div style="display: flex; justify-content: space-between; margin-bottom:5px;">
+                    <div>
+                        <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">
+                            <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
+                            <span class="checkmark2" style="text-align: center;"></span>
+                        </label><label for="tudo">Selecionar tudo</label>
+
+                    </div>
+                    <div>
+                        <button onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
+                    </div>
+                </div>
+
                 <div id="lista">
 
                 </div>
@@ -311,6 +348,93 @@
         console.log('Erro:', error);
         mensagemR("Erro ao carregar pedido pedido!");
     });
+
+    function adicionar(){
+        var codigo = $("#codigo").val();
+        var cor = document.getElementById("cor").value;
+        fetch('{{url_for('adicionar_item')}}' , {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                'codigo': codigo,
+                'cor': cor
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            data.preco = parseFloat((data.preco).replace(",","."));
+            console.log(data)
+            console.log(data.chave != false)
+            if(data.chave != false){
+                $("#lista").empty();
+                var pedido = JSON.parse(localStorage["{{chave}}"]);
+                pedido.carrinho.push(data)
+                var total = parseFloat(0);
+                console.log(pedido)
+                for(var i = 0; i < pedido.carrinho.length; i++){
+                    var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                    const index = keys.indexOf("C10");
+                    if (index !== -1) {
+                        keys.splice(index, 1);
+                        keys.push("C10");
+                    }
+
+                    for(var j = 0; j < keys.length; j++){
+                        $("#lista").append('<div class="cart--item cart--totalitem"> \
+                                          <div>\
+                                            <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
+                                                <input type="hidden" value="{{chave}}">\
+                                                <input type="checkbox"  style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
+                                                <span class="checkmark2" style="text-align: center;"></span>\
+                                            </label>\
+                                        </div>\
+                                          <div> \
+                                              <img src="' + pedido.carrinho[i].img +  '" onclick="abrirImagem(this)">\
+                                          </div>\
+                                          <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
+                                              <div class="cart--item-nome"> ' + pedido.carrinho[i].codigo + ' | ' + keys[j] + '</div>\
+                                              <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
+                                                    <div style="inline-block; text-align: left;">valor:R$ ' + pedido.carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
+                                              </div>\
+                                          </div>\
+                                          <div>\
+                                              <div class="cart--item--qtarea">\
+                                                <button class="cart--item-qtmenos" onclick="diminuir(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
+                                                <div class="cart--item--qt"><b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b>/' + pedido.carrinho[i].cores[keys[j]][1] + '</div>\
+                                                <button class="cart--item-qtmais" onclick="aumentar(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
+                                              </div>\
+                                          </div>\
+                                     </div>');
+                        document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
+                        if(pedido.carrinho[i].cores[keys[j]][2] == true){
+                            total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
+                        }
+                    }
+                }
+                $("#total").text(pedido.total);
+                document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+
+                localStorage["{{chave}}"] = JSON.stringify(pedido)
+            }else{
+                mensagemR("Erro ao adicionar item!");
+            }
+
+        })
+        .catch(error => {
+            console.log('Erro:', error);
+            mensagemR("Erro ao carregar pedido pedido!");
+        });
+
+    }
+
+    function btAdicionar(){
+        $('#adicionar').css('display','block');
+        $("#codigo").val("");
+        document.getElementById("cor").value = "C1";
+    }
 
     function verificar(elemento){
         var pedido = JSON.parse(localStorage[elemento.previousElementSibling.value])
@@ -436,6 +560,31 @@
     <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
       <p id="mensagemR"></p>
     </div>
+</div>
+
+<div class="modal-adicionar" id="adicionar">
+    <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
+        <p>Digite o código e escolha a cor:</p>
+        <input autocomplete="false" class="w3-input w3-border w3-margin-bottom" style="width:70%; display:inline-block;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
+        <select name="cor" id="cor" class="w3-input w3-border w3-margin-bottom" style="width:28%; display:inline-block;">
+            <option selected="" value="C1">C1</option>
+            <option value="C2">C2</option>
+            <option value="C3">C3</option>
+            <option value="C4">C4</option>
+            <option value="C5">C5</option>
+            <option value="C6">C6</option>
+            <option value="C7">C7</option>
+            <option value="C8">C8</option>
+            <option value="C9">C9</option>
+            <option value="C10">C10</option>
+
+        </select>
+        <div style="display:flex; justify-content: space-between;">
+            <button onclick="adicionar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
+            <button onclick="$('#adicionar').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
+        </div>
+    </div>
+    <div class="fundo-adicionar"></div>
 </div>
 
 {% endblock %}

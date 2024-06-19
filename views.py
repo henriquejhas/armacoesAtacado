@@ -486,6 +486,43 @@ def carregar_pedido(chave):
         return redirect(url_for('logout', mensagem=mensagem))
 
 
+@app.route('/adicionar-item', methods=['POST'])
+def adicionar_item():
+    global item
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        if request.method == 'POST':
+            dadoJson = request.get_json()
+            item = None
+            try:
+                produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+
+                for armacao in produtos:
+                    if produtos[armacao]['codigo'] == dadoJson['codigo'] and dadoJson['cor'] in produtos[armacao]['cores']:
+
+                        item = {
+                            'chave': armacao,
+                            'codigo': produtos[armacao]['codigo'],
+                            'cores': {dadoJson['cor']:[1, produtos[armacao]['cores'][dadoJson['cor']], False]},
+                            'img': produtos[armacao]['imagem'],
+                            'preco': produtos[armacao]['preco']
+                        }
+            except:
+                return jsonify({'chave': False})
+
+            else:
+                if item != None:
+                    return jsonify(item)
+                else:
+                    return jsonify({'chave':'vazia'})
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
 def conferir_cookie():
     global cookie
     cookie = False
