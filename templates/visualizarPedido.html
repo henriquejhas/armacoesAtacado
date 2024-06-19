@@ -40,8 +40,11 @@
 
         .cart--item--qt {
             line-height: 30px;
-            font-size: 14px;
+            font-size: 11px;
             color: #000;
+            min-width: 50px;
+            text-align: center;
+            display: inline-block;
         }
 
         .cart--item--qtarea button {
@@ -50,7 +53,7 @@
             font-size: 17px;
             outline: 0;
             cursor: pointer;
-            padding: 0px 10px;
+            padding: 0px 6px;
             color: #333;
         }
 
@@ -145,11 +148,11 @@
                 width:95%;
             }
             .cart--item--qtarea button {
-                padding: 0px 10px;
+                padding: 0px 6px;
             }
             .cart--item--qt {
                 line-height: 32px;
-                min-width: 50px;
+                min-width: 40px;
                 text-align: center;
                 display: inline-block;
             }
@@ -181,14 +184,14 @@
             <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-green">Concluído</span></p>
         {% endif %}
 
-       <form class="w3-container" method="POST" action="{{ url_for('visualizar', chave=chave)}}" enctype="multipart/form-data" onsubmit="preencher()">
+       <div class="w3-container" >
             <div>
                 <p>Nome: <b>{{ pedido.cliente }}</b></p>
                 <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
                 <p>Valor: <b>{{ pedido.total }}</b></p>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
                 <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px; margin-bottom:5px;">
-                    <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" id="tudo">
+                    <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
                     <span class="checkmark2" style="text-align: center;"></span>
                 </label><label for="tudo">Selecionar tudo</label>
                 <div id="lista">
@@ -217,7 +220,7 @@
 
                 {% endif %}
             </div>
-       </form>
+       </div>
 
     </div>
     <a href="{{url_for('deletar', chave=chave)}}" style="text-decoration:none;"><button type="submit" class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir modelo</button></a>
@@ -243,9 +246,18 @@
     .then(data => {
         if(data.chave != false){
 
+            if(!("{{chave}}" in localStorage)){
+                localStorage["{{chave}}"] = JSON.stringify(data)
+                for(var i = 0; i < pedido.carrinho.length; i++){
+                    var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                    for(var j = 0; j < keys.length; j++){
+                        pedido.carrinho[i].cores[keys[j]][2] = false;
+                    }
+                }
+            }
 
-            localStorage["{{chave}}"] = JSON.stringify(data)
-            pedido = JSON.parse(localStorage["{{chave}}"])
+            pedido = JSON.parse(localStorage["{{chave}}"]);
+            var total = parseFloat(0);
             for(var i = 0; i < pedido.carrinho.length; i++){
                 var keys = Object.keys(pedido.carrinho[i]["cores"]);
                 const index = keys.indexOf("C10");
@@ -255,12 +267,11 @@
                 }
 
                 for(var j = 0; j < keys.length; j++){
-                    pedido.carrinho[i].cores[keys[j]][2] = false;
                     $("#lista").append('<div class="cart--item cart--totalitem"> \
                                       <div>\
                                         <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
                                             <input type="hidden" value="{{chave}}">\
-                                            <input type="checkbox" style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
+                                            <input type="checkbox"  style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
                                             <span class="checkmark2" style="text-align: center;"></span>\
                                         </label>\
                                     </div>\
@@ -274,12 +285,22 @@
                                           </div>\
                                       </div>\
                                       <div>\
-                                          <div>quant:<b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b></div>\
+                                          <div class="cart--item--qtarea">\
+                                            <button class="cart--item-qtmenos" onclick="diminuir(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
+                                            <div class="cart--item--qt"><b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b>/' + pedido.carrinho[i].cores[keys[j]][1] + '</div>\
+                                            <button class="cart--item-qtmais" onclick="aumentar(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
+                                          </div>\
                                       </div>\
                                  </div>');
+                    document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
+                    if(pedido.carrinho[i].cores[keys[j]][2] == true){
+                        total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
+                    }
                 }
             }
             $("#total").text(pedido.total);
+            document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+
             localStorage["{{chave}}"] = JSON.stringify(pedido)
         }else{
             mensagemR("Erro ao carergar pedido!");
@@ -316,7 +337,87 @@
     }
 
     function verificarTodos(elemento){
+        var total = 0;
+        if(elemento.checked){
+            var pedido = JSON.parse(localStorage[elemento.value])
+            for(var i = 0; i < pedido.carrinho.length; i++){
+                var checks = document.getElementsByName(pedido.carrinho[i].chave)
+                for(var k = 0; k < checks.length; k++){
+                    checks[k].checked = true;
+                }
+                var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                for(var j = 0; j < keys.length; j++){
+                    pedido.carrinho[i].cores[keys[j]][2] = true;
+                    total += (pedido.carrinho[i].cores[keys[j]][0] * pedido.carrinho[i].preco);
+                }
+            }
+        }else{
+            var pedido = JSON.parse(localStorage[elemento.value])
+            for(var i = 0; i < pedido.carrinho.length; i++){
+                var checks = document.getElementsByName(pedido.carrinho[i].chave)
+                for(var k = 0; k < checks.length; k++){
+                    checks[k].checked = false;
+                }
+                var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                for(var j = 0; j < keys.length; j++){
+                    pedido.carrinho[i].cores[keys[j]][2] = false;
 
+                }
+            }
+        }
+        $("#subtotal").text(total.toFixed(2).replace(".", ","));
+        localStorage[elemento.value] = JSON.stringify(pedido)
+    }
+
+    function aumentar(elemento, chave, cor){
+        var total = parseFloat(0);
+        var objetoJSON = localStorage.getItem("{{chave}}");
+        var pedido = JSON.parse(objetoJSON);
+        pedido.carrinho.filter((armacao) =>{
+            if(armacao.chave == chave){
+                if(armacao.cores[cor][0] < armacao.cores[cor][1]){
+                    armacao.cores[cor][0] += 1;
+                    elemento.previousElementSibling.textContent = armacao.cores[cor][0] + "/" + armacao.cores[cor][1];
+                    //elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor][0] * armacao.preco));
+
+                }
+            }
+            var keys = Object.keys(armacao["cores"]);
+            for(var i = 0; i < Object.keys(armacao["cores"]).length; i++){
+                if(armacao.cores[keys[i]][2] == true){
+                    total += (armacao["cores"][keys[i]][0]  * armacao.preco);
+                }
+            }
+
+        });
+        document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        localStorage.setItem("{{chave}}",JSON.stringify(pedido));
+    }
+
+    function diminuir(elemento, chave, cor){
+        var total = parseFloat(0);
+        var objetoJSON = localStorage.getItem("{{chave}}");
+        var pedido = JSON.parse(objetoJSON);
+        pedido.carrinho.filter((armacao) =>{
+            if(armacao.chave == chave){
+                if(armacao.cores[cor][0] >= 1){
+
+                    armacao.cores[cor][0] -= 1;
+                    elemento.nextElementSibling.textContent = armacao.cores[cor][0] + "/" + armacao.cores[cor][1];
+                    //elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor][0] * armacao.preco));
+
+                }
+             }
+            var keys = Object.keys(armacao["cores"]);
+            for(var i = 0; i < Object.keys(armacao["cores"]).length; i++){
+                if(armacao.cores[keys[i]][2] == true){
+                    total += (armacao["cores"][keys[i]][0]  * armacao.preco);
+                }
+            }
+
+        });
+        document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        localStorage.setItem("{{chave}}",JSON.stringify(pedido));
     }
 
     function mensagemR(msg){
