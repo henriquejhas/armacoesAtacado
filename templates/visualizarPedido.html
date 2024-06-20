@@ -170,6 +170,50 @@
  	        top:0;
  	    }
 
+ 	    .modal, .modal-excluir {
+          display: none; /* Hidden by default */
+          position: fixed; /* Stay in place */
+          z-index: 1; /* Sit on top */
+          padding-top: 90px; /* Location of the box */
+          left: 0;
+          top: 0;
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          overflow: auto; /* Enable scroll if needed */
+          background-color: rgb(0,0,0); /* Fallback color */
+          background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        .modal-excluir{
+            padding-top: 200px;
+
+        }
+
+ 	    .modal-content {
+          margin: auto;
+          display: block;
+          width: 80%;
+          max-width: 500px;
+        }
+
+        /* The Close Button */
+        .close {
+          position: absolute;
+          top: 15px;
+          right: 35px;
+          color: #f1f1f1;
+          font-size: 40px;
+          font-weight: bold;
+          transition: 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+          color: #bbb;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
         @media  screen and (max-width: 550px) {
             aside.show {
                 z-index: 99;
@@ -219,16 +263,31 @@
                 <p>Valor: <b>{{ pedido.total }}</b></p>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
                 <div style="display: flex; justify-content: space-between; margin-bottom:5px;">
-                    <div>
-                        <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">
-                            <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
-                            <span class="checkmark2" style="text-align: center;"></span>
-                        </label><label for="tudo">Selecionar tudo</label>
 
-                    </div>
-                    <div>
-                        <button onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
-                    </div>
+                    {% if pedido.ativo %}
+                        <div>
+                            <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">
+                                <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
+                                <span class="checkmark2" style="text-align: center;"></span>
+                            </label><label for="tudo">Selecionar tudo</label>
+
+                        </div>
+                        <div>
+                            <button onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
+                        </div>
+                    {% else %}
+                         <div>
+                            <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">
+                                <input disabled type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
+                                <span class="checkmark2" style="text-align: center;"></span>
+                            </label><label for="tudo">Selecionar tudo</label>
+
+                        </div>
+                        <div>
+                            <button disabled onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
+                        </div>
+                    {% endif %}
+
                 </div>
 
                 <div id="lista">
@@ -239,9 +298,9 @@
                       <span>Total</span>
                       <span>R$ <span id="total">0</span></span>
                     </div>
-                    <div class="cart--totalitem total big">
-                      <span>Subtotal</span>
-                      <span>R$ <span id="subtotal">0</span></span>
+                    <div class="cart--totalitem total big" style="flex-wrap:wrap;">
+                      <span style="width:100%; text-align:center;">Subtotal</span>
+                      <span>Quantidade: <span id="quant">0</span></span><span>R$ <span id="subtotal">0</span></span>
                     </div>
 
                 </div>
@@ -285,24 +344,94 @@
 
             if(!("{{chave}}" in localStorage)){
                 localStorage["{{chave}}"] = JSON.stringify(data)
+                pedido = JSON.parse(localStorage["{{chave}}"]);
                 for(var i = 0; i < pedido.carrinho.length; i++){
                     var keys = Object.keys(pedido.carrinho[i]["cores"]);
                     for(var j = 0; j < keys.length; j++){
                         pedido.carrinho[i].cores[keys[j]][2] = false;
                     }
                 }
+            }else{
+                pedido = JSON.parse(localStorage["{{chave}}"]);
             }
 
-            pedido = JSON.parse(localStorage["{{chave}}"]);
-            var total = parseFloat(0);
-            for(var i = 0; i < pedido.carrinho.length; i++){
-                var keys = Object.keys(pedido.carrinho[i]["cores"]);
-                const index = keys.indexOf("C10");
-                if (index !== -1) {
-                    keys.splice(index, 1);
-                    keys.push("C10");
+
+            carregar(pedido);
+        }else{
+            mensagemR("Erro ao carergar pedido!");
+        }
+
+    })
+    .catch(error => {
+        console.log('Erro:', error);
+        mensagemR("Erro ao carregar pedido pedido!");
+    });
+
+    function adicionar(){
+        var codigo = $("#codigo").val();
+        var cor = document.getElementById("cor").value;
+        fetch('{{url_for('adicionar_item')}}' , {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                'codigo': codigo,
+                'cor': cor
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            if(data.chave != false){
+                if(data.chave == "vazia"){
+                    $('#adicionar').css('display','none');
+                    mensagemR("Item não encontrado!");
+                }else{
+                    data.preco = parseFloat((data.preco).replace(",","."));
+                    $("#lista").empty();
+                    var pedido = JSON.parse(localStorage["{{chave}}"]);
+                    var index = pedido.carrinho.findIndex(armacao => armacao.chave == data.chave);
+                    if( index > -1 ){
+                        var cor = Object.keys(data.cores)[0];
+                        pedido.carrinho[index].cores[cor] = data.cores[cor];
+                    }else{
+                        pedido.carrinho.unshift(data)
+                    }
+
+                    carregar(pedido);
+                    $('#adicionar').css('display','none');
+                    mensagemR("Item adicionado!");
+
                 }
 
+            }else{
+                mensagemR("Erro ao adicionar item!");
+            }
+
+        })
+        .catch(error => {
+            console.log('Erro:', error);
+            mensagemR("Erro ao carregar pedido pedido!");
+        });
+
+    }
+
+
+    function carregar(pedido){
+        var total = parseFloat(0);
+        var quant = 0;
+        for(var i = 0; i < pedido.carrinho.length; i++){
+            var keys = Object.keys(pedido.carrinho[i]["cores"]);
+            keys.sort();
+            const index = keys.indexOf("C10");
+            if (index !== -1) {
+                keys.splice(index, 1);
+                keys.push("C10");
+            }
+
+            if(pedido.ativo){
                 for(var j = 0; j < keys.length; j++){
                     $("#lista").append('<div class="cart--item cart--totalitem"> \
                                       <div>\
@@ -332,102 +461,51 @@
                     document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
                     if(pedido.carrinho[i].cores[keys[j]][2] == true){
                         total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
+                        quant += pedido.carrinho[i]["cores"][keys[j]][0];
                     }
                 }
-            }
-            $("#total").text(pedido.total);
-            document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
-
-            localStorage["{{chave}}"] = JSON.stringify(pedido)
-        }else{
-            mensagemR("Erro ao carergar pedido!");
-        }
-
-    })
-    .catch(error => {
-        console.log('Erro:', error);
-        mensagemR("Erro ao carregar pedido pedido!");
-    });
-
-    function adicionar(){
-        var codigo = $("#codigo").val();
-        var cor = document.getElementById("cor").value;
-        fetch('{{url_for('adicionar_item')}}' , {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': {{ csrf_token()|tojson }},
-                'Content-Type': 'application/json'
-            },
-            body:JSON.stringify({
-                'codigo': codigo,
-                'cor': cor
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            data.preco = parseFloat((data.preco).replace(",","."));
-            console.log(data)
-            console.log(data.chave != false)
-            if(data.chave != false){
-                $("#lista").empty();
-                var pedido = JSON.parse(localStorage["{{chave}}"]);
-                pedido.carrinho.push(data)
-                var total = parseFloat(0);
-                console.log(pedido)
-                for(var i = 0; i < pedido.carrinho.length; i++){
-                    var keys = Object.keys(pedido.carrinho[i]["cores"]);
-                    const index = keys.indexOf("C10");
-                    if (index !== -1) {
-                        keys.splice(index, 1);
-                        keys.push("C10");
-                    }
-
-                    for(var j = 0; j < keys.length; j++){
-                        $("#lista").append('<div class="cart--item cart--totalitem"> \
-                                          <div>\
-                                            <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
-                                                <input type="hidden" value="{{chave}}">\
-                                                <input type="checkbox"  style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
-                                                <span class="checkmark2" style="text-align: center;"></span>\
-                                            </label>\
-                                        </div>\
-                                          <div> \
-                                              <img src="' + pedido.carrinho[i].img +  '" onclick="abrirImagem(this)">\
-                                          </div>\
-                                          <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
-                                              <div class="cart--item-nome"> ' + pedido.carrinho[i].codigo + ' | ' + keys[j] + '</div>\
-                                              <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
-                                                    <div style="inline-block; text-align: left;">valor:R$ ' + pedido.carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
-                                              </div>\
-                                          </div>\
-                                          <div>\
-                                              <div class="cart--item--qtarea">\
-                                                <button class="cart--item-qtmenos" onclick="diminuir(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
-                                                <div class="cart--item--qt"><b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b>/' + pedido.carrinho[i].cores[keys[j]][1] + '</div>\
-                                                <button class="cart--item-qtmais" onclick="aumentar(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
-                                              </div>\
-                                          </div>\
-                                     </div>');
-                        document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
-                        if(pedido.carrinho[i].cores[keys[j]][2] == true){
-                            total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
-                        }
-                    }
-                }
-                $("#total").text(pedido.total);
-                document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
-
-                localStorage["{{chave}}"] = JSON.stringify(pedido)
             }else{
-                mensagemR("Erro ao adicionar item!");
+                for(var j = 0; j < keys.length; j++){
+                    $("#lista").append('<div class="cart--item cart--totalitem"> \
+                                      <div>\
+                                        <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
+                                            <input type="hidden" value="{{chave}}">\
+                                            <input disabled type="checkbox"  style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
+                                            <span class="checkmark2" style="text-align: center;"></span>\
+                                        </label>\
+                                    </div>\
+                                      <div> \
+                                          <img src="' + pedido.carrinho[i].img +  '" onclick="abrirImagem(this)">\
+                                      </div>\
+                                      <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
+                                          <div class="cart--item-nome"> ' + pedido.carrinho[i].codigo + ' | ' + keys[j] + '</div>\
+                                          <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
+                                                <div style="inline-block; text-align: left;">valor:R$ ' + pedido.carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
+                                          </div>\
+                                      </div>\
+                                      <div>\
+                                          <div class="cart--item--qtarea">\
+                                            <button disabled class="cart--item-qtmenos" onclick="diminuir(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
+                                            <div class="cart--item--qt"><b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b>/' + pedido.carrinho[i].cores[keys[j]][1] + '</div>\
+                                            <button disabled class="cart--item-qtmais" onclick="aumentar(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
+                                          </div>\
+                                      </div>\
+                                 </div>');
+                    document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
+                    if(pedido.carrinho[i].cores[keys[j]][2] == true){
+                        total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
+                        quant += pedido.carrinho[i]["cores"][keys[j]][0];
+                    }
+                }
             }
 
-        })
-        .catch(error => {
-            console.log('Erro:', error);
-            mensagemR("Erro ao carregar pedido pedido!");
-        });
 
+        }
+        $("#total").text(pedido.total);
+        document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        document.getElementById("quant").textContent = quant;
+
+        localStorage["{{chave}}"] = JSON.stringify(pedido)
     }
 
     function btAdicionar(){
@@ -438,7 +516,8 @@
 
     function verificar(elemento){
         var pedido = JSON.parse(localStorage[elemento.previousElementSibling.value])
-        var total = 0;
+        var total = parseFloat(0);
+        var quant = 0;
         for(var i = 0; i < pedido.carrinho.length; i++){
             if(pedido.carrinho[i].chave == elemento.name){
                 if(pedido.carrinho[i].cores[elemento.value][2] === undefined){
@@ -453,15 +532,18 @@
             for(var j = 0; j < keys.length; j++){
                 if(pedido.carrinho[i].cores[keys[j]][2] == true){
                     total += (pedido.carrinho[i].cores[keys[j]][0] * pedido.carrinho[i].preco);
+                    quant += pedido.carrinho[i].cores[keys[j]][0];
                 }
             }
         }
-        $("#subtotal").text(total.toFixed(2).replace(".", ","));
+        document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        document.getElementById("quant").textContent = quant;
         localStorage[elemento.previousElementSibling.value] = JSON.stringify(pedido)
     }
 
     function verificarTodos(elemento){
-        var total = 0;
+        var total = parseFloat(0);
+        var quant = 0;
         if(elemento.checked){
             var pedido = JSON.parse(localStorage[elemento.value])
             for(var i = 0; i < pedido.carrinho.length; i++){
@@ -473,6 +555,7 @@
                 for(var j = 0; j < keys.length; j++){
                     pedido.carrinho[i].cores[keys[j]][2] = true;
                     total += (pedido.carrinho[i].cores[keys[j]][0] * pedido.carrinho[i].preco);
+                    quant += pedido.carrinho[i].cores[keys[j]][0];
                 }
             }
         }else{
@@ -489,19 +572,21 @@
                 }
             }
         }
-        $("#subtotal").text(total.toFixed(2).replace(".", ","));
+        document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        document.getElementById("quant").textContent = quant;
         localStorage[elemento.value] = JSON.stringify(pedido)
     }
 
     function aumentar(elemento, chave, cor){
         var total = parseFloat(0);
+        var quant = 0;
         var objetoJSON = localStorage.getItem("{{chave}}");
         var pedido = JSON.parse(objetoJSON);
         pedido.carrinho.filter((armacao) =>{
             if(armacao.chave == chave){
                 if(armacao.cores[cor][0] < armacao.cores[cor][1]){
                     armacao.cores[cor][0] += 1;
-                    elemento.previousElementSibling.textContent = armacao.cores[cor][0] + "/" + armacao.cores[cor][1];
+                    elemento.previousElementSibling.children[0].textContent = armacao.cores[cor][0];
                     //elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor][0] * armacao.preco));
 
                 }
@@ -510,16 +595,19 @@
             for(var i = 0; i < Object.keys(armacao["cores"]).length; i++){
                 if(armacao.cores[keys[i]][2] == true){
                     total += (armacao["cores"][keys[i]][0]  * armacao.preco);
+                    quant += armacao["cores"][keys[i]][0];
                 }
             }
 
         });
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        document.getElementById("quant").textContent = quant;
         localStorage.setItem("{{chave}}",JSON.stringify(pedido));
     }
 
     function diminuir(elemento, chave, cor){
         var total = parseFloat(0);
+        var quant = 0;
         var objetoJSON = localStorage.getItem("{{chave}}");
         var pedido = JSON.parse(objetoJSON);
         pedido.carrinho.filter((armacao) =>{
@@ -527,7 +615,7 @@
                 if(armacao.cores[cor][0] >= 1){
 
                     armacao.cores[cor][0] -= 1;
-                    elemento.nextElementSibling.textContent = armacao.cores[cor][0] + "/" + armacao.cores[cor][1];
+                    elemento.nextElementSibling.children[0].textContent = armacao.cores[cor][0];
                     //elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor][0] * armacao.preco));
 
                 }
@@ -536,11 +624,13 @@
             for(var i = 0; i < Object.keys(armacao["cores"]).length; i++){
                 if(armacao.cores[keys[i]][2] == true){
                     total += (armacao["cores"][keys[i]][0]  * armacao.preco);
+                    quant += armacao["cores"][keys[i]][0];
                 }
             }
 
         });
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        document.getElementById("quant").textContent = quant;
         localStorage.setItem("{{chave}}",JSON.stringify(pedido));
     }
 
@@ -554,7 +644,29 @@
                setTimeout(() => $("#msg2").css("display", "none"),1000);
             } ,4000);
     }
+
+    function abrirImagem(elemento){
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+      var modal = document.getElementById("myModal");
+      var modalImg = document.getElementById("img01");
+
+      modal.style.display = "block";
+      modalImg.src = elemento.src;
+
+    }
+
+    function fecharImagem() {
+      var modal = document.getElementById("myModal");
+      modal.style.display = "none";
+    }
 </script>
+
+<!-- The Modal -->
+<div id="myModal" class="modal w3-animate-zoom">
+  <span class="close" onclick="fecharImagem()">&times;</span>
+  <img class="modal-content" id="img01" src="">
+
+</div>
 
 <div id="msg2" style="margin: auto; left: 0; right: 0; z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:60%; height:80px; position:fixed;bottom:10%; display:none;">
     <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">

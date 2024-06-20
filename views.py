@@ -495,12 +495,14 @@ def adicionar_item():
 
         if request.method == 'POST':
             dadoJson = request.get_json()
+            print(dadoJson)
             item = None
             try:
                 produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
-
+                codigo = (dadoJson['codigo']).strip()
+                cor = (dadoJson['cor']).strip()
                 for armacao in produtos:
-                    if produtos[armacao]['codigo'] == dadoJson['codigo'] and dadoJson['cor'] in produtos[armacao]['cores']:
+                    if produtos[armacao]['codigo'] == codigo and cor in produtos[armacao]['cores']:
 
                         item = {
                             'chave': armacao,
@@ -513,6 +515,7 @@ def adicionar_item():
                 return jsonify({'chave': False})
 
             else:
+                print(item)
                 if item != None:
                     return jsonify(item)
                 else:
