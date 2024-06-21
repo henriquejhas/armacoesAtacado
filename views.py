@@ -426,6 +426,7 @@ def pedidos():
     if cookie:
 
         if request.method == 'GET':
+            mensagem = request.args.get('mensagem')
             try:
                 listaPedidos = []
                 pedidos = ref.child(f'estoques/{cookie['uid']}/pedidos').get()
@@ -438,11 +439,12 @@ def pedidos():
                         pedido = pedidos[chave]
                         listaPedidos.append((chave, pedido))
 
-                return render_template('pedidos.html', pedidos=listaPedidos)
+                return render_template('pedidos.html', pedidos=listaPedidos, mensagem=mensagem)
 
     else:
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem=mensagem))
+
 
 @app.route('/visualizar/<string:chave>', methods=['GET', 'POST'])
 def visualizar(chave):
@@ -454,11 +456,39 @@ def visualizar(chave):
         if request.method == 'GET':
             try:
                 pedido = ref.child(f'estoques/{cookie['uid']}/pedidos').child(chave).get()
+                lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                produtos = []
+                for produto in lista:
+                    produtos.append(lista[produto]['codigo'])
             except:
                 return render_template('visualizarPedido.html', pedido=[], mensagem='Erro ao ler os pedidos!')
 
             else:
-                return render_template('visualizarPedido.html', pedido=pedido, chave=chave)
+                return render_template('visualizarPedido.html', pedido=pedido, chave=chave, produtos=produtos)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/carregar-codigos/', methods=['GET', 'POST'])
+def carregar_codigos():
+    global loja
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        if request.method == 'GET':
+            try:
+                lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                produtos = []
+                for produto in lista:
+                    produtos.append(lista[produto]['codigo'])
+            except:
+                return jsonify({'chave': False})
+
+            else:
+                return jsonify(produtos)
 
     else:
         session['usuario_logado'] = None
@@ -524,6 +554,63 @@ def adicionar_item():
     else:
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/baixa', methods=['POST'])
+def dar_baixa():
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        if request.method == 'POST':
+            pedido = request.get_json()
+
+            try:
+                pedido['ativo'] = False
+                for armacao in pedido['carrinho']:
+                    local = ref.child(f'estoques/{cookie['uid']}/produtos/{armacao['chave']}').child('cores')
+                    for cor in armacao['cores']:
+                        if armacao['cores'][cor][2] == True:
+                            local.update({cor: (local.child(cor).get() - armacao['cores'][cor][0])})
+
+                ref.child(f'estoques/{cookie['uid']}/pedidos/{pedido['chave']}').update(pedido)
+            except Exception as e:
+                print(e)
+                return jsonify({'chave': False})
+
+            else:
+
+                return jsonify(pedido)
+
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/deletar-pedido')
+def deletar_pedido():
+    chave = request.args.get('chave')
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+
+        try:
+            referenciaDeletado = ref.child(f'estoques/{cookie['uid']}/pedidos/{chave}')
+            referenciaDeletado.delete()
+
+        except:
+            mensagem = 'Algo deu errado ao Excluir os dados do pedido!'
+            return redirect(url_for('carregar', chave=chave, mensagem=mensagem))
+        else:
+
+            return redirect(url_for('pedidos', mensagem='Pedido excluído com sucesso!'))
+
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem='Sessão encerrada!'))
 
 
 def conferir_cookie():

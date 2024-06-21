@@ -214,6 +214,68 @@
           cursor: pointer;
         }
 
+        #loading {
+          position: fixed; /* Fixo na tela */
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+          display: none; /* Alinha os elementos */
+          justify-content: center; /* Centraliza horizontalmente */
+          align-items: center; /* Centraliza verticalmente */
+          z-index: 100; /* Acima do conteúdo */
+        }
+
+        .loading-spinner {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          border: 5px solid #ccc; /* Cor da borda */
+          border-color: #ccc transparent #ccc transparent; /* Cor da animação */
+          animation: spin 1.2s linear infinite; /* Animação de rotação */
+        }
+
+        .autocomplete {
+          position: relative;
+          display: inline-block;
+        }
+
+        .autocomplete-items {
+          position: absolute;
+          border: 1px solid #d4d4d4;
+          border-bottom: none;
+          border-top: none;
+          z-index: 99;
+          /*position the autocomplete items to be the same width as the container:*/
+          top: 100%;
+          left: 0;
+          right: 0;
+        }
+
+        .autocomplete-items div {
+          padding: 10px;
+          cursor: pointer;
+          background-color: #fff;
+          border-bottom: 1px solid #d4d4d4;
+        }
+
+        /*when hovering an item:*/
+        .autocomplete-items div:hover {
+          background-color: #e9e9e9;
+        }
+
+        /*when navigating through the items using the arrow keys:*/
+        .autocomplete-active {
+          background-color: DodgerBlue !important;
+          color: #ffffff;
+        }
+
+         @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
         @media  screen and (max-width: 550px) {
             aside.show {
                 z-index: 99;
@@ -309,7 +371,7 @@
             </div>
             <div>
                 {% if pedido.ativo %}
-                    <button type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Dar baixa</button>
+                    <button onclick="btBaixa()" type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Dar baixa</button>
 
                 {% else %}
                     <button disabled class="w3-button w3-block w3-green w3-section w3-padding w3-large">Esse pedido já foi dado baixa!</button>
@@ -319,8 +381,67 @@
        </div>
 
     </div>
-    <a href="{{url_for('deletar', chave=chave)}}" style="text-decoration:none;"><button type="submit" class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir modelo</button></a>
+    <button onclick="btExcluir()"  class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir Pedido</button>
 
+</div>
+
+
+<!-- The Modal -->
+<div id="myModal" class="modal w3-animate-zoom">
+  <span class="close" onclick="fecharImagem()">&times;</span>
+  <img class="modal-content" id="img01" src="">
+
+</div>
+
+<div id="msg2" style="margin: auto; left: 0; right: 0; z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:60%; height:80px; position:fixed;bottom:10%; display:none;">
+    <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+      <p id="mensagemR"></p>
+    </div>
+</div>
+
+<div class="modal-adicionar" id="adicionar">
+    <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
+        <p>Digite o código e escolha a cor:</p>
+        <div class="autocomplete" style="width:70%;">
+            <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
+        </div>
+        <select name="cor" id="cor" class="w3-input w3-border w3-margin-bottom" style="width:28%; display:inline-block;">
+            <option selected="" value="C1">C1</option>
+            <option value="C2">C2</option>
+            <option value="C3">C3</option>
+            <option value="C4">C4</option>
+            <option value="C5">C5</option>
+            <option value="C6">C6</option>
+            <option value="C7">C7</option>
+            <option value="C8">C8</option>
+            <option value="C9">C9</option>
+            <option value="C10">C10</option>
+
+        </select>
+        <div style="display:flex; justify-content: space-between; margin-top:15px;">
+            <button onclick="adicionar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
+            <button onclick="$('#adicionar').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
+        </div>
+    </div>
+    <div class="fundo-adicionar"></div>
+
+</div>
+
+<div class="modal-adicionar" id="baixa">
+    <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
+        <p style="text-align:center;">Somente os item selecionados serão dados baixa.</p>
+
+        <div style="display:flex; justify-content: space-between;">
+            <button onclick="darBaixa()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
+            <button onclick="$('#baixa').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
+        </div>
+    </div>
+    <div class="fundo-adicionar"></div>
+
+</div>
+
+<div id="loading">
+    <div class="loading-spinner"></div>
 </div>
 
 <script>
@@ -341,16 +462,21 @@
     .then(response => response.json())
     .then(data => {
         if(data.chave != false){
-
+            var pedido = {};
             if(!("{{chave}}" in localStorage)){
-                localStorage["{{chave}}"] = JSON.stringify(data)
-                pedido = JSON.parse(localStorage["{{chave}}"]);
-                for(var i = 0; i < pedido.carrinho.length; i++){
-                    var keys = Object.keys(pedido.carrinho[i]["cores"]);
-                    for(var j = 0; j < keys.length; j++){
-                        pedido.carrinho[i].cores[keys[j]][2] = false;
+                if(data.ativo){
+                    localStorage["{{chave}}"] = JSON.stringify(data)
+                    pedido = JSON.parse(localStorage["{{chave}}"]);
+                    for(var i = 0; i < pedido.carrinho.length; i++){
+                        var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                        for(var j = 0; j < keys.length; j++){
+                            pedido.carrinho[i].cores[keys[j]][2] = false;
+                        }
                     }
+                }else{
+                    pedido = data
                 }
+
             }else{
                 pedido = JSON.parse(localStorage["{{chave}}"]);
             }
@@ -416,6 +542,34 @@
             mensagemR("Erro ao carregar pedido pedido!");
         });
 
+    }
+
+    function darBaixa(){
+        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        pedido['chave'] = "{{chave}}";
+        $("#loading").css("display", "flex");
+        fetch('{{url_for('dar_baixa')}}' , {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(pedido)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            if(data.ativo == false){
+                delete localStorage["{{chave}}"];
+                location.reload();
+
+            }
+        })
+        .catch(error => {
+            console.log('Erro:', error);
+            mensagemR("Erro ao dar baixa no pedido!");
+            $("#loading").css("display", "flex");
+        });
     }
 
 
@@ -504,14 +658,23 @@
         $("#total").text(pedido.total);
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
         document.getElementById("quant").textContent = quant;
-
-        localStorage["{{chave}}"] = JSON.stringify(pedido)
+        if(pedido.ativo){
+            localStorage["{{chave}}"] = JSON.stringify(pedido)
+        }
     }
 
     function btAdicionar(){
         $('#adicionar').css('display','block');
         $("#codigo").val("");
         document.getElementById("cor").value = "C1";
+    }
+    function btBaixa(){
+        $('#baixa').css('display','block');
+    }
+
+    function btExcluir(){
+        delete localStorage["{{chave}}"];
+        location.href = "{{url_for('deletar_pedido', chave=chave)}}"
     }
 
     function verificar(elemento){
@@ -659,44 +822,127 @@
       var modal = document.getElementById("myModal");
       modal.style.display = "none";
     }
+
+    function autocomplete(inp, arr) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+          });
+          a.appendChild(b);
+        }
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+
+/*An array containing all the country names in the world:*/
+var codigos = []
+
+fetch('{{url_for('carregar_codigos', chave=chave)}}' , {
+    method: 'GET',
+    headers: {
+        'X-CSRFToken': {{ csrf_token()|tojson }},
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => {
+    codigos = data;
+    autocomplete(document.getElementById("codigo"), codigos);
+
+})
+.catch(error => {
+    console.log('Erro:', error);
+});
+
+/*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
+
 </script>
 
-<!-- The Modal -->
-<div id="myModal" class="modal w3-animate-zoom">
-  <span class="close" onclick="fecharImagem()">&times;</span>
-  <img class="modal-content" id="img01" src="">
-
-</div>
-
-<div id="msg2" style="margin: auto; left: 0; right: 0; z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:60%; height:80px; position:fixed;bottom:10%; display:none;">
-    <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
-      <p id="mensagemR"></p>
-    </div>
-</div>
-
-<div class="modal-adicionar" id="adicionar">
-    <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
-        <p>Digite o código e escolha a cor:</p>
-        <input autocomplete="false" class="w3-input w3-border w3-margin-bottom" style="width:70%; display:inline-block;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
-        <select name="cor" id="cor" class="w3-input w3-border w3-margin-bottom" style="width:28%; display:inline-block;">
-            <option selected="" value="C1">C1</option>
-            <option value="C2">C2</option>
-            <option value="C3">C3</option>
-            <option value="C4">C4</option>
-            <option value="C5">C5</option>
-            <option value="C6">C6</option>
-            <option value="C7">C7</option>
-            <option value="C8">C8</option>
-            <option value="C9">C9</option>
-            <option value="C10">C10</option>
-
-        </select>
-        <div style="display:flex; justify-content: space-between;">
-            <button onclick="adicionar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
-            <button onclick="$('#adicionar').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
-        </div>
-    </div>
-    <div class="fundo-adicionar"></div>
-</div>
 
 {% endblock %}
