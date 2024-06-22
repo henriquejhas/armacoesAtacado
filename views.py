@@ -532,15 +532,24 @@ def adicionar_item():
                 codigo = (dadoJson['codigo']).strip()
                 cor = (dadoJson['cor']).strip()
                 for armacao in produtos:
-                    if produtos[armacao]['codigo'] == codigo and cor in produtos[armacao]['cores']:
-
-                        item = {
-                            'chave': armacao,
-                            'codigo': produtos[armacao]['codigo'],
-                            'cores': {dadoJson['cor']:[1, produtos[armacao]['cores'][dadoJson['cor']], False]},
-                            'img': produtos[armacao]['imagem'],
-                            'preco': produtos[armacao]['preco']
-                        }
+                    if produtos[armacao]['codigo'] == codigo :
+                        if cor in produtos[armacao]['cores']:
+                            if produtos[armacao]['cores'][dadoJson['cor']] > 0:
+                                item = {
+                                    'chave': armacao,
+                                    'codigo': produtos[armacao]['codigo'],
+                                    'cores': {dadoJson['cor']:[1, produtos[armacao]['cores'][dadoJson['cor']], False]},
+                                    'img': produtos[armacao]['imagem'],
+                                    'preco': produtos[armacao]['preco']
+                                }
+                            else:
+                                item = {
+                                    'chave': 'vazia', 'erro': '1', 'msg': 'Cor esgotada!'
+                                }
+                        else:
+                            item = {
+                                'chave':'vazia', 'erro': '2', 'msg': 'Cor não encontrada!'
+                            }
             except:
                 return jsonify({'chave': False})
 
@@ -549,7 +558,7 @@ def adicionar_item():
                 if item != None:
                     return jsonify(item)
                 else:
-                    return jsonify({'chave':'vazia'})
+                    return jsonify({'chave':'vazia', 'erro':'3', 'msg': 'Modelo não encontrado!'})
 
     else:
         session['usuario_logado'] = None
@@ -568,10 +577,11 @@ def dar_baixa():
             try:
                 pedido['ativo'] = False
                 for armacao in pedido['carrinho']:
-                    local = ref.child(f'estoques/{cookie['uid']}/produtos/{armacao['chave']}').child('cores')
-                    for cor in armacao['cores']:
-                        if armacao['cores'][cor][2] == True:
-                            local.update({cor: (local.child(cor).get() - armacao['cores'][cor][0])})
+                    if armacao['chave'] in ref.child(f'estoques/{cookie['uid']}/produtos').get():
+                        local = ref.child(f'estoques/{cookie['uid']}/produtos/{armacao['chave']}').child('cores')
+                        for cor in armacao['cores']:
+                            if armacao['cores'][cor][2] == True:
+                                local.update({cor: (local.child(cor).get() - armacao['cores'][cor][0])})
 
                 ref.child(f'estoques/{cookie['uid']}/pedidos/{pedido['chave']}').update(pedido)
             except Exception as e:

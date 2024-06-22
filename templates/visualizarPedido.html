@@ -147,13 +147,13 @@
             position: fixed;
             top: 0;
             height: 100%;
-            width: 100%;
+            width: calc(100% - 250px);
  	    }
 
  	    .adicionar{
             position: absolute;
             z-index: 1;
-            width: 90%;
+            width: 60%;
             left: 0;
             right: 0;
             margin: auto;
@@ -276,7 +276,35 @@
           100% { transform: rotate(360deg); }
         }
 
+        #msg2{
+            margin: auto;
+            left: 250px;
+            right: 0;
+            z-index:1;
+            opacity: 0;
+            transition: 0.9s;
+            text-align:center;
+            width:calc(100% - 250px);
+            height:80px;
+            position:fixed;
+            bottom:10%;
+            display:none;
+        }
+
+        @media (max-width: 992px){
+            .modal-adicionar{
+                width:100%;
+            }
+            #msg2{
+                left: 0;
+                width:100%;
+            }
+        }
+
         @media  screen and (max-width: 550px) {
+            .adicionar{
+                width:90%;
+            }
             aside.show {
                 z-index: 99;
                 width:95%;
@@ -324,7 +352,7 @@
                 <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
                 <p>Valor: <b>{{ pedido.total }}</b></p>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
-                <div style="display: flex; justify-content: space-between; margin-bottom:5px;">
+                <div style="display: flex; justify-content: space-between; flex-wrap:wrap; margin-bottom:5px;">
 
                     {% if pedido.ativo %}
                         <div>
@@ -336,6 +364,8 @@
                         </div>
                         <div>
                             <button onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
+                            <button onclick="btCriar()" class="w3-button w3-green" style="padding:4px 8px;">Criar item</button>
+
                         </div>
                     {% else %}
                          <div>
@@ -345,9 +375,7 @@
                             </label><label for="tudo">Selecionar tudo</label>
 
                         </div>
-                        <div>
-                            <button disabled onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
-                        </div>
+
                     {% endif %}
 
                 </div>
@@ -393,15 +421,15 @@
 
 </div>
 
-<div id="msg2" style="margin: auto; left: 0; right: 0; z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:60%; height:80px; position:fixed;bottom:10%; display:none;">
-    <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+<div id="msg2">
+    <div style="border-radius: 16px; display:inline-block; width:60%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
       <p id="mensagemR"></p>
     </div>
 </div>
 
 <div class="modal-adicionar" id="adicionar">
     <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
-        <p>Digite o código e escolha a cor:</p>
+        <p style="text-align:center;">Digite o código e escolha a cor:</p>
         <div class="autocomplete" style="width:70%;">
             <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
         </div>
@@ -427,13 +455,68 @@
 
 </div>
 
+<div class="modal-adicionar" id="criar">
+    <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
+        <p style="text-align:center;">Criar um item fora do estoque:</p>
+        <div class="autocomplete" style="width:70%;">
+            <label for="codigo">Código</label>
+            <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="codigoC" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
+        </div>
+        <div style="width:28%; display:inline-block;">
+            <label for="cor">Cor</label>
+            <select name="cor" id="corC" class="w3-input w3-border w3-margin-bottom" style="display:inline-block;">
+                <option selected="" value="C1">C1</option>
+                <option value="C2">C2</option>
+                <option value="C3">C3</option>
+                <option value="C4">C4</option>
+                <option value="C5">C5</option>
+                <option value="C6">C6</option>
+                <option value="C7">C7</option>
+                <option value="C8">C8</option>
+                <option value="C9">C9</option>
+                <option value="C10">C10</option>
+            </select>
+        </div>
+
+        <div style="display:inline-block; width:49%;">
+            <label for="quantidadeC">Quantidade</label>
+            <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="quantidadeC" max="1000" min="1" name="codigo"  placeholder="Digite a quantidade" required="" type="number" value="">
+
+        </div>
+        <div style="display:inline-block; width:49%;">
+            <label for="valorC">Valor</label>
+            <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="valorC" max="9000" min="1" name="codigo"  placeholder="Digite o valor" required="" type="number" value="">
+        </div>
+
+        <div style="display:flex; justify-content: space-between; margin-top:15px;">
+            <button onclick="criar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
+            <button onclick="$('#criar').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
+        </div>
+    </div>
+    <div class="fundo-adicionar"></div>
+
+</div>
+
 <div class="modal-adicionar" id="baixa">
     <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
         <p style="text-align:center;">Somente os item selecionados serão dados baixa.</p>
 
         <div style="display:flex; justify-content: space-between;">
-            <button onclick="darBaixa()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
+            <button onclick="darBaixa()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Dar baixa</button>
             <button onclick="$('#baixa').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
+        </div>
+    </div>
+    <div class="fundo-adicionar"></div>
+
+</div>
+
+<div class="modal-adicionar" id="excluir">
+    <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
+        <p style="text-align:center;">Deseja excluir esse pedido?</p>
+
+        <div style="display:flex; justify-content: space-between;">
+            <button onclick="excluir()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Excluir</button>
+            <button onclick="$('#excluir').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
         </div>
     </div>
     <div class="fundo-adicionar"></div>
@@ -447,10 +530,6 @@
 <script>
     var opcao = document.getElementById("op4");
     opcao.style.backgroundColor = "#a9a9a9";
-
-
-
-
 
     fetch('{{url_for('carregar_pedido', chave=chave)}}' , {
         method: 'GET',
@@ -494,8 +573,14 @@
     });
 
     function adicionar(){
-        var codigo = $("#codigo").val();
-        var cor = document.getElementById("cor").value;
+        var codigo = ($("#codigo").val()).trim();
+        var cor = (document.getElementById("cor").value).trim();
+        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        var modelo = pedido.carrinho.filter(armacao => armacao.codigo == codigo)
+        if(cor in modelo[0].cores){
+            mensagemR("Item já adicionado!");
+            return
+        }
         fetch('{{url_for('adicionar_item')}}' , {
             method: 'POST',
             headers: {
@@ -513,7 +598,8 @@
             if(data.chave != false){
                 if(data.chave == "vazia"){
                     $('#adicionar').css('display','none');
-                    mensagemR("Item não encontrado!");
+
+                    mensagemR(data.msg);
                 }else{
                     data.preco = parseFloat((data.preco).replace(",","."));
                     $("#lista").empty();
@@ -570,6 +656,30 @@
             mensagemR("Erro ao dar baixa no pedido!");
             $("#loading").css("display", "flex");
         });
+    }
+
+    function criar(){
+        var codigo = ($("#codigoC").val()).trim();
+        var cor = (document.getElementById("corC").value).trim();
+        var quantidade = parseInt(($("#quantidadeC").val()).trim());
+        var valor = parseFloat(($("#valorC").val().trim()).replace(",","."));
+        var pedido = JSON.parse(localStorage["{{chave}}"]);
+
+        var item = {
+            "chave": codigo,
+            "codigo": codigo,
+            "img": "https://firebasestorage.googleapis.com/v0/b/estoque-armacoes.appspot.com/o/padrao.jpg?alt=media&token=fdf174ca-2576-4fdb-9e49-8cf17a6248ed",
+            "preco": valor,
+            "cores":{
+                [cor]: [quantidade, (2 * quantidade), false]
+            }
+        }
+        pedido.carrinho.unshift(item)
+        console.log(pedido)
+        $("#lista").empty();
+        carregar(pedido);
+        $('#criar').css('display','none');
+        mensagemR("Item adicionado!");
     }
 
 
@@ -673,9 +783,22 @@
     }
 
     function btExcluir(){
+         $('#excluir').css('display','block');
+    }
+
+    function btCriar(){
+
+        $('#criar').css('display','block');
+        $("#codigoC").val("");
+        document.getElementById("corC").value = "C1";
+    }
+
+    function excluir(){
         delete localStorage["{{chave}}"];
         location.href = "{{url_for('deletar_pedido', chave=chave)}}"
     }
+
+
 
     function verificar(elemento){
         var pedido = JSON.parse(localStorage[elemento.previousElementSibling.value])

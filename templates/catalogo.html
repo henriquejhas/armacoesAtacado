@@ -812,7 +812,7 @@
                                                 <input type="hidden" value="{{ armacoes[i][1]['preco'] }}">
                                                 <input type="hidden" value="{{ armacoes[i][1]['codigo'] }}">
                                                 {%  for c in armacoes[i][1]['cores'] %}
-                                                    {% if 'C10' not in c %}
+                                                    {% if 'C10' not in c and armacoes[i][1]['cores'][c] > 0 %}
                                                         <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
                                                             <span class="input-with-bottom-border">
                                                                 <input max="{{armacoes[i][1]['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -821,7 +821,7 @@
                                                         </p>
                                                     {% endif %}
                                                 {% endfor %}
-                                                {% if 'C10' in armacoes[i][1]['cores'] %}
+                                                {% if 'C10' in armacoes[i][1]['cores'] and armacoes[i][1]['cores']['C10'] > 0 %}
                                                      <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
                                                         <span class="input-with-bottom-border">
                                                             <input max="{{armacoes[i][1]['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -875,7 +875,7 @@
                                                 <input type="hidden" value="{{ armacao['preco'] }}">
                                                 <input type="hidden" value="{{ armacao['codigo'] }}">
                                                 {%  for c in armacao['cores'] %}
-                                                    {% if 'C10' not in c %}
+                                                    {% if 'C10' not in c and armacao['cores'][c] > 0 %}
                                                         <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
                                                             <span class="input-with-bottom-border">
                                                                 <input max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -884,7 +884,7 @@
                                                         </p>
                                                     {% endif %}
                                                 {% endfor %}
-                                                {% if 'C10' in armacao['cores'] %}
+                                                {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
                                                      <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
                                                         <span class="input-with-bottom-border">
                                                             <input max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -938,7 +938,7 @@
                                             <input type="hidden" value="{{ armacao['preco'] }}">
                                             <input type="hidden" value="{{ armacao['codigo'] }}">
                                             {%  for c in armacao['cores'] %}
-                                                {% if 'C10' not in c %}
+                                                {% if 'C10' not in c and armacao['cores'][c] > 0 %}
                                                     <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class=" pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
                                                         <span class="input-with-bottom-border">
                                                             <input max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -947,7 +947,7 @@
                                                     </p>
                                                 {% endif %}
                                             {% endfor %}
-                                            {% if 'C10' in armacao['cores'] %}
+                                            {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
                                                  <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class=" pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
                                                     <span class="input-with-bottom-border">
                                                         <input max="{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -1002,7 +1002,7 @@
                                             <input type="hidden" value="{{ armacao['preco'] }}">
                                             <input type="hidden" value="{{ armacao['codigo'] }}">
                                             {%  for c in armacao['cores'] %}
-                                                {% if 'C10' not in c %}
+                                                {% if 'C10' not in c and armacao['cores'][c] > 0 %}
                                                     <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
                                                         <span class="input-with-bottom-border">
                                                             <input max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -1011,7 +1011,7 @@
                                                     </p>
                                                 {% endif %}
                                             {% endfor %}
-                                            {% if 'C10' in armacao['cores'] %}
+                                            {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
                                                  <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
                                                     <span class="input-with-bottom-border">
                                                         <input max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -1066,7 +1066,7 @@
                                             <input type="hidden" value="{{ armacao['preco'] }}">
                                             <input type="hidden" value="{{ armacao['codigo'] }}">
                                             {%  for c in armacao['cores'] %}
-                                                {% if 'C10' not in c %}
+                                                {% if 'C10' not in c and armacao['cores'][c] > 0 %}
                                                     <p  class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
                                                         <span class="input-with-bottom-border">
                                                             <input  max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
@@ -1075,7 +1075,7 @@
                                                     </p>
                                                 {% endif %}
                                             {% endfor %}
-                                            {% if 'C10' in armacao['cores'] %}
+                                            {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
                                                  <p  class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
                                                     <span class="input-with-bottom-border">
                                                         <input  max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
