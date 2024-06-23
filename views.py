@@ -10,6 +10,7 @@ from flask import render_template, request, redirect, session, flash, url_for, s
 from config import config
 from datetime import timedelta
 from flask_bcrypt import generate_password_hash, check_password_hash
+import requests
 import time
 from PIL import Image
 
@@ -509,6 +510,7 @@ def carregar_pedido(chave):
                 return jsonify({'chave': False})
 
             else:
+                print(pedido)
                 return jsonify(pedido)
 
     else:
@@ -616,6 +618,58 @@ def deletar_pedido():
         else:
 
             return redirect(url_for('pedidos', mensagem='Pedido excluído com sucesso!'))
+
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem='Sessão encerrada!'))
+
+
+@app.route('/frete', methods=['POST'])
+def frete():
+    global response
+    dados = request.get_json()
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        try:
+            url = "https://www.melhorenvio.com.br/api/v2/me/shipment/calculate"
+
+            altura = dados['altura']
+            largura = dados['largura']
+            comprimento = dados['comprimento']
+            peso = dados['peso']
+            origem = dados['origem']
+            destino = dados['destino']
+
+            headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOThmYWFhZWJlZTFkMzBkZTk3NmM0Y2E3ZTIwNWU5MDRjZGEzNzJjNjdlZWRmMWYxYTU2MzVhOTc5NTA0NjE1NzA5YTdiZTEzNDIzNThmMGIiLCJpYXQiOjE3MTkwOTExNzQuMDcxNTk3LCJuYmYiOjE3MTkwOTExNzQuMDcxNTk5LCJleHAiOjE3NTA2MjcxNzQuMDU3MzEsInN1YiI6IjljNTliMDgxLWYwZGQtNGY2NC1iOTU3LTljMDBlNWI0OTI4NCIsInNjb3BlcyI6WyJzaGlwcGluZy1jYWxjdWxhdGUiXX0.4i6wlI-6L6cESW9coWwsXIyivRzEPtwvcjbgV_56uJtdpW3CIUq4wtZedrEttwlOdglCFRCcmG8besdcKFbe1xIEg5C8jS7sOfp2gYf7ZU3KXHOR6kBIUjse3uvqEe4IEfj_X_NaeAmlh4LBC6__tGIiNw4QKnoaTeT0E3izZRCqTes4Z5JumRLvlcut02B-xUKF-EvsUR9wftiWkcBvx6gtRHJHoJVSffpAbhfKdo45s2Q4Qsa9ucqFkIVnot2CgZdOJ43h65K9WSyXU6RQKJKJdDzVCglB3XmS4ly2hYiyofuBIbcfcfQXVle6qTDf-pkjAxKNHGqvxuyCxCsMtg6AYrpm3pHvxfs5Ye-iu4XrhRBXobsDUMg9dzc9Kq2KVjy43O61FokANa_LGkoiIybyGs3sZqk03DAU1C89bP3rprzDkUGpm1h9HP8tSV8yCQrhAglupp1TMPzWWDW_MNl2DwIZAtV7d10WVA2v9JKCE2Ayfe1Hmhl8fUGbwTNSAfqpNX_Y3L7h8gcIPlz1Q7vU-EX60PqIilDw_j9wg9TgMYLHI6k_fWdTbr--rYOu3o67UqNAC0YtVfc6U8S-k-svt5in9QOiKKjUQm5pZVYxooHOowH4X2cFzx32XqeY_ksHYuwVxxLlytdrgVmHprof-y2CfzJN1prfGPDjarU",
+                "User-Agent": "Aplicação henrique._jh@hotmail.com"
+            }
+
+            payload = {
+                "from": {"postal_code": origem},
+                "to": {"postal_code": destino},
+                "package": {
+                    "height": altura,
+                    "width": largura,
+                    "length": comprimento,
+                    "weight": peso
+                }
+            }
+
+            response = requests.post(url, json=payload, headers=headers)
+
+        except:
+            mensagem = 'Algo deu errado ao Excluir os dados do pedido!'
+            return jsonify(response.json())
+        else:
+
+            print(response.text)
+            return jsonify(response.json())
 
 
     else:

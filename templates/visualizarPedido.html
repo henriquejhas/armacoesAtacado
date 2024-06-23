@@ -291,6 +291,16 @@
             display:none;
         }
 
+        .campoCaixa{
+            padding: 2px 4px;
+            border:1px solid #ccc;
+            border-radius: 6px;
+            height: 30px;
+            width: 100%;
+            margin-bottom: 3px;
+            font-size:14px
+          }
+
         @media (max-width: 992px){
             .modal-adicionar{
                 width:100%;
@@ -336,7 +346,7 @@
 </style>
 
 <div id="visualizar">
-    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px;">
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 15px;border-radius:5px;">
 
     	<h2 style="text-align:center; padding-top:10px; margin-bottom:0;">Pedido Número {{pedido.numero}}</h2>
         <p style="text-align:center; margin:0;">{{ pedido.data }}</p>
@@ -409,6 +419,46 @@
        </div>
 
     </div>
+
+        <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px; padding:1px;">
+            <h3 style="text-align:center; padding-top:10px; margin-bottom:0;">Calcular frete</h3>
+            <div style="text-align:center;">
+                <div style="width:40%; display:inline-block;">
+                    <label style="font-size:12px" for="origem">CEP remetente</label>
+                    <input autocomplete="false" class="campoCaixa" id="origem" maxlength="9" minlength="1" name="numero" placeholder="Origem" required="" type="text" value="{{ pedido.origem }}">
+                </div>
+                <span><i class="fa fa-long-arrow-right" aria-hidden="true"></i></span>
+                <div style="width:40%; display:inline-block;">
+                    <label style="font-size:12px" for="destino">CEP destinatário</label>
+                    <input autocomplete="false" class="campoCaixa" id="destino" maxlength="9" minlength="1" name="numero" placeholder="Destino" required="" type="text" value="{{ pedido.cep }}">
+                </div>
+
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:0 10px;flex-wrap:wrap;">
+                <div style="width:40%; display:inline-block;">
+                    <label style="font-size:12px" for="altura">Altura(cm)</label>
+                    <input autocomplete="false" class="campoCaixa" id="altura" maxlength="9" minlength="1" name="altura" placeholder="15,2" required="" type="text" value="">
+                </div>
+                <div style="width:40%; display:inline-block;">
+                    <label style="font-size:12px" for="largura">Largura(cm)</label>
+                    <input autocomplete="false" class="campoCaixa" id="largura" maxlength="9" minlength="1" name="largura" placeholder="18,0" required="" type="text" value="">
+                </div>
+                <div style="width:40%; display:inline-block;">
+                    <label style="font-size:12px" for="comprimento">Comprimeno(cm)</label>
+                    <input autocomplete="false" class="campoCaixa" id="comprimento" maxlength="9" minlength="1" name="comprimento" placeholder="25,0" required="" type="text" value="">
+                </div>
+                <div style="width:40%; display:inline-block;">
+                    <label style="font-size:12px" for="peso">Peso(Kg)</label>
+                    <input autocomplete="false" class="campoCaixa" id="peso" maxlength="9" minlength="1" name="peso" placeholder="1,3" required="" type="text" value="">
+                </div>
+            </div>
+            <div id="transportadoras">
+
+            </div>
+            <button onclick="frete()"  class="w3-button w3-block w3-green w3-section" style="width: 50%; font-size: 14px; margin: auto; padding: 4px 8px;">Calcular frete</button>
+
+
+        </div>
     <button onclick="btExcluir()"  class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir Pedido</button>
 
 </div>
@@ -422,7 +472,7 @@
 </div>
 
 <div id="msg2">
-    <div style="border-radius: 16px; display:inline-block; width:60%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+    <div style="border-radius: 16px; display:inline-block; width:80%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
       <p id="mensagemR"></p>
     </div>
 </div>
@@ -571,6 +621,75 @@
         console.log('Erro:', error);
         mensagemR("Erro ao carregar pedido pedido!");
     });
+
+    function frete(){
+        var origem = $("#origem").val().replace("-", "").trim();
+        var destino = $("#destino").val().replace("-", "").trim();
+        var largura = $("#largura").val().trim();
+        var altura = $("#altura").val().trim();
+        var comprimento = $("#comprimento").val().trim();
+        var peso = $("#peso").val().trim();
+
+        if(origem != "" && destino != "" && largura != "" && altura != "" && comprimento != "" && peso != ""){
+
+            fetch('{{url_for('frete')}}' , {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': {{ csrf_token()|tojson }},
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    'origem': origem,
+                    'destino': destino,
+                    'largura': largura,
+                    'altura': altura,
+                    'comprimento': comprimento,
+                    'peso': peso
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                $("#transportadoras").empty();
+                for(var i = 0; i < data.length; i++){
+                    if(!("error" in data[i]) && (data[i].name == "PAC" || data[i].name == "SEDEX")){
+                        $("#transportadoras").append('<div class="" style="width:49%; padding:10px; display:inline-block;"> \
+                                              <div style="width:49%;"> \
+                                                  <img style="width:100%;" src="' + data[i].company.picture +  '" onclick="abrirImagem(this)">\
+                                              </div>\
+                                              <div style="font-size:13px;">\
+                                                    <div style="inline-block; text-align: left;">Tipo: ' + data[i].name + '</div>\
+                                                    <div style="inline-block; text-align: left;">valor:R$ ' + (data[i].custom_price).replace(".",",") + '</div>\
+                                                    <div style="inline-block; text-align: left;">Entrega: ' + data[i].delivery_time + ' dias</div>\
+                                              </div>\
+                                         </div>');
+                    }
+
+
+                }
+
+
+            })
+            .catch(error => {
+                console.log('Erro:', error);
+                mensagemR("Erro ao calcular frete!");
+            });
+
+        }else if(origem == ""){
+            mensagemR("O campo remetente deve ser preenchido!");
+        }else if(destino == ""){
+            mensagemR("O campo destinatário deve ser preenchido!");
+        }else if(largura == ""){
+            mensagemR("O campo largura deve ser preenchido!");
+        }else if(altura == ""){
+            mensagemR("O campo altura deve ser preenchido!");
+        }else if(comprimento == ""){
+            mensagemR("O campo comprimento deve ser preenchido!");
+        }else if(peso == ""){
+            mensagemR("O campo peso deve ser preenchido!");
+        }
+
+    }
 
     function adicionar(){
         var codigo = ($("#codigo").val()).trim();
@@ -946,6 +1065,30 @@
       modal.style.display = "none";
     }
 
+    function cep(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+                    if( val.length == 6){
+                        val.splice(val.length -1,0, "-");
+                    }
+            }else{
+                  val.splice(val.length - 1,1);
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+            }
+            this.value = s;
+        });
+    }
+
+    cep(document.getElementById("origem"))
+    cep(document.getElementById("destino"))
+
     function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
@@ -1064,6 +1207,7 @@ fetch('{{url_for('carregar_codigos', chave=chave)}}' , {
 });
 
 /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
+
 
 </script>
 
