@@ -359,129 +359,57 @@
 <div id="visualizar">
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 15px;border-radius:5px;">
 
-    	<h2 style="text-align:center; padding-top:10px; margin-bottom:0;">Pedido Número {{pedido.numero}}</h2>
-        <p style="text-align:center; margin:0;">{{ pedido.data }}</p>
-        {% if pedido.ativo %}
-            <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-red">Em Processo</span></p>
-        {% else %}
-            <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-green">Concluído</span></p>
-        {% endif %}
+    	<h2 style="text-align:center; padding-top:10px; margin-bottom:0;">Novo pedido</h2>
 
        <div class="w3-container" >
             <div>
-                <p>Nome: <b>{{ pedido.cliente }}</b></p>
-                <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
-                <p>Valor: <b>{{ pedido.total }}</b></p>
+                <p>Nome:<input autocomplete="off" onblur="salvarNome(this)" class="campoCaixa" id="nome" maxlength="50" minlength="1" name="nome" placeholder="Nome" required="" type="text" ></p>
+                <p>Whatsapp: <input autocomplete="off" onblur="salvarWhatsapp(this)" class="campoCaixa" id="whatsapp" maxlength="50" minlength="1" name="whatsapp" placeholder="Whatsapp" required="" type="text" ></p>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
                 <div style="display: flex; justify-content: space-between; flex-wrap:wrap; margin-bottom:5px;">
 
-                    {% if pedido.ativo %}
-                        <div>
-                            <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">
-                                <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
-                                <span class="checkmark2" style="text-align: center;"></span>
-                            </label><label for="tudo">Selecionar tudo</label>
+                    <div>
+                        <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">
+                            <input type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
+                            <span class="checkmark2" style="text-align: center;"></span>
+                        </label><label for="tudo">Selecionar tudo</label>
 
-                        </div>
-                        <div>
-                            <button onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
-                            <button onclick="btCriar()" class="w3-button w3-green" style="padding:4px 8px;">Criar item</button>
+                    </div>
+                    <div>
+                        <button onclick="btAdicionar()" class="w3-button w3-green" style="padding:4px 8px;">Adicionar</button>
+                        <button onclick="btCriar()" class="w3-button w3-green" style="padding:4px 8px;">Criar item</button>
 
-                        </div>
-                    {% else %}
-                         <div>
-                            <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">
-                                <input disabled type="checkbox" style="display:none;" onclick="verificarTodos(this)" value="{{chave}}" id="tudo">
-                                <span class="checkmark2" style="text-align: center;"></span>
-                            </label><label for="tudo">Selecionar tudo</label>
+                    </div>
 
-                        </div>
-
-                    {% endif %}
 
                 </div>
 
-                <div id="lista">
+                <div id="lista" style="min-height:300px;">
 
                 </div>
                 <div class="cart--details">
                     <div class="cart--totalitem total big" style="font-size:15px;">
-                      <span>Valor do pedido</span>
-                      <span>R$ <span id="total">0</span></span>
-                    </div>
-                    <div class="cart--totalitem total big" style="font-size:15px;">
-                      <span>Desconto</span>
-                      {% if pedido.ativo %}
-                            <span><input onblur="darDesconto(this)" style="width:45px; height:25px" class="campoCaixa" id="desconto" maxlength="3" minlength="1" name="desconto"  type="number" value="0"> %</span>
-                      {% else %}
-                            <span><input disabled onblur="darDesconto(this)" style="width:45px; height:25px" class="campoCaixa" id="desconto" maxlength="3" minlength="1" name="desconto"  type="number" value="0"> %</span>
-
-                      {% endif %}
-                    </div>
+                        <span>Desconto</span>
+                        <span><input onblur="darDesconto(this)" style="width:45px; height:25px" class="campoCaixa" id="desconto" maxlength="3" minlength="1" name="desconto"  type="number" value="0"> %</span>
+                     </div>
                     <div class="cart--totalitem total big" style="flex-wrap:wrap;">
                       <span style="width:100%; text-align:center;">total</span>
                       <span>Quantidade: <span id="quant">0</span></span><span>R$ <span id="subtotal">0</span></span>
                     </div>
-
                 </div>
-
-
             </div>
             <div>
-                {% if pedido.ativo %}
-                    <button onclick="btBaixa()" type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Dar baixa</button>
 
-                {% else %}
-                    <button disabled class="w3-button w3-block w3-green w3-section w3-padding w3-large">Esse pedido já foi dado baixa!</button>
+                <button onclick="btSalvar()" type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Salvar pedido</button>
+                <button onclick="btBaixa()" type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Dar baixa</button>
 
-                {% endif %}
             </div>
        </div>
 
     </div>
 
-        <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px; padding:1px;">
-            <h3 style="text-align:center; padding-top:10px; margin-bottom:0;">Calcular frete</h3>
-            <div style="text-align:center;">
-                <div style="width:40%; display:inline-block;">
-                    <label style="font-size:12px" for="origem">CEP remetente</label>
-                    <input autocomplete="false" class="campoCaixa" id="origem" maxlength="9" minlength="1" name="numero" placeholder="Origem" required="" type="text" value="{{ pedido.origem }}">
-                </div>
-                <span><i class="fa fa-long-arrow-right" aria-hidden="true"></i></span>
-                <div style="width:40%; display:inline-block;">
-                    <label style="font-size:12px" for="destino">CEP destinatário</label>
-                    <input autocomplete="false" class="campoCaixa" id="destino" maxlength="9" minlength="1" name="numero" placeholder="Destino" required="" type="text" value="{{ pedido.cep }}">
-                </div>
 
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:0 10px;flex-wrap:wrap;">
-                <div style="width:40%; display:inline-block;">
-                    <label style="font-size:12px" for="altura">Altura(cm)</label>
-                    <input autocomplete="false" class="campoCaixa" id="altura" maxlength="9" minlength="1" name="altura" placeholder="15,2" required="" type="text" value="">
-                </div>
-                <div style="width:40%; display:inline-block;">
-                    <label style="font-size:12px" for="largura">Largura(cm)</label>
-                    <input autocomplete="false" class="campoCaixa" id="largura" maxlength="9" minlength="1" name="largura" placeholder="18,0" required="" type="text" value="">
-                </div>
-                <div style="width:40%; display:inline-block;">
-                    <label style="font-size:12px" for="comprimento">Comprimeno(cm)</label>
-                    <input autocomplete="false" class="campoCaixa" id="comprimento" maxlength="9" minlength="1" name="comprimento" placeholder="25,0" required="" type="text" value="">
-                </div>
-                <div style="width:40%; display:inline-block;">
-                    <label style="font-size:12px" for="peso">Peso(Kg)</label>
-                    <input autocomplete="false" class="campoCaixa" id="peso" maxlength="9" minlength="1" name="peso" placeholder="1,3" required="" type="text" value="">
-                </div>
-            </div>
-            <div id="transportadoras">
-
-            </div>
-            <button onclick="frete()"  class="w3-button w3-block w3-green w3-section" style="width: 50%; font-size: 14px; margin: auto; padding: 4px 8px;">Calcular frete</button>
-
-
-        </div>
-        <button onclick="delete localStorage['{{ chave }}']; location.reload();"  class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Reiniciar Pedido</button>
-
-        <button onclick="btExcluir()"  class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir Pedido</button>
+        <button onclick="delete localStorage['novoPedido']; location.reload();"  class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Reiniciar Pedido</button>
 
 </div>
 
@@ -582,6 +510,19 @@
 
 </div>
 
+<div class="modal-adicionar" id="salvar">
+    <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
+        <p style="text-align:center;">O pedido será salvo na área "Pedidos".</p>
+
+        <div style="display:flex; justify-content: space-between;">
+            <button onclick="salvar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Salvar</button>
+            <button onclick="$('#salvar').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
+        </div>
+    </div>
+    <div class="fundo-adicionar"></div>
+
+</div>
+
 <div class="modal-adicionar" id="excluir">
     <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
         <p style="text-align:center;">Deseja excluir esse pedido?</p>
@@ -600,149 +541,40 @@
 </div>
 
 <script>
-    var opcao = document.getElementById("op3");
+    var opcao = document.getElementById("op2");
     opcao.style.backgroundColor = "#a9a9a9";
 
-    fetch('{{url_for('carregar_pedido', chave=chave)}}' , {
-        method: 'GET',
-        headers: {
-            'X-CSRFToken': {{ csrf_token()|tojson }},
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data.chave != false){
-            var pedido = {};
-            if(!("{{chave}}" in localStorage)){
-                if(data.ativo){
-                    localStorage["{{chave}}"] = JSON.stringify(data)
-                    pedido = JSON.parse(localStorage["{{chave}}"]);
-                    for(var i = 0; i < pedido.carrinho.length; i++){
-                        var keys = Object.keys(pedido.carrinho[i]["cores"]);
-                        for(var j = 0; j < keys.length; j++){
-                            pedido.carrinho[i].cores[keys[j]][2] = false;
-                        }
-                    }
-                }else{
-                    pedido = data
-                }
+    if(localStorage.getItem("novoPedido") == null){
+        var dataAtual = new Date();
+        var dia = dataAtual.getDate();
+        var mes = dataAtual.getMonth() + 1;
+        var ano = dataAtual.getFullYear();
+        var dataCliente =`${dia}/${mes}/${ano}`;
+        var novoPedido = {
+            'cliente': '',
+            'celular': '',
+            'carrinho': [],
+            'total': 0,
+            'desconto': 0,
+            'data': dataCliente
+        };
+        localStorage.setItem("novoPedido",JSON.stringify(novoPedido));
 
-            }else{
-                pedido = JSON.parse(localStorage["{{chave}}"]);
-            }
-
-
-            carregar(pedido);
-        }else{
-            mensagemR("Erro ao carergar pedido!");
-        }
-
-    })
-    .catch(error => {
-        console.log('Erro:', error);
-        mensagemR("Erro ao carregar pedido pedido!");
-    });
-
-    function frete(){
-        $("#transportadoras").append('<div id="loading" style="display:flex; position:relative;">\
-                                        <div class="loading-spinner"></div>\
-                                    </div>')
-
-        var origem = $("#origem").val().replace("-", "").trim();
-        var destino = $("#destino").val().replace("-", "").trim();
-        var largura = $("#largura").val().trim();
-        var altura = $("#altura").val().trim();
-        var comprimento = $("#comprimento").val().trim();
-        var peso = $("#peso").val().trim();
-
-        if(origem != "" && destino != "" && largura != "" && altura != "" && comprimento != "" && peso != ""){
-
-            fetch('{{url_for('frete')}}' , {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': {{ csrf_token()|tojson }},
-                    'Content-Type': 'application/json'
-                },
-                body:JSON.stringify({
-                    'origem': origem,
-                    'destino': destino,
-                    'largura': largura,
-                    'altura': altura,
-                    'comprimento': comprimento,
-                    'peso': peso
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-               $("#transportadoras").empty();
-               $("#transportadoras").append('<span style="display:inline-block; width:100%; text-align:center;">Clique para adicionar</span>')
-                for(var i = 0; i < data.length; i++){
-                    if(!("error" in data[i]) && (data[i].name == "PAC" || data[i].name == "SEDEX")){
-                        console.log(data[i])
-                        var preco = 0;
-                        if(data[i].name == "PAC"){
-                            preco = parseFloat(data[i].price) * 1.12
-                        }else{
-                            preco = parseFloat(data[i].price) * 1.20
-                        }
-                        console.log(preco)
-                        $("#transportadoras").append('<div class="escolherFrete" onclick="addFrete(\'' + preco.toFixed(2).replace(".",",") + '\',\'' + data[i].delivery_time + '\',\'' + data[i].name + '\', \'' + data[i].company.picture +  '\')"> \
-                                              <div style="width:49%;"> \
-                                                  <img style="width:100%;" src="' + data[i].company.picture +  '" onclick="abrirImagem(this)">\
-                                              </div>\
-                                              <div style="font-size:13px;">\
-                                                    <div style="inline-block; text-align: left;">Tipo: ' + data[i].name + '</div>\
-                                                    <div style="inline-block; text-align: left;">valor:R$ ' + preco.toFixed(2).replace(".",",") + '</div>\
-                                                    <div style="inline-block; text-align: left;">Entrega: ' + data[i].delivery_time + ' dias</div>\
-                                              </div>\
-                                         </div>');
-                    }
-                }
-            })
-            .catch(error => {
-                console.log('Erro:', error);
-                mensagemR("Erro ao calcular frete!");
-            });
-
-        }else if(origem == ""){
-            mensagemR("O campo remetente deve ser preenchido!");
-        }else if(destino == ""){
-            mensagemR("O campo destinatário deve ser preenchido!");
-        }else if(largura == ""){
-            mensagemR("O campo largura deve ser preenchido!");
-        }else if(altura == ""){
-            mensagemR("O campo altura deve ser preenchido!");
-        }else if(comprimento == ""){
-            mensagemR("O campo comprimento deve ser preenchido!");
-        }else if(peso == ""){
-            mensagemR("O campo peso deve ser preenchido!");
-        }
-
+    }else{
+        var objetoJSON = localStorage.getItem("novoPedido");
+        var novoPedido = JSON.parse(objetoJSON);
+        $("#nome").val(novoPedido.cliente);
+        $("#whatsapp").val(novoPedido.celular);
+        carregar(novoPedido);
     }
 
-    function addFrete(preco, dias, tipo, img){
-        var pedido = JSON.parse(localStorage["{{chave}}"]);
-        var item = {
-            "chave": "Frete " + tipo,
-            "codigo": "Frete " + tipo,
-            "img": img,
-            "preco": parseFloat(preco.replace(",", ".")),
-            "cores":{
-                ["C1"]: [1, 1, false]
-            }
-        }
-        pedido.carrinho.push(item)
-        console.log(pedido)
-        $("#lista").empty();
-        carregar(pedido);
-        $('#criar').css('display','none');
-        mensagemR("Item adicionado!");
-    }
+
+
+
 
     function darDesconto(elemento){
         var total = parseFloat(0);
-        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        var pedido = JSON.parse(localStorage["novoPedido"]);
         var desc = parseFloat(elemento.value);
         if(typeof desc === 'number' && !isNaN(desc)){
             pedido.desconto = desc
@@ -760,13 +592,26 @@
             }
         }
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
-        localStorage["{{chave}}"] = JSON.stringify(pedido)
+        localStorage["novoPedido"] = JSON.stringify(pedido)
+    }
+
+    function salvarNome(elemento){
+        var nome = elemento.value;
+        var pedido = JSON.parse(localStorage["novoPedido"]);
+        pedido.cliente = nome;
+        localStorage["novoPedido"] = JSON.stringify(pedido);
+    }
+    function salvarWhatsapp(elemento){
+        var whatsapp = elemento.value;
+        var pedido = JSON.parse(localStorage["novoPedido"]);
+        pedido.celular = whatsapp;
+        localStorage["novoPedido"] = JSON.stringify(pedido);
     }
 
     function adicionar(){
         var codigo = ($("#codigo").val()).trim();
         var cor = (document.getElementById("cor").value).trim();
-        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        var pedido = JSON.parse(localStorage["novoPedido"]);
         var modelo = pedido.carrinho.filter(armacao => armacao.codigo == codigo)
         if(modelo.length > 0 && cor in modelo[0].cores){
             mensagemR("Item já adicionado!");
@@ -794,12 +639,15 @@
                 }else{
                     data.preco = parseFloat((data.preco).replace(",","."));
                     $("#lista").empty();
-                    var pedido = JSON.parse(localStorage["{{chave}}"]);
+                    var pedido = JSON.parse(localStorage["novoPedido"]);
                     var index = pedido.carrinho.findIndex(armacao => armacao.chave == data.chave);
                     if( index > -1 ){
                         var cor = Object.keys(data.cores)[0];
+                        data.cores[cor][2] = true;
                         pedido.carrinho[index].cores[cor] = data.cores[cor];
                     }else{
+                        var cor = Object.keys(data.cores)[0];
+                        data.cores[cor][2] = true;
                         pedido.carrinho.unshift(data)
                     }
 
@@ -821,8 +669,47 @@
 
     }
 
+    function salvar(){
+        var pedido = JSON.parse(localStorage["novoPedido"]);
+        var total = 0;
+        for(var i = 0; i < pedido.carrinho.length; i++){
+            var keys = Object.keys(pedido.carrinho[i]["cores"]);
+            for(var j = 0; j < keys.length; j++){
+                if(pedido.carrinho[i].cores[keys[j]][2] == true){
+                    total += (pedido.carrinho[i].cores[keys[j]][0] * pedido.carrinho[i].preco);
+                }
+            }
+        }
+        pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
+        localStorage["novoPedido"] = JSON.stringify(pedido);
+        $("#loading").css("display", "flex");
+        fetch('{{url_for('salvar')}}' , {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(pedido)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            if(!data.mensagem){
+                delete localStorage["novoPedido"];
+
+                location.reload();
+
+            }
+        })
+        .catch(error => {
+            console.log('Erro:', error);
+            mensagemR("Erro ao salvar pedido!");
+            $("#loading").css("display", "flex");
+        });
+    }
+
     function darBaixa(){
-        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        var pedido = JSON.parse(localStorage["novoPedido"]);
         pedido['chave'] = "{{chave}}";
         $("#loading").css("display", "flex");
         fetch('{{url_for('dar_baixa')}}' , {
@@ -837,7 +724,7 @@
         .then(data => {
             console.log(data)
             if(data.ativo == false){
-                delete localStorage["{{chave}}"];
+                delete localStorage["novoPedido"];
                 location.reload();
 
             }
@@ -854,7 +741,7 @@
         var cor = (document.getElementById("corC").value).trim();
         var quantidade = parseInt(($("#quantidadeC").val()).trim());
         var valor = parseFloat(($("#valorC").val().trim()).replace(",","."));
-        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        var pedido = JSON.parse(localStorage["novoPedido"]);
 
         var item = {
             "chave": codigo,
@@ -886,84 +773,45 @@
                 keys.push("C10");
             }
 
-            if(pedido.ativo){
-                for(var j = 0; j < keys.length; j++){
-                    $("#lista").append('<div class="cart--item cart--totalitem"> \
-                                      <div>\
-                                        <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
-                                            <input type="hidden" value="{{chave}}">\
-                                            <input type="checkbox"  style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
-                                            <span class="checkmark2" style="text-align: center;"></span>\
-                                        </label>\
-                                    </div>\
-                                      <div> \
-                                          <img src="' + pedido.carrinho[i].img +  '" onclick="abrirImagem(this)">\
+            for(var j = 0; j < keys.length; j++){
+                $("#lista").append('<div class="cart--item cart--totalitem"> \
+                                  <div>\
+                                    <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
+                                        <input type="hidden" value="{{chave}}">\
+                                        <input type="checkbox"  style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
+                                        <span class="checkmark2" style="text-align: center;"></span>\
+                                    </label>\
+                                </div>\
+                                  <div> \
+                                      <img src="' + pedido.carrinho[i].img +  '" onclick="abrirImagem(this)">\
+                                  </div>\
+                                  <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
+                                      <div class="cart--item-nome"> ' + pedido.carrinho[i].codigo + ' | ' + keys[j] + '</div>\
+                                      <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
+                                            <div style="inline-block; text-align: left;">valor:R$ ' + pedido.carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
                                       </div>\
-                                      <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
-                                          <div class="cart--item-nome"> ' + pedido.carrinho[i].codigo + ' | ' + keys[j] + '</div>\
-                                          <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
-                                                <div style="inline-block; text-align: left;">valor:R$ ' + pedido.carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
-                                          </div>\
+                                  </div>\
+                                  <div>\
+                                      <div class="cart--item--qtarea">\
+                                        <button class="cart--item-qtmenos" onclick="diminuir(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
+                                        <div class="cart--item--qt"><b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b>/' + pedido.carrinho[i].cores[keys[j]][1] + '</div>\
+                                        <button class="cart--item-qtmais" onclick="aumentar(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
                                       </div>\
-                                      <div>\
-                                          <div class="cart--item--qtarea">\
-                                            <button class="cart--item-qtmenos" onclick="diminuir(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
-                                            <div class="cart--item--qt"><b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b>/' + pedido.carrinho[i].cores[keys[j]][1] + '</div>\
-                                            <button class="cart--item-qtmais" onclick="aumentar(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
-                                          </div>\
-                                      </div>\
-                                 </div>');
-                    document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
-                    if(pedido.carrinho[i].cores[keys[j]][2] == true){
-                        total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
-                        quant += pedido.carrinho[i]["cores"][keys[j]][0];
-                    }
-                }
-            }else{
-                for(var j = 0; j < keys.length; j++){
-                    $("#lista").append('<div class="cart--item cart--totalitem"> \
-                                      <div>\
-                                        <label class="container w3-text-purple" style="display: inline-block; position:relative; width:30px;">\
-                                            <input type="hidden" value="{{chave}}">\
-                                            <input disabled type="checkbox"  style="display:none;" onclick="verificar(this)" name="' + pedido.carrinho[i].chave + '" value="' + keys[j] + '">\
-                                            <span class="checkmark2" style="text-align: center;"></span>\
-                                        </label>\
-                                    </div>\
-                                      <div> \
-                                          <img src="' + pedido.carrinho[i].img +  '" onclick="abrirImagem(this)">\
-                                      </div>\
-                                      <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">\
-                                          <div class="cart--item-nome"> ' + pedido.carrinho[i].codigo + ' | ' + keys[j] + '</div>\
-                                          <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">\
-                                                <div style="inline-block; text-align: left;">valor:R$ ' + pedido.carrinho[i].preco.toFixed(2).replace(".",",") + '</div>\
-                                          </div>\
-                                      </div>\
-                                      <div>\
-                                          <div class="cart--item--qtarea">\
-                                            <button disabled class="cart--item-qtmenos" onclick="diminuir(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">-</button>\
-                                            <div class="cart--item--qt"><b>' + pedido.carrinho[i].cores[keys[j]][0] + '</b>/' + pedido.carrinho[i].cores[keys[j]][1] + '</div>\
-                                            <button disabled class="cart--item-qtmais" onclick="aumentar(this,\'' + pedido.carrinho[i].chave + '\', \'' + keys[j] + '\')">+</button>\
-                                          </div>\
-                                      </div>\
-                                 </div>');
-                    document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
-                    if(pedido.carrinho[i].cores[keys[j]][2] == true){
-                        total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
-                        quant += pedido.carrinho[i]["cores"][keys[j]][0];
-                    }
+                                  </div>\
+                             </div>');
+                document.getElementsByName(pedido.carrinho[i].chave)[j].checked = pedido.carrinho[i].cores[keys[j]][2];
+                if(pedido.carrinho[i].cores[keys[j]][2] == true){
+                    total += (pedido.carrinho[i]["cores"][keys[j]][0]  * pedido.carrinho[i].preco);
+                    quant += pedido.carrinho[i]["cores"][keys[j]][0];
                 }
             }
-
-
         }
         $("#total").text(pedido.total);
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - (total * (pedido.desconto/100)));
         document.getElementById("quant").textContent = quant;
         document.getElementById("desconto").value = pedido.desconto;
-        console.log(pedido.desconto)
-        if(pedido.ativo){
-            localStorage["{{chave}}"] = JSON.stringify(pedido)
-        }
+        localStorage["novoPedido"] = JSON.stringify(pedido)
+
     }
 
     function btAdicionar(){
@@ -973,6 +821,9 @@
     }
     function btBaixa(){
         $('#baixa').css('display','block');
+    }
+    function btSalvar(){
+        $('#salvar').css('display','block');
     }
 
     function btExcluir(){
@@ -986,15 +837,8 @@
         document.getElementById("corC").value = "C1";
     }
 
-    function excluir(){
-        delete localStorage["{{chave}}"];
-        location.href = "{{url_for('deletar_pedido', chave=chave)}}"
-    }
-
-
-
     function verificar(elemento){
-        var pedido = JSON.parse(localStorage[elemento.previousElementSibling.value])
+        var pedido = JSON.parse(localStorage["novoPedido"])
         var total = parseFloat(0);
         var quant = 0;
         for(var i = 0; i < pedido.carrinho.length; i++){
@@ -1017,14 +861,14 @@
         }
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total  - (total * (pedido.desconto/100)));
         document.getElementById("quant").textContent = quant;
-        localStorage[elemento.previousElementSibling.value] = JSON.stringify(pedido)
+        localStorage["novoPedido"] = JSON.stringify(pedido)
     }
 
     function verificarTodos(elemento){
         var total = parseFloat(0);
         var quant = 0;
         if(elemento.checked){
-            var pedido = JSON.parse(localStorage[elemento.value])
+            var pedido = JSON.parse(localStorage["novoPedido"])
             for(var i = 0; i < pedido.carrinho.length; i++){
                 var checks = document.getElementsByName(pedido.carrinho[i].chave)
                 for(var k = 0; k < checks.length; k++){
@@ -1038,7 +882,7 @@
                 }
             }
         }else{
-            var pedido = JSON.parse(localStorage[elemento.value])
+            var pedido = JSON.parse(localStorage["novoPedido"])
             for(var i = 0; i < pedido.carrinho.length; i++){
                 var checks = document.getElementsByName(pedido.carrinho[i].chave)
                 for(var k = 0; k < checks.length; k++){
@@ -1053,13 +897,13 @@
         }
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total  - (total * (pedido.desconto/100)));
         document.getElementById("quant").textContent = quant;
-        localStorage[elemento.value] = JSON.stringify(pedido)
+        localStorage["novoPedido"] = JSON.stringify(pedido)
     }
 
     function aumentar(elemento, chave, cor){
         var total = parseFloat(0);
         var quant = 0;
-        var objetoJSON = localStorage.getItem("{{chave}}");
+        var objetoJSON = localStorage.getItem("novoPedido");
         var pedido = JSON.parse(objetoJSON);
         pedido.carrinho.filter((armacao) =>{
             if(armacao.chave == chave){
@@ -1081,13 +925,13 @@
         });
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total  - (total * (pedido.desconto/100)));
         document.getElementById("quant").textContent = quant;
-        localStorage.setItem("{{chave}}",JSON.stringify(pedido));
+        localStorage.setItem("novoPedido",JSON.stringify(pedido));
     }
 
     function diminuir(elemento, chave, cor){
         var total = parseFloat(0);
         var quant = 0;
-        var objetoJSON = localStorage.getItem("{{chave}}");
+        var objetoJSON = localStorage.getItem("novoPedido");
         var pedido = JSON.parse(objetoJSON);
         pedido.carrinho.filter((armacao) =>{
             if(armacao.chave == chave){
@@ -1110,7 +954,7 @@
         });
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total  - (total * (pedido.desconto/100)));
         document.getElementById("quant").textContent = quant;
-        localStorage.setItem("{{chave}}",JSON.stringify(pedido));
+        localStorage.setItem("novoPedido",JSON.stringify(pedido));
     }
 
     function mensagemR(msg){
@@ -1139,29 +983,6 @@
       modal.style.display = "none";
     }
 
-    function cep(element){
-        element.style.backgroundColor = "white";
-        element.addEventListener("input",function(e){
-            var val = this.value.replace(",", "").split("");
-            var s = "";
-
-            if(val[val.length - 1].search("[0-9]") != -1 ){
-                    if( val.length == 6){
-                        val.splice(val.length -1,0, "-");
-                    }
-            }else{
-                  val.splice(val.length - 1,1);
-            }
-
-            for(var i = 0; i < val.length; i++){
-                s += val[i];
-            }
-            this.value = s;
-        });
-    }
-
-    cep(document.getElementById("origem"))
-    cep(document.getElementById("destino"))
 
     function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,

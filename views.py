@@ -73,27 +73,20 @@ def catalogo(nome):
 
             if cookie:
                 try:
-                    armacoes = []
-                    produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
-                    for produto in produtos:
-                        armacao = produtos[produto]
-                        armacoes.append((produto, armacao))
 
                     loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
-
+                    nomeLoja= (loja['nomeLoja']).replace(' ', '').lower()
                 except:
-                    return render_template('catalogo.html', loja=loja, mensagem='Erro ao ler os dados do catálogo!')
+                    return redirect(url_for('painel_catalogo'))
                 else:
-                    form = FormularioUpload()
-                    mensagem = request.args.get('mensagem')
-                    return render_template('catalogo.html', loja=loja, armacoes=armacoes, mensagem=mensagem, form=form,
-                                           nome=nome)
+                    return redirect(url_for('catalogo', nome=nomeLoja))
 
 
             else:
                 session['usuario_logado'] = None
                 return redirect(url_for('logout', mensagem=mensagem))
-        return render_template('catalogo_nao_encontrado.html',mensagem='Erro ao ler os dados do catálogo!')
+        else:
+            return render_template('catalogo_nao_encontrado.html',mensagem='Erro ao ler os dados do catálogo!')
 
 
 @app.route('/historia', methods=['POST'])
@@ -399,9 +392,9 @@ def carrinho():
                 ref.child(f'estoques/{chave}/pedidos').update({'contador': (resNumero + 1)})
                 dadoJson['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
                 dadoJson['ativo'] = True
+                dadoJson['desconto'] = 0.0
                 res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
             else:
-                resNumero = 0
                 ref.child(f'estoques/{chave}/pedidos').update({'contador': 1})
                 dadoJson['numero'] = ('0' * (5 - len(str(1)))) + str(1)
                 dadoJson['ativo'] = True
@@ -417,6 +410,42 @@ def carrinho():
                 return jsonify({'mensagem': False,'erro': '1'})
     else:
         return jsonify({'mensagem': False,'erro': '2'})
+
+
+@app.route('/salvar', methods=['POST'])
+def salvar():
+    global loja
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+        global loja, res
+        dadoJson = request.get_json()
+
+        try:
+            resNumero = ref.child(f'estoques/{cookie['uid']}/pedidos').child('contador').get()
+            if resNumero != None:
+                ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': (resNumero + 1)})
+                dadoJson['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
+                dadoJson['ativo'] = True
+                res = ref.child(f'estoques/{cookie['uid']}/pedidos').push(dadoJson)
+            else:
+                ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': 1})
+                dadoJson['numero'] = ('0' * (5 - len(str(1)))) + str(1)
+                dadoJson['ativo'] = True
+                res = ref.child(f'estoques/{cookie['uid']}/pedidos').push(dadoJson)
+
+        except Exception as erro:
+            print(erro)
+            return jsonify({'mensagem': False,'erro': str(erro)})
+        else:
+            if res.key in ref.child(f'estoques/{cookie['uid']}/pedidos').get():
+                return jsonify(dadoJson)
+            else:
+                return jsonify({'mensagem': False,'erro': '1'})
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
 
 
 @app.route('/pedidos', methods=['POST', 'GET'])
@@ -441,6 +470,29 @@ def pedidos():
                         listaPedidos.append((chave, pedido))
 
                 return render_template('pedidos.html', pedidos=listaPedidos, mensagem=mensagem)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/novo-pedido', methods=['GET'])
+def novo_pedido():
+    global loja
+    cookie, mensagem = conferir_cookie()
+
+    if cookie:
+
+        if request.method == 'GET':
+                try:
+                    lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                    produtos = []
+                    for produto in lista:
+                        produtos.append(lista[produto]['codigo'])
+                except:
+                    return render_template('novo_pedido.html', mensagem='Erro ao carregar lista de produtos')
+                else:
+                    return render_template('novo_pedido.html',mensagem=mensagem, produtos=produtos)
 
     else:
         session['usuario_logado'] = None
