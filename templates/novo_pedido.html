@@ -356,15 +356,15 @@
 
 </style>
 
-<div id="visualizar">
+<div id="novoPedido">
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 15px;border-radius:5px;">
 
     	<h2 style="text-align:center; padding-top:10px; margin-bottom:0;">Novo pedido</h2>
-
+        <p id="data" style="text-align:center; margin:0;"></p>
        <div class="w3-container" >
             <div>
                 <p>Nome:<input autocomplete="off" onblur="salvarNome(this)" class="campoCaixa" id="nome" maxlength="50" minlength="1" name="nome" placeholder="Nome" required="" type="text" ></p>
-                <p>Whatsapp: <input autocomplete="off" onblur="salvarWhatsapp(this)" class="campoCaixa" id="whatsapp" maxlength="50" minlength="1" name="whatsapp" placeholder="Whatsapp" required="" type="text" ></p>
+                <p>Whatsapp: <input autocomplete="off" onblur="salvarWhatsapp(this)" class="campoCaixa" id="whatsapp" maxlength="14" minlength="1" name="whatsapp" placeholder="Whatsapp" required="" type="text" ></p>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
                 <div style="display: flex; justify-content: space-between; flex-wrap:wrap; margin-bottom:5px;">
 
@@ -429,23 +429,64 @@
 
 <div class="modal-adicionar" id="adicionar">
     <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
-        <p style="text-align:center;">Digite o código e escolha a cor:</p>
-        <div class="autocomplete" style="width:70%;">
-            <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
+        <p style="text-align:center;">Digite o código e escolha as cores:</p>
+        <div class="autocomplete" style="width:100%;margin: 0 auto 12px;text-align:center;">
+            <input autocomplete="off" class="w3-input w3-border " style="width:70%; display:inline-block; border-radius:5px; padding:6px;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
         </div>
-        <select name="cor" id="cor" class="w3-input w3-border w3-margin-bottom" style="width:28%; display:inline-block;">
-            <option selected="" value="C1">C1</option>
-            <option value="C2">C2</option>
-            <option value="C3">C3</option>
-            <option value="C4">C4</option>
-            <option value="C5">C5</option>
-            <option value="C6">C6</option>
-            <option value="C7">C7</option>
-            <option value="C8">C8</option>
-            <option value="C9">C9</option>
-            <option value="C10">C10</option>
-
-        </select>
+        <div style="display:flex;justify-content:space-between;width:90%; margin-bottom:6px;">
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C1cor" type="checkbox"  style="display:none;" name="cor" value="C1">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C1cor" style="margin-left:22px;">C1</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C2cor" type="checkbox"  style="display:none;" name="cor" value="C2">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C2cor" style="margin-left:22px;">C2</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C3cor" type="checkbox"  style="display:none;" name="cor" value="C3">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C3cor" style="margin-left:22px;">C3</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C4cor" type="checkbox"  style="display:none;" name="cor" value="C4">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C4cor" style="margin-left:22px;">C4</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C5cor" type="checkbox"  style="display:none;" name="cor" value="C5">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C5cor" style="margin-left:22px;">C5</label>
+            </label>
+        </div>
+        <div style="display:flex;justify-content:space-between;width:90%;">
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C6cor" type="checkbox"  style="display:none;" name="cor" value="C6">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C6cor" style="margin-left:22px;">C6</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C7cor" type="checkbox"  style="display:none;" name="cor" value="C7">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C7cor" style="margin-left:22px;">C7</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C8cor" type="checkbox"  style="display:none;" name="cor" value="C8">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C8cor" style="margin-left:22px;">C8</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C9cor" type="checkbox"  style="display:none;" name="cor" value="C9">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C9cor" style="margin-left:22px;">C9</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C10cor" type="checkbox"  style="display:none;" name="cor" value="C10">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C10cor" style="margin-left:22px;">C10</label>
+            </label>
+        </div>
         <div style="display:flex; justify-content: space-between; margin-top:15px;">
             <button onclick="adicionar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
             <button onclick="$('#adicionar').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
@@ -463,8 +504,8 @@
             <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="codigoC" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
         </div>
         <div style="width:28%; display:inline-block;">
-            <label for="cor">Cor</label>
-            <select name="cor" id="corC" class="w3-input w3-border w3-margin-bottom" style="display:inline-block;">
+            <label for="corC">Cor</label>
+            <select name="corC" id="corC" class="w3-input w3-border w3-margin-bottom" style="display:inline-block;">
                 <option selected="" value="C1">C1</option>
                 <option value="C2">C2</option>
                 <option value="C3">C3</option>
@@ -544,7 +585,7 @@
     var opcao = document.getElementById("op2");
     opcao.style.backgroundColor = "#a9a9a9";
 
-    if(localStorage.getItem("novoPedido") == null){
+    function zerarPedido(){
         var dataAtual = new Date();
         var dia = dataAtual.getDate();
         var mes = dataAtual.getMonth() + 1;
@@ -558,14 +599,26 @@
             'desconto': 0,
             'data': dataCliente
         };
+        $("#nome").val("");
+        $("#whatsapp").val("");
+        $("#lista").empty();
+        $("#data").text(novoPedido.data);
         localStorage.setItem("novoPedido",JSON.stringify(novoPedido));
-
+    }
+    if(localStorage.getItem("novoPedido") == null){
+        zerarPedido();
     }else{
         var objetoJSON = localStorage.getItem("novoPedido");
         var novoPedido = JSON.parse(objetoJSON);
-        $("#nome").val(novoPedido.cliente);
-        $("#whatsapp").val(novoPedido.celular);
-        carregar(novoPedido);
+        if(novoPedido.cliente == "" && novoPedido.celular == ""){
+            zerarPedido();
+        }else{
+            $("#nome").val(novoPedido.cliente);
+            $("#whatsapp").val(novoPedido.celular);
+            $("#data").text(novoPedido.data);
+            carregar(novoPedido);
+        }
+
     }
 
 
@@ -610,13 +663,15 @@
 
     function adicionar(){
         var codigo = ($("#codigo").val()).trim();
-        var cor = (document.getElementById("cor").value).trim();
+        var checks = document.getElementsByName("cor");
+        var cores = [];
         var pedido = JSON.parse(localStorage["novoPedido"]);
-        var modelo = pedido.carrinho.filter(armacao => armacao.codigo == codigo)
-        if(modelo.length > 0 && cor in modelo[0].cores){
-            mensagemR("Item já adicionado!");
-            return
-        }
+
+        checks.forEach(checkbox => {
+            if(checkbox.checked){
+                cores.push(checkbox.value);
+            }
+        });
         fetch('{{url_for('adicionar_item')}}' , {
             method: 'POST',
             headers: {
@@ -625,7 +680,7 @@
             },
             body:JSON.stringify({
                 'codigo': codigo,
-                'cor': cor
+                'cor': cores
             })
         })
         .then(response => response.json())
@@ -634,7 +689,6 @@
             if(data.chave != false){
                 if(data.chave == "vazia"){
                     $('#adicionar').css('display','none');
-
                     mensagemR(data.msg);
                 }else{
                     data.preco = parseFloat((data.preco).replace(",","."));
@@ -642,29 +696,40 @@
                     var pedido = JSON.parse(localStorage["novoPedido"]);
                     var index = pedido.carrinho.findIndex(armacao => armacao.chave == data.chave);
                     if( index > -1 ){
-                        var cor = Object.keys(data.cores)[0];
-                        data.cores[cor][2] = true;
-                        pedido.carrinho[index].cores[cor] = data.cores[cor];
+                        var cores = Object.keys(data.cores);
+                        cores.forEach((cor) =>{
+                            data.cores[cor][2] = true;
+                            if(!(cor in pedido.carrinho[index].cores)){
+                                pedido.carrinho[index].cores[cor] = data.cores[cor];
+                            }else{
+                                 delete data.cores[cor];
+                            }
+                        });
+
                     }else{
-                        var cor = Object.keys(data.cores)[0];
-                        data.cores[cor][2] = true;
+                        var cores = Object.keys(data.cores);
+                        cores.forEach((cor) => data.cores[cor][2] = true);
                         pedido.carrinho.unshift(data)
                     }
 
                     carregar(pedido);
                     $('#adicionar').css('display','none');
-                    mensagemR("Item adicionado!");
-
+                    if(Object.keys(data.cores).length > 1){
+                        mensagemR(Object.keys(data.cores).length + " itens adicionado!");
+                    }else if(Object.keys(data.cores).length == 0){
+                        mensagemR("Item não encontrado!");
+                    }else{
+                        mensagemR(Object.keys(data.cores).length + " item adicionado!");
+                    }
                 }
 
             }else{
                 mensagemR("Erro ao adicionar item!");
             }
-
         })
         .catch(error => {
             console.log('Erro:', error);
-            mensagemR("Erro ao carregar pedido pedido!");
+            mensagemR("Erro ao adicionar item!");
         });
 
     }
@@ -681,6 +746,7 @@
             }
         }
         pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
+        pedido["tipo"] = "local";
         localStorage["novoPedido"] = JSON.stringify(pedido);
         $("#loading").css("display", "flex");
         fetch('{{url_for('salvar')}}' , {
@@ -695,10 +761,27 @@
         .then(data => {
             console.log(data)
             if(!data.mensagem){
-                delete localStorage["novoPedido"];
-
-                location.reload();
-
+                $("#salvar").css("display", "none");
+                $("#loading").css("display", "none");
+                zerarPedido()
+                carregar(JSON.parse(localStorage["novoPedido"]))
+                var celular = data.celular.replace(/[()-]/g, '');
+                var numeroP = data.numero;
+                pedido = 'http://api.whatsapp.com/send?phone=' + celular + '&text=Olá,20' + data.cliente + '.%0A' +
+                'O%20seu%20pedido%20' + numeroP + '%20está%20pronto:%0A'
+                for(var i = 0; i < data.carrinho.length; i++){
+                   cores = Object.keys(data.carrinho[i].cores);
+                   for(var j = 0; j < cores.length; j++){
+                        var codigo = '*' + data.carrinho[i].codigo + '*%20-%20*' + cores[j] + '*%20'
+                        var traco = 40 - codigo.length;
+                        if(traco < 0){
+                            traco = 0;
+                        }
+                        codigo = codigo + '-'.repeat(35 - codigo.length);
+                        pedido += codigo + '%20qt:%20*' + data.carrinho[i].cores[cores[j]][0] + '*%20---%20pç:%20*R$' + (data.carrinho[i].preco).toFixed(2).replace(".", ",") + '*%0A'
+                   }
+                }
+                document.location = pedido;
             }
         })
         .catch(error => {
@@ -749,7 +832,7 @@
             "img": "https://firebasestorage.googleapis.com/v0/b/estoque-armacoes.appspot.com/o/padrao.jpg?alt=media&token=fdf174ca-2576-4fdb-9e49-8cf17a6248ed",
             "preco": valor,
             "cores":{
-                [cor]: [quantidade, (2 * quantidade), false]
+                [cor]: [quantidade, (2 * quantidade), true]
             }
         }
         pedido.carrinho.unshift(item)
@@ -817,7 +900,10 @@
     function btAdicionar(){
         $('#adicionar').css('display','block');
         $("#codigo").val("");
-        document.getElementById("cor").value = "C1";
+        var checks = document.getElementsByName("cor");
+        for(var i = 0; i < checks.length; i++){
+            checks[i].checked = false;
+        }
     }
     function btBaixa(){
         $('#baixa').css('display','block');
@@ -982,6 +1068,32 @@
       var modal = document.getElementById("myModal");
       modal.style.display = "none";
     }
+
+    function celular(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+                    if(val.length == 3){
+                        val.splice(0,0,"(");
+                        val.splice(val.length -1,0,")");
+                    }else if( val.length == 10){
+                        val.splice(val.length -1,0, "-");
+                    }
+            }else{
+                  val.splice(val.length - 1,1);
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+            }
+            this.value = s;
+        });
+    }
+
+    celular(document.getElementById("whatsapp"))
 
 
     function autocomplete(inp, arr) {

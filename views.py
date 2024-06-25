@@ -24,7 +24,7 @@ def painel_catalogo():
     global loja
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
         try:
             armacoes = []
             produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
@@ -92,7 +92,7 @@ def catalogo(nome):
 @app.route('/historia', methods=['POST'])
 def add_historia():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -111,7 +111,7 @@ def add_historia():
 @app.route('/whatsapp', methods=['POST'])
 def add_whatsapp():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -130,7 +130,7 @@ def add_whatsapp():
 @app.route('/instagram', methods=['POST'])
 def add_instagram():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -149,7 +149,7 @@ def add_instagram():
 @app.route('/facebook', methods=['POST'])
 def add_facebook():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -168,7 +168,7 @@ def add_facebook():
 @app.route('/youtube', methods=['POST'])
 def add_youtube():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -187,7 +187,7 @@ def add_youtube():
 @app.route('/endereco', methods=['POST'])
 def add_endereco():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -206,7 +206,7 @@ def add_endereco():
 @app.route('/funcionamento', methods=['POST'])
 def add_funcionamento():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -225,7 +225,7 @@ def add_funcionamento():
 @app.route('/cor', methods=['POST'])
 def add_cor():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -244,7 +244,7 @@ def add_cor():
 @app.route('/fonte', methods=['POST'])
 def add_fonte():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
@@ -264,7 +264,7 @@ def add_fonte():
 def add_logo():
     global url
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         try:
             token = session['usuario_logado']
             form = FormularioUpload()
@@ -307,7 +307,7 @@ def add_logo():
 @app.route('/banner', methods=['POST'])
 def add_banner():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         try:
             token = session['usuario_logado']
             form = FormularioUpload()
@@ -344,7 +344,7 @@ def add_banner():
 @app.route('/foto', methods=['POST'])
 def add_foto():
     cookie, mensagem = conferir_cookie()
-    if cookie:
+    if cookie and mensagem == '':
         try:
             token = session['usuario_logado']
             form = FormularioUpload()
@@ -417,7 +417,7 @@ def salvar():
     global loja
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
         global loja, res
         dadoJson = request.get_json()
 
@@ -453,7 +453,7 @@ def pedidos():
     global loja
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         if request.method == 'GET':
             mensagem = request.args.get('mensagem')
@@ -481,7 +481,7 @@ def novo_pedido():
     global loja
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         if request.method == 'GET':
                 try:
@@ -504,7 +504,7 @@ def visualizar(chave):
     global loja
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         if request.method == 'GET':
             try:
@@ -529,7 +529,7 @@ def carregar_codigos():
     global loja
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         if request.method == 'GET':
             try:
@@ -553,7 +553,7 @@ def carregar_pedido(chave):
     global loja
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         if request.method == 'GET':
             try:
@@ -575,44 +575,39 @@ def adicionar_item():
     global item
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         if request.method == 'POST':
             dadoJson = request.get_json()
             print(dadoJson)
-            item = None
+            itens = None
             try:
                 produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
                 codigo = (dadoJson['codigo']).strip()
-                cor = (dadoJson['cor']).strip()
+                cores = dadoJson['cor']
                 for armacao in produtos:
-                    if produtos[armacao]['codigo'] == codigo :
-                        if cor in produtos[armacao]['cores']:
-                            if produtos[armacao]['cores'][dadoJson['cor']] > 0:
-                                item = {
-                                    'chave': armacao,
-                                    'codigo': produtos[armacao]['codigo'],
-                                    'cores': {dadoJson['cor']:[1, produtos[armacao]['cores'][dadoJson['cor']], False]},
-                                    'img': produtos[armacao]['imagem'],
-                                    'preco': produtos[armacao]['preco']
-                                }
-                            else:
-                                item = {
-                                    'chave': 'vazia', 'erro': '1', 'msg': 'Cor esgotada!'
-                                }
-                        else:
-                            item = {
-                                'chave':'vazia', 'erro': '2', 'msg': 'Cor não encontrada!'
-                            }
+                    if produtos[armacao]['codigo'] == codigo:
+                        itens = {
+                            'chave': armacao,
+                            'codigo': produtos[armacao]['codigo'],
+                            'cores': {},
+                            'img': produtos[armacao]['imagem'],
+                            'preco': produtos[armacao]['preco']
+                        }
+                        for cor in cores:
+                            if cor in produtos[armacao]['cores']:
+                                if produtos[armacao]['cores'][cor] > 0:
+                                    itens['cores'][cor] = [1, produtos[armacao]['cores'][cor], False]
+
             except:
                 return jsonify({'chave': False})
 
             else:
-                print(item)
-                if item != None:
-                    return jsonify(item)
+                print(itens)
+                if itens != None:
+                    return jsonify(itens)
                 else:
-                    return jsonify({'chave':'vazia', 'erro':'3', 'msg': 'Modelo não encontrado!'})
+                    return jsonify({'chave':'vazia', 'erro':'3', 'msg': 'Código não encontrado!'})
 
     else:
         session['usuario_logado'] = None
@@ -623,7 +618,7 @@ def adicionar_item():
 def dar_baixa():
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         if request.method == 'POST':
             pedido = request.get_json()
@@ -657,7 +652,7 @@ def deletar_pedido():
     chave = request.args.get('chave')
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
 
         try:
@@ -683,7 +678,7 @@ def frete():
     dados = request.get_json()
     cookie, mensagem = conferir_cookie()
 
-    if cookie:
+    if cookie and mensagem == '':
 
         try:
             url = "https://www.melhorenvio.com.br/api/v2/me/shipment/calculate"

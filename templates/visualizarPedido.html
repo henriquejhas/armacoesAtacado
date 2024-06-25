@@ -439,7 +439,7 @@
        </div>
 
     </div>
-
+    {% if pedido.cep %}
         <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px; padding:1px;">
             <h3 style="text-align:center; padding-top:10px; margin-bottom:0;">Calcular frete</h3>
             <div style="text-align:center;">
@@ -482,7 +482,7 @@
         <button onclick="delete localStorage['{{ chave }}']; location.reload();"  class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Reiniciar Pedido</button>
 
         <button onclick="btExcluir()"  class="w3-button w3-block w3-red w3-section w3-padding w3-large" style="margin:auto; width:50%;">Excluir Pedido</button>
-
+    {% endif %}
 </div>
 
 
@@ -615,7 +615,7 @@
         if(data.chave != false){
             var pedido = {};
             if(!("{{chave}}" in localStorage)){
-                if(data.ativo){
+                if(data.ativo && data.tipo != 'local'){
                     localStorage["{{chave}}"] = JSON.stringify(data)
                     pedido = JSON.parse(localStorage["{{chave}}"]);
                     for(var i = 0; i < pedido.carrinho.length; i++){
