@@ -382,11 +382,12 @@ def carrinho():
     dadoJson = request.get_json()
     lojas = ref.child('lojas').get()
     nome = dadoJson['loja']
-
     if nome in lojas:
         chave = lojas[nome]
 
         try:
+            if 'pedidos' not in ref.child(f'estoques/{chave}').get():
+                ref.child(f'estoques/{chave}/pedidos').set({'contador': 0})
             resNumero = ref.child(f'estoques/{chave}/pedidos').child('contador').get()
             if resNumero != None:
                 ref.child(f'estoques/{chave}/pedidos').update({'contador': (resNumero + 1)})
@@ -464,10 +465,11 @@ def pedidos():
                 return render_template('pedidos.html', pedidos=[], mensagem='Erro ao ler os pedidos!')
 
             else:
-                for chave in pedidos:
-                    if chave != 'contador':
-                        pedido = pedidos[chave]
-                        listaPedidos.append((chave, pedido))
+                if pedidos:
+                    for chave in pedidos:
+                        if chave != 'contador':
+                            pedido = pedidos[chave]
+                            listaPedidos.append((chave, pedido))
 
                 return render_template('pedidos.html', pedidos=listaPedidos, mensagem=mensagem)
 
@@ -592,13 +594,17 @@ def adicionar_item():
                             'codigo': produtos[armacao]['codigo'],
                             'cores': {},
                             'img': produtos[armacao]['imagem'],
-                            'preco': produtos[armacao]['preco']
+                            'preco': produtos[armacao]['preco'],
+                            'add': []
                         }
                         for cor in cores:
                             if cor in produtos[armacao]['cores']:
                                 if produtos[armacao]['cores'][cor] > 0:
                                     itens['cores'][cor] = [1, produtos[armacao]['cores'][cor], False]
-
+                                else:
+                                    itens['add'].append([cor,'esgotada'])
+                            else:
+                                itens['add'].append([cor, 'não encontrada'])
             except:
                 return jsonify({'chave': False})
 
@@ -631,8 +637,22 @@ def dar_baixa():
                         for cor in armacao['cores']:
                             if armacao['cores'][cor][2] == True:
                                 local.update({cor: (local.child(cor).get() - armacao['cores'][cor][0])})
+                if 'chave' in pedido:
+                    ref.child(f'estoques/{cookie['uid']}/pedidos/{pedido['chave']}').update(pedido)
+                else:
+                    resNumero = ref.child(f'estoques/{cookie['uid']}/pedidos').child('contador').get()
+                    if resNumero != None:
+                        ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': (resNumero + 1)})
+                        pedido['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
 
-                ref.child(f'estoques/{cookie['uid']}/pedidos/{pedido['chave']}').update(pedido)
+                    else:
+                        ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': 1})
+                        pedido['numero'] = ('0' * (5 - len(str(1)))) + str(1)
+
+                    pedido['ativo'] = False
+                    res = ref.child(f'estoques/{cookie['uid']}/pedidos').push(pedido)
+                    pedido['chave'] = res.key
+                    ref.child(f'estoques/{cookie['uid']}/pedidos').child(res.key).update(pedido)
             except Exception as e:
                 print(e)
                 return jsonify({'chave': False})

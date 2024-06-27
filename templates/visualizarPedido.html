@@ -357,7 +357,7 @@
 </style>
 
 <div id="visualizar">
-    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 15px;border-radius:5px;">
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 15px;border-radius:5px; overflow:hidden;">
 
     	<h2 style="text-align:center; padding-top:10px; margin-bottom:0;">Pedido Número {{pedido.numero}}</h2>
         <p style="text-align:center; margin:0;">{{ pedido.data }}</p>
@@ -645,9 +645,6 @@
     });
 
     function frete(){
-        $("#transportadoras").append('<div id="loading" style="display:flex; position:relative;">\
-                                        <div class="loading-spinner"></div>\
-                                    </div>')
 
         var origem = $("#origem").val().replace("-", "").trim();
         var destino = $("#destino").val().replace("-", "").trim();
@@ -657,6 +654,9 @@
         var peso = $("#peso").val().trim();
 
         if(origem != "" && destino != "" && largura != "" && altura != "" && comprimento != "" && peso != ""){
+            $("#transportadoras").append('<div id="loading" style="display:flex; position:relative;">\
+                                        <div class="loading-spinner"></div>\
+                                    </div>')
 
             fetch('{{url_for('frete')}}' , {
                 method: 'POST',
@@ -1160,8 +1160,9 @@
         });
     }
 
-    cep(document.getElementById("origem"))
-    cep(document.getElementById("destino"))
+        cep(document.getElementById("origem"))
+        cep(document.getElementById("destino"))
+
 
     function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,

@@ -148,6 +148,7 @@
   border-radius:5px;
   postion:relative;
   padding: 12px;
+  overflow:hidden;
 }
 
 .card p{
@@ -203,7 +204,7 @@
     <div class="row">
         {% if not pedidos %}
             <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:800px; margin-bottom: 100px; border-radius:5px;">
-                <h2 style="text-align:center; padding:20px;">Modelo não encontrado!</h2>
+                <h2 style="text-align:center; padding:20px;">Nenhum pedido feito!</h2>
             </div>
         {% endif %}
         {% for chave, pedido in pedidos %}

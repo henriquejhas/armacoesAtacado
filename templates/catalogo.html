@@ -1439,6 +1439,9 @@
 
         });
         document.getElementById("total").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+        if(carrinho.length == 0){
+            document.getElementById("notificacao").textContent = carrinho.length;
+        }
         localStorage.setItem("carrinho",JSON.stringify(carrinho));
     }
 

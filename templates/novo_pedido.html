@@ -287,7 +287,7 @@
             width:calc(100% - 250px);
             height:80px;
             position:fixed;
-            bottom:10%;
+            bottom:40%;
             display:none;
         }
 
@@ -363,8 +363,42 @@
         <p id="data" style="text-align:center; margin:0;"></p>
        <div class="w3-container" >
             <div>
-                <p>Nome:<input autocomplete="off" onblur="salvarNome(this)" class="campoCaixa" id="nome" maxlength="50" minlength="1" name="nome" placeholder="Nome" required="" type="text" ></p>
-                <p>Whatsapp: <input autocomplete="off" onblur="salvarWhatsapp(this)" class="campoCaixa" id="whatsapp" maxlength="14" minlength="1" name="whatsapp" placeholder="Whatsapp" required="" type="text" ></p>
+                <p style="margin-bottom:5px;">Nome:<input autocomplete="off" onblur="salvarNome(this)" class="campoCaixa" id="nome" maxlength="50" minlength="1" name="nome" placeholder="Nome" required="" type="text" ></p>
+                <p style="margin:5px 0;">Whatsapp: <input autocomplete="off" onblur="salvarWhatsapp(this)" class="campoCaixa" id="whatsapp" maxlength="14" minlength="1" name="whatsapp" placeholder="ex:(00)98888-7777" required="" type="text" ></p>
+                <button id="btEndereco" onclick="btEndereco()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;"><i class="fa fa-plus" aria-hidden="true"></i> Endereço</button>
+                <button id="btEnderecoM" onclick="btEnderecoM()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;"><i class="fa fa-minus" aria-hidden="true"></i> Endereço</button>
+
+                <div id="endereco" style="height:0px; overflow:hidden; transition: height ease 0.5s;">
+                    <div style="width:49%; display:inline-block;">
+                        <label style="font-size:12px" for="cep">CEP</label>
+                        <input autocomplete="false" class="campoCaixa" id="cep" maxlength="9" minlength="1" name="cep" placeholder="Seu CEP" required="" type="text" value="">
+                    </div>
+                    <div style="width:27%; display:inline-block;">
+                        <label style="font-size:12px" for="numero">Número</label>
+                        <input autocomplete="false" class="campoCaixa" id="numero" maxlength="14" minlength="1" name="numero" placeholder="Número" required="" type="text" value="">
+                    </div>
+                    <div style="width:59%; display:inline-block;">
+                        <label style="font-size:12px" for="complemento">Complemento</label>
+                        <input autocomplete="false" class="campoCaixa" id="complemento" maxlength="50" minlength="1" name="complemento" placeholder="Complemento" required="" type="text" value="">
+                    </div>
+                    <div style="width:59%; display:inline-block;">
+                        <label style="font-size:12px" for="rua">Logradouro/Rua</label>
+                        <input autocomplete="false" class="campoCaixa" id="rua" maxlength="50" minlength="1" name="rua" placeholder="Sua rua" required="" type="text" value="">
+                    </div>
+
+                    <div style="width:39%; display:inline-block;">
+                        <label style="font-size:12px" for="bairro">Bairro</label>
+                        <input autocomplete="false" class="campoCaixa" id="bairro" maxlength="50" minlength="1" name="bairro" placeholder="Seu bairro" required="" type="text" value="">
+                    </div>
+                    <div style="width:59%; display:inline-block;">
+                        <label style="font-size:12px" for="cidade">Cidade</label>
+                        <input autocomplete="false" class="campoCaixa" id="cidade" maxlength="50" minlength="1" name="cidade" placeholder="Sua cidade" required="" type="text" value="">
+                    </div>
+                    <div style="width:39%; display:inline-block;">
+                        <label style="font-size:12px" for="estado">Estado</label>
+                        <input autocomplete="false" class="campoCaixa" id="estado" maxlength="50" minlength="1" name="estado" placeholder="Seu estado" required="" type="text" value="">
+                    </div>
+                </div>
                 <h4 style="text-align:center;" ><b>Armações</b></h4>
                 <div style="display: flex; justify-content: space-between; flex-wrap:wrap; margin-bottom:5px;">
 
@@ -694,6 +728,7 @@
                     data.preco = parseFloat((data.preco).replace(",","."));
                     $("#lista").empty();
                     var pedido = JSON.parse(localStorage["novoPedido"]);
+
                     var index = pedido.carrinho.findIndex(armacao => armacao.chave == data.chave);
                     if( index > -1 ){
                         var cores = Object.keys(data.cores);
@@ -703,24 +738,46 @@
                                 pedido.carrinho[index].cores[cor] = data.cores[cor];
                             }else{
                                  delete data.cores[cor];
+                                 data.add.push([cor, "já adicionada!"])
                             }
                         });
+
+                        var msg = '';
+                        if(Object.keys(data.cores).length > 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' itens adicionado!</>span>';
+                        }else if(Object.keys(data.cores).length <= 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' item adicionado!</span>';
+                        }
+                        data.add.forEach((cor) =>{
+                            msg += '<br><span>' + cor[0] + ' ' + cor[1] + '</span>';
+                        });
+
+                        mensagemR(msg);
+                        delete data.add
 
                     }else{
                         var cores = Object.keys(data.cores);
                         cores.forEach((cor) => data.cores[cor][2] = true);
+
+                        var msg = '';
+                        if(Object.keys(data.cores).length > 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' itens adicionado!</span>';
+                        }else if(Object.keys(data.cores).length <= 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' item adicionado!</span>';
+                        }
+                        data.add.forEach((cor) =>{
+                            msg += '<br><span>' + cor[0] + ' ' + cor[1] + '</span>';
+                        });
+
+                        mensagemR(msg);
+                        delete data.add
+
                         pedido.carrinho.unshift(data)
                     }
 
                     carregar(pedido);
                     $('#adicionar').css('display','none');
-                    if(Object.keys(data.cores).length > 1){
-                        mensagemR(Object.keys(data.cores).length + " itens adicionado!");
-                    }else if(Object.keys(data.cores).length == 0){
-                        mensagemR("Item não encontrado!");
-                    }else{
-                        mensagemR(Object.keys(data.cores).length + " item adicionado!");
-                    }
+
                 }
 
             }else{
@@ -736,6 +793,89 @@
 
     function salvar(){
         var pedido = JSON.parse(localStorage["novoPedido"]);
+        if(($("#nome").val().trim()) == "" ){
+            mensagemR("Campo nome deve ser preenchido!");
+        }else if(($("#whatsapp").val().trim()).length < 14){
+            mensagemR("Número do whatsapp inválido!");
+        }else if(pedido.carrinho.length == 0){
+            mensagemR("Pedido vazio!");
+        }else{
+            var pedido = JSON.parse(localStorage["novoPedido"]);
+            var total = 0;
+            for(var i = 0; i < pedido.carrinho.length; i++){
+                var keys = Object.keys(pedido.carrinho[i]["cores"]);
+                for(var j = 0; j < keys.length; j++){
+                    if(pedido.carrinho[i].cores[keys[j]][2] == true){
+                        total += (pedido.carrinho[i].cores[keys[j]][0] * pedido.carrinho[i].preco);
+                    }
+                }
+            }
+            var cep = $("#cep").val();
+            var numero = $("#numero").val();
+            var complemento = $("#complemento").val();
+            var rua = $("#rua").val();
+            var bairro = $("#bairro").val();
+            var cidade = $("#cidade").val();
+            var estado = $("#estado").val();
+            pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
+            pedido["tipo"] = "local";
+            pedido['cep'] = cep.replace("-","");
+            pedido['numero'] = numero;
+            pedido['complemento'] = complemento;
+            pedido['rua'] = rua;
+            pedido['bairro'] = bairro;
+            pedido['cidade'] = cidade;
+            pedido['estado'] = estado;
+            localStorage["novoPedido"] = JSON.stringify(pedido);
+            $("#loading").css("display", "flex");
+            fetch('{{url_for('salvar')}}' , {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': {{ csrf_token()|tojson }},
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify(pedido)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if(!data.mensagem){
+                    $("#salvar").css("display", "none");
+                    $("#loading").css("display", "none");
+                    zerarPedido()
+                    carregar(JSON.parse(localStorage["novoPedido"]))
+                    var celular = data.celular.replace(/[()-]/g, '');
+                    var numeroP = data.numero;
+                    pedido = 'http://api.whatsapp.com/send?phone=' + celular + '&text=Olá,%20' + data.cliente + '.%0A' +
+                    'O%20seu%20pedido%20' + numeroP + '%20está%20pronto:%0A'
+                    for(var i = 0; i < data.carrinho.length; i++){
+                       cores = Object.keys(data.carrinho[i].cores);
+                       for(var j = 0; j < cores.length; j++){
+                            var codigo = '*' + data.carrinho[i].codigo + '*%20-%20*' + cores[j] + '*%20'
+                            var traco = 40 - codigo.length;
+                            if(traco < 0){
+                                traco = 0;
+                            }
+                            codigo = codigo + '-'.repeat(35 - codigo.length);
+                            pedido += codigo + '%20qt:%20*' + data.carrinho[i].cores[cores[j]][0] + '*%20---%20pç:%20*R$' + (data.carrinho[i].preco).toFixed(2).replace(".", ",") + '*%0A'
+                       }
+                    }
+                    document.location = pedido;
+                }
+            })
+            .catch(error => {
+                console.log('Erro:', error);
+                mensagemR("Erro ao salvar pedido!");
+                $("#loading").css("display", "flex");
+            });
+        }
+
+
+    }
+
+    function darBaixa(){
+        var pedido = JSON.parse(localStorage["novoPedido"]);
+        $("#loading").css("display", "flex");
         var total = 0;
         for(var i = 0; i < pedido.carrinho.length; i++){
             var keys = Object.keys(pedido.carrinho[i]["cores"]);
@@ -745,11 +885,23 @@
                 }
             }
         }
+        var cep = $("#cep").val();
+        var numero = $("#numero").val();
+        var complemento = $("#complemento").val();
+        var rua = $("#rua").val();
+        var bairro = $("#bairro").val();
+        var cidade = $("#cidade").val();
+        var estado = $("#estado").val();
         pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
         pedido["tipo"] = "local";
-        localStorage["novoPedido"] = JSON.stringify(pedido);
-        $("#loading").css("display", "flex");
-        fetch('{{url_for('salvar')}}' , {
+        pedido['cep'] = cep.replace("-","");
+        pedido['numero'] = numero;
+        pedido['complemento'] = complemento;
+        pedido['rua'] = rua;
+        pedido['bairro'] = bairro;
+        pedido['cidade'] = cidade;
+        pedido['estado'] = estado;
+        fetch('{{url_for('dar_baixa')}}' , {
             method: 'POST',
             headers: {
                 'X-CSRFToken': {{ csrf_token()|tojson }},
@@ -760,14 +912,15 @@
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            if(!data.mensagem){
+            if(data.ativo == false){
                 $("#salvar").css("display", "none");
                 $("#loading").css("display", "none");
                 zerarPedido()
-                carregar(JSON.parse(localStorage["novoPedido"]))
+                carregar(JSON.parse(localStorage["novoPedido"]));
+
                 var celular = data.celular.replace(/[()-]/g, '');
                 var numeroP = data.numero;
-                pedido = 'http://api.whatsapp.com/send?phone=' + celular + '&text=Olá,20' + data.cliente + '.%0A' +
+                pedido = 'http://api.whatsapp.com/send?phone=' + celular + '&text=Olá,%20' + data.cliente + '.%0A' +
                 'O%20seu%20pedido%20' + numeroP + '%20está%20pronto:%0A'
                 for(var i = 0; i < data.carrinho.length; i++){
                    cores = Object.keys(data.carrinho[i].cores);
@@ -782,33 +935,6 @@
                    }
                 }
                 document.location = pedido;
-            }
-        })
-        .catch(error => {
-            console.log('Erro:', error);
-            mensagemR("Erro ao salvar pedido!");
-            $("#loading").css("display", "flex");
-        });
-    }
-
-    function darBaixa(){
-        var pedido = JSON.parse(localStorage["novoPedido"]);
-        pedido['chave'] = "{{chave}}";
-        $("#loading").css("display", "flex");
-        fetch('{{url_for('dar_baixa')}}' , {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': {{ csrf_token()|tojson }},
-                'Content-Type': 'application/json'
-            },
-            body:JSON.stringify(pedido)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            if(data.ativo == false){
-                delete localStorage["novoPedido"];
-                location.reload();
 
             }
         })
@@ -895,6 +1021,17 @@
         document.getElementById("desconto").value = pedido.desconto;
         localStorage["novoPedido"] = JSON.stringify(pedido)
 
+    }
+
+    function btEndereco(){
+        $("#endereco").css("height", "230px");
+        $("#btEndereco").css("display", "none")
+        $("#btEnderecoM").css("display", "inline-block")
+    }
+    function btEnderecoM(){
+        $("#endereco").css("height", "0px");
+        $("#btEndereco").css("display", "inline-block")
+        $("#btEnderecoM").css("display", "none")
     }
 
     function btAdicionar(){
@@ -1044,7 +1181,8 @@
     }
 
     function mensagemR(msg){
-        document.getElementById("mensagemR").textContent = msg
+        $("#mensagemR").empty()
+        $("#mensagemR").append(msg)
          $("#msg2").css("display", "flex");
             $("#msg2").css("opacity", "1");
             setTimeout(()=>{
@@ -1093,6 +1231,99 @@
         });
     }
 
+    function cep(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+                    if( val.length == 6){
+                        val.splice(val.length -1,0, "-");
+                    }
+            }else{
+                  val.splice(val.length - 1,1);
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+            }
+            this.value = s;
+        });
+    }
+
+    function limpa_formulário_cep() {
+            //Limpa valores do formulário de cep.
+            document.getElementById('rua').value=("");
+            document.getElementById('bairro').value=("");
+            document.getElementById('cidade').value=("");
+            document.getElementById('estado').value=("");
+    }
+
+    function meu_callback(conteudo) {
+        if (!("erro" in conteudo)) {
+            //Atualiza os campos com os valores.
+            document.getElementById('rua').value=(conteudo.logradouro);
+            document.getElementById('bairro').value=(conteudo.bairro);
+            document.getElementById('cidade').value=(conteudo.localidade);
+            document.getElementById('estado').value=(conteudo.uf);
+        } //end if.
+        else {
+            //CEP não Encontrado.
+            limpa_formulário_cep();
+            $('#msgCep').text('CEP não encontrado!')
+            $('#mensagemCep').css('display','block')
+        }
+    }
+
+    function pesquisacep(valor) {
+
+        //Nova variável "cep" somente com dígitos.
+        var cep = valor.replace('-', '');
+
+        //Verifica se campo cep possui valor informado.
+        if (cep != "") {
+
+            //Expressão regular para validar o CEP.
+            var validacep = /^[0-9]{8}$/;
+
+            //Valida o formato do CEP.
+            if(validacep.test(cep)) {
+
+                //Preenche os campos com "..." enquanto consulta webservice.
+                document.getElementById('rua').value="...";
+                document.getElementById('bairro').value="...";
+                document.getElementById('cidade').value="...";
+                document.getElementById('estado').value="...";
+
+                //Cria um elemento javascript.
+                var script = document.createElement('script');
+
+                //Sincroniza com o callback.
+                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+
+                //Insere script no documento e carrega o conteúdo.
+                document.body.appendChild(script);
+
+            } //end if.
+            else {
+                //cep é inválido.
+                limpa_formulário_cep();
+                $('#msgCep').text('Formato de CEP inválido!')
+                $('#mensagemCep').css('display','block')
+            }
+        } //end if.
+        else {
+            //cep sem valor, limpa formulário.
+            limpa_formulário_cep();
+        }
+    };
+
+    document.getElementById("cep").onblur = function() {
+        pesquisacep(document.getElementById("cep").value)
+    };
+
+    cep(document.getElementById("cep"))
     celular(document.getElementById("whatsapp"))
 
 
