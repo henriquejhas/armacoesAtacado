@@ -287,7 +287,7 @@
             width:calc(100% - 250px);
             height:80px;
             position:fixed;
-            bottom:10%;
+            bottom:40%;
             display:none;
         }
 
@@ -369,10 +369,50 @@
 
        <div class="w3-container" >
             <div>
-                <p>Nome: <b>{{ pedido.cliente }}</b></p>
-                <p>Whatsapp: <b>{{ pedido.celular }}</b></p>
-                <p>Valor: <b>{{ pedido.total }}</b></p>
-                <h4 style="text-align:center;" ><b>Armações</b></h4>
+                <p style="margin:0; margin-bottom: 22px;">Nome: <b>{{ pedido.cliente }}</b></p>
+                <button id="btNome" onclick="editarNome()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;  display:none;">Editar nome</button>
+                <p style="margin:0; margin-bottom: 22px;">Whatsapp: <b>{{ pedido.celular }}</b></p>
+                <button id="btWhatsapp" onclick="editarWhatsapp()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;">Editar whatsapp</button>
+                <p style="margin:0; margin-bottom: 22px;">Endereço: <b>{{pedido.rua}}, {{pedido.num}}, {{pedido.bairro}}, {{pedido.cidade}}, {{pedido.estado}}, {{pedido.cep}}</b></p>
+                <button id="btEndereco" onclick="editarEndereco()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;">Editar endereço</button>
+                <div id="endereco" style="height:0px; overflow:hidden; transition: height ease 0.5s;">
+                    <div style="width:49%; display:inline-block;">
+                        <label style="font-size:12px" for="cep">CEP</label>
+                        <input autocomplete="false" class="campoCaixa" id="cep" maxlength="9" minlength="1" name="cep" placeholder="Seu CEP" required="" type="text" value="">
+                    </div>
+                    <div style="width:27%; display:inline-block;">
+                        <label style="font-size:12px" for="numero">Número</label>
+                        <input autocomplete="false" class="campoCaixa" id="numero" maxlength="14" minlength="1" name="numero" placeholder="Número" required="" type="text" value="">
+                    </div>
+                    <div style="width:59%; display:inline-block;">
+                        <label style="font-size:12px" for="complemento">Complemento</label>
+                        <input autocomplete="false" class="campoCaixa" id="complemento" maxlength="50" minlength="1" name="complemento" placeholder="Complemento" required="" type="text" value="">
+                    </div>
+                    <div style="width:59%; display:inline-block;">
+                        <label style="font-size:12px" for="rua">Logradouro/Rua</label>
+                        <input autocomplete="false" class="campoCaixa" id="rua" maxlength="50" minlength="1" name="rua" placeholder="Sua rua" required="" type="text" value="">
+                    </div>
+
+                    <div style="width:39%; display:inline-block;">
+                        <label style="font-size:12px" for="bairro">Bairro</label>
+                        <input autocomplete="false" class="campoCaixa" id="bairro" maxlength="50" minlength="1" name="bairro" placeholder="Seu bairro" required="" type="text" value="">
+                    </div>
+                    <div style="width:59%; display:inline-block;">
+                        <label style="font-size:12px" for="cidade">Cidade</label>
+                        <input autocomplete="false" class="campoCaixa" id="cidade" maxlength="50" minlength="1" name="cidade" placeholder="Sua cidade" required="" type="text" value="">
+                    </div>
+                    <div style="width:39%; display:inline-block;">
+                        <label style="font-size:12px" for="estado">Estado</label>
+                        <input autocomplete="false" class="campoCaixa" id="estado" maxlength="50" minlength="1" name="estado" placeholder="Seu estado" required="" type="text" value="">
+                    </div>
+                </div>
+                <p style="margin:0;">Valor: <b>{{ pedido.total }}</b></p>
+                <div style="text-align:center;">
+                    <button id="btEditar" onclick="editar()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;"><i class="fa fa-plus" aria-hidden="true"></i> Editar</button>
+                    <button id="btEditarM" onclick="editarM()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;"><i class="fa fa-minus" aria-hidden="true"></i> Editar</button>
+
+                </div>
+                <h4 style="text-align:center; margin-top:0;" ><b>Armações</b></h4>
                 <div style="display: flex; justify-content: space-between; flex-wrap:wrap; margin-bottom:5px;">
 
                     {% if pedido.ativo %}
@@ -501,23 +541,64 @@
 
 <div class="modal-adicionar" id="adicionar">
     <div class="adicionar w3-container  w3-card-4 w3-animate-zoom w3-white ">
-        <p style="text-align:center;">Digite o código e escolha a cor:</p>
-        <div class="autocomplete" style="width:70%;">
-            <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
+        <p style="text-align:center;">Digite o código e escolha as cores:</p>
+        <div class="autocomplete" style="width:100%;margin: 0 auto 12px;text-align:center;">
+            <input autocomplete="off" class="w3-input w3-border " style="width:70%; display:inline-block; border-radius:5px; padding:6px;" id="codigo" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
         </div>
-        <select name="cor" id="cor" class="w3-input w3-border w3-margin-bottom" style="width:28%; display:inline-block;">
-            <option selected="" value="C1">C1</option>
-            <option value="C2">C2</option>
-            <option value="C3">C3</option>
-            <option value="C4">C4</option>
-            <option value="C5">C5</option>
-            <option value="C6">C6</option>
-            <option value="C7">C7</option>
-            <option value="C8">C8</option>
-            <option value="C9">C9</option>
-            <option value="C10">C10</option>
-
-        </select>
+        <div style="display:flex;justify-content:space-between;width:90%; margin-bottom:6px;">
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C1cor" type="checkbox"  style="display:none;" name="cor" value="C1">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C1cor" style="margin-left:22px;">C1</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C2cor" type="checkbox"  style="display:none;" name="cor" value="C2">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C2cor" style="margin-left:22px;">C2</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C3cor" type="checkbox"  style="display:none;" name="cor" value="C3">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C3cor" style="margin-left:22px;">C3</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C4cor" type="checkbox"  style="display:none;" name="cor" value="C4">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C4cor" style="margin-left:22px;">C4</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C5cor" type="checkbox"  style="display:none;" name="cor" value="C5">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C5cor" style="margin-left:22px;">C5</label>
+            </label>
+        </div>
+        <div style="display:flex;justify-content:space-between;width:90%;">
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C6cor" type="checkbox"  style="display:none;" name="cor" value="C6">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C6cor" style="margin-left:22px;">C6</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C7cor" type="checkbox"  style="display:none;" name="cor" value="C7">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C7cor" style="margin-left:22px;">C7</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C8cor" type="checkbox"  style="display:none;" name="cor" value="C8">
+                <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C8cor" style="margin-left:22px;">C8</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C9cor" type="checkbox"  style="display:none;" name="cor" value="C9">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C9cor" style="margin-left:22px;">C9</label>
+            </label>
+            <label class="container" style="display: inline-block; position:relative; width:30px;">
+                <input id="C10cor" type="checkbox"  style="display:none;" name="cor" value="C10">
+                 <span class="checkmark2" style="text-align: center;top:0px;"></span>
+                <label for="C10cor" style="margin-left:22px;">C10</label>
+            </label>
+        </div>
         <div style="display:flex; justify-content: space-between; margin-top:15px;">
             <button onclick="adicionar()" style="width:30%; padding: 4px 8px; margin-left: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-green">Adicionar</button>
             <button onclick="$('#adicionar').css('display','none')" style="width:30%; padding: 4px 8px; margin-right: 40px; border-radius:5px;font-size:14px;" class="w3-button w3-red">Cancelar</button>
@@ -535,7 +616,7 @@
             <input autocomplete="off" class="w3-input w3-border " style="width:100%; display:inline-block; border-radius:5px; padding:6px;" id="codigoC" maxlength="50" minlength="1" name="codigo"  placeholder="Digite o código" required="" type="text" value="">
         </div>
         <div style="width:28%; display:inline-block;">
-            <label for="cor">Cor</label>
+            <label for="corC">Cor</label>
             <select name="cor" id="corC" class="w3-input w3-border w3-margin-bottom" style="display:inline-block;">
                 <option selected="" value="C1">C1</option>
                 <option value="C2">C2</option>
@@ -765,13 +846,15 @@
 
     function adicionar(){
         var codigo = ($("#codigo").val()).trim();
-        var cor = (document.getElementById("cor").value).trim();
-        var pedido = JSON.parse(localStorage["{{chave}}"]);
-        var modelo = pedido.carrinho.filter(armacao => armacao.codigo == codigo)
-        if(modelo.length > 0 && cor in modelo[0].cores){
-            mensagemR("Item já adicionado!");
-            return
-        }
+        var checks = document.getElementsByName("cor");
+        var cores = [];
+        var pedido = JSON.parse(localStorage["novoPedido"]);
+
+        checks.forEach(checkbox => {
+            if(checkbox.checked){
+                cores.push(checkbox.value);
+            }
+        });
         fetch('{{url_for('adicionar_item')}}' , {
             method: 'POST',
             headers: {
@@ -780,7 +863,7 @@
             },
             body:JSON.stringify({
                 'codigo': codigo,
-                'cor': cor
+                'cor': cores
             })
         })
         .then(response => response.json())
@@ -789,34 +872,70 @@
             if(data.chave != false){
                 if(data.chave == "vazia"){
                     $('#adicionar').css('display','none');
-
                     mensagemR(data.msg);
                 }else{
                     data.preco = parseFloat((data.preco).replace(",","."));
                     $("#lista").empty();
-                    var pedido = JSON.parse(localStorage["{{chave}}"]);
+                    var pedido = JSON.parse(localStorage["{{ chave }}"]);
+
                     var index = pedido.carrinho.findIndex(armacao => armacao.chave == data.chave);
                     if( index > -1 ){
-                        var cor = Object.keys(data.cores)[0];
-                        pedido.carrinho[index].cores[cor] = data.cores[cor];
+                        var cores = Object.keys(data.cores);
+                        cores.forEach((cor) =>{
+                            data.cores[cor][2] = true;
+                            if(!(cor in pedido.carrinho[index].cores)){
+                                pedido.carrinho[index].cores[cor] = data.cores[cor];
+                            }else{
+                                 delete data.cores[cor];
+                                 data.add.push([cor, "já adicionada!"])
+                            }
+                        });
+
+                        var msg = '';
+                        if(Object.keys(data.cores).length > 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' itens adicionado!</>span>';
+                        }else if(Object.keys(data.cores).length <= 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' item adicionado!</span>';
+                        }
+                        data.add.forEach((cor) =>{
+                            msg += '<br><span>' + cor[0] + ' ' + cor[1] + '</span>';
+                        });
+
+                        mensagemR(msg);
+                        delete data.add
+
                     }else{
+                        var cores = Object.keys(data.cores);
+                        cores.forEach((cor) => data.cores[cor][2] = true);
+
+                        var msg = '';
+                        if(Object.keys(data.cores).length > 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' itens adicionado!</span>';
+                        }else if(Object.keys(data.cores).length <= 1){
+                            msg += '<span>' + Object.keys(data.cores).length + ' item adicionado!</span>';
+                        }
+                        data.add.forEach((cor) =>{
+                            msg += '<br><span>' + cor[0] + ' ' + cor[1] + '</span>';
+                        });
+
+                        mensagemR(msg);
+                        delete data.add
+
                         pedido.carrinho.unshift(data)
                     }
 
                     carregar(pedido);
                     $('#adicionar').css('display','none');
-                    mensagemR("Item adicionado!");
 
                 }
 
             }else{
                 mensagemR("Erro ao adicionar item!");
             }
-
         })
         .catch(error => {
             console.log('Erro:', error);
-            mensagemR("Erro ao carregar pedido pedido!");
+            mensagemR("Erro ao adicionar item!");
         });
 
     }
@@ -964,6 +1083,28 @@
         if(pedido.ativo){
             localStorage["{{chave}}"] = JSON.stringify(pedido)
         }
+    }
+
+    function editar(){
+        $("#btNome").css("display", "inline-block");
+        document.getElementById("btNome").previousElementSibling.style.marginBottom = "0";
+        $("#btWhatsapp").css("display", "inline-block");
+        document.getElementById("btWhatsapp").previousElementSibling.style.marginBottom = "0";
+        $("#btEndereco").css("display", "inline-block");
+        document.getElementById("btEndereco").previousElementSibling.style.marginBottom = "0";
+        $("#btEditarM").css("display", "inline-block");
+        $("#btEditar").css("display", "none");
+    }
+
+    function editarM(){
+        $("#btNome").css("display", "none");
+        document.getElementById("btNome").previousElementSibling.style.marginBottom = "22px";
+        $("#btWhatsapp").css("display", "none");
+        document.getElementById("btWhatsapp").previousElementSibling.style.marginBottom = "22px";
+        $("#btEndereco").css("display", "none");
+        document.getElementById("btEndereco").previousElementSibling.style.marginBottom = "22px"
+        $("#btEditarM").css("display", "none");
+        $("#btEditar").css("display", "inline-block");
     }
 
     function btAdicionar(){
@@ -1114,14 +1255,15 @@
     }
 
     function mensagemR(msg){
-        document.getElementById("mensagemR").textContent = msg
-         $("#msg2").css("display", "flex");
-            $("#msg2").css("opacity", "1");
-            setTimeout(()=>{
-               $("#msg2").css("opacity", "0");
+        $("#mensagemR").empty();
+        $("#mensagemR").append(msg);
+        $("#msg2").css("display", "flex");
+        $("#msg2").css("opacity", "1");
+        setTimeout(()=>{
+           $("#msg2").css("opacity", "0");
 
-               setTimeout(() => $("#msg2").css("display", "none"),1000);
-            } ,4000);
+           setTimeout(() => $("#msg2").css("display", "none"),1000);
+        } ,4000);
     }
 
     function abrirImagem(elemento){

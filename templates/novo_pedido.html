@@ -364,7 +364,7 @@
        <div class="w3-container" >
             <div>
                 <p style="margin-bottom:5px;">Nome:<input autocomplete="off" onblur="salvarNome(this)" class="campoCaixa" id="nome" maxlength="50" minlength="1" name="nome" placeholder="Nome" required="" type="text" ></p>
-                <p style="margin:5px 0;">Whatsapp: <input autocomplete="off" onblur="salvarWhatsapp(this)" class="campoCaixa" id="whatsapp" maxlength="14" minlength="1" name="whatsapp" placeholder="ex:(00)98888-7777" required="" type="text" ></p>
+                <p style="margin:5px 0;">Whatsapp: <input autocomplete="off" onblur="salvarWhatsapp(this)" class="campoCaixa" id="whatsapp" maxlength="14" minlength="1" name="whatsapp" placeholder="ex:(11)98888-7777" required="" type="text" ></p>
                 <button id="btEndereco" onclick="btEndereco()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;"><i class="fa fa-plus" aria-hidden="true"></i> Endereço</button>
                 <button id="btEnderecoM" onclick="btEnderecoM()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;"><i class="fa fa-minus" aria-hidden="true"></i> Endereço</button>
 
@@ -820,7 +820,7 @@
             pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
             pedido["tipo"] = "local";
             pedido['cep'] = cep.replace("-","");
-            pedido['numero'] = numero;
+            pedido['num'] = numero;
             pedido['complemento'] = complemento;
             pedido['rua'] = rua;
             pedido['bairro'] = bairro;
@@ -895,7 +895,7 @@
         pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
         pedido["tipo"] = "local";
         pedido['cep'] = cep.replace("-","");
-        pedido['numero'] = numero;
+        pedido['num'] = numero;
         pedido['complemento'] = complemento;
         pedido['rua'] = rua;
         pedido['bairro'] = bairro;
