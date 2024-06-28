@@ -369,11 +369,19 @@
 
        <div class="w3-container" >
             <div>
-                <p style="margin:0; margin-bottom: 22px;">Nome: <b>{{ pedido.cliente }}</b></p>
+                <p style="margin:0; margin-bottom: 22px;">Nome: <b id="textoNome"></b></p>
                 <button id="btNome" onclick="editarNome()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;  display:none;">Editar nome</button>
-                <p style="margin:0; margin-bottom: 22px;">Whatsapp: <b>{{ pedido.celular }}</b></p>
+                <div id="conteiner-nome" style="display:none;" class="w3-animate-left">
+                    <input autocomplete="off" class="campoCaixa" style="width:70%;" id="nome" maxlength="50" minlength="1" name="nome" placeholder="Nome" required="" type="text" >
+                    <button id="btSalvarNome" onclick="salvarNome()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;">Salvar nome</button>
+                </div>
+                <p style="margin:0; margin-bottom: 22px;">Whatsapp: <b id="textoWhatsapp"></b></p>
                 <button id="btWhatsapp" onclick="editarWhatsapp()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;">Editar whatsapp</button>
-                <p style="margin:0; margin-bottom: 22px;">Endereço: <b>{{pedido.rua}}, {{pedido.num}}, {{pedido.bairro}}, {{pedido.cidade}}, {{pedido.estado}}, {{pedido.cep}}</b></p>
+                <div id="conteiner-whatsapp" style="display:none;" class="w3-animate-left">
+                    <input autocomplete="off" class="campoCaixa" style="width:70%;" id="whatsapp" maxlength="50" minlength="1" name="whatsapp" placeholder="Whatsapp" required="" type="text" >
+                    <button id="btSalvarWhatsapp" onclick="salvarWhatsapp()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;">Salvar nome</button>
+                </div>
+                <p style="margin:0; margin-bottom: 22px;">Endereço: <b id="textoEndereco"></b></p>
                 <button id="btEndereco" onclick="editarEndereco()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;">Editar endereço</button>
                 <div id="endereco" style="height:0px; overflow:hidden; transition: height ease 0.5s;">
                     <div style="width:49%; display:inline-block;">
@@ -713,6 +721,11 @@
                 pedido = JSON.parse(localStorage["{{chave}}"]);
             }
 
+            $("#textoNome").text(pedido.cliente);
+            $("#textoWhatsapp").text(pedido.celular);
+            var endereco = (pedido.cep).split("");
+            endereco.splice(5,0, "-");
+            $("#textoEndereco").text(pedido.rua + ", " + pedido.num + ", " + pedido.bairro + ", " + pedido.cidade + ", " + pedido.estado + ", " + endereco.join(""));
 
             carregar(pedido);
         }else{
@@ -1105,6 +1118,38 @@
         document.getElementById("btEndereco").previousElementSibling.style.marginBottom = "22px"
         $("#btEditarM").css("display", "none");
         $("#btEditar").css("display", "inline-block");
+    }
+
+    function editarNome(){
+        $("#btNome").css("display", "none");
+        $("#conteiner-nome").css("display", "block");
+    }
+
+    function salvarNome(){
+        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        pedido["cliente"] = $("#nome").val();
+        localStorage["{{chave}}"] = JSON.stringify(pedido)
+        $("#textoNome").text($("#nome").val());
+        $("#conteiner-nome").css("display", "none");
+        $("#btNome").css("display", "block");
+
+
+    }
+
+    function editarWhatsapp(){
+        $("#btWhatsapp").css("display", "none");
+        $("#conteiner-whatsapp").css("display", "block");
+    }
+
+    function salvarWhatsapp(){
+        var pedido = JSON.parse(localStorage["{{chave}}"]);
+        pedido["celular"] = $("#whatsapp").val();
+        localStorage["{{chave}}"] = JSON.stringify(pedido)
+        $("#textoWhatsapp").text($("#whatsapp").val());
+        $("#conteiner-whatsapp").css("display", "none");
+        $("#btWhatsapp").css("display", "block");
+
+
     }
 
     function btAdicionar(){
