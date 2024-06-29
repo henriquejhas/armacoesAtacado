@@ -819,7 +819,7 @@
             var estado = $("#estado").val();
             pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
             pedido["tipo"] = "local";
-            pedido['cep'] = cep.replace("-","");
+            pedido['cep'] = cep;
             pedido['num'] = numero;
             pedido['complemento'] = complemento;
             pedido['rua'] = rua;
@@ -894,7 +894,7 @@
         var estado = $("#estado").val();
         pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
         pedido["tipo"] = "local";
-        pedido['cep'] = cep.replace("-","");
+        pedido['cep'] = cep;
         pedido['num'] = numero;
         pedido['complemento'] = complemento;
         pedido['rua'] = rua;

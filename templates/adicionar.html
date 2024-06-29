@@ -19,7 +19,7 @@
     	<h2 style="text-align:center; padding-top:10px;">Adicionar Armação</h2>
 
        <form class="w3-container" method="POST" action="{{ url_for('adicionar')}}" enctype="multipart/form-data" onsubmit="preencher()">
-           <figure style="text-align:center; overflow:hidden; padding-bottom:10px; margin-bottom:0px;">
+           <figure style="text-align:center; overflow:hidden; padding-bottom:10px; margin:0px;">
                 <img style="height:300px;" src="{{ url_for('imagem', nome_arquivo='capa_padrao.jpg')}}">
                 <figcaption>
                     <label class="fileContainer"  style="background-color: #3498db; border-radius: 5px; color: #fff; cursor: pointer; margin: 10px; padding: 6px 20px">

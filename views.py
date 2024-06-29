@@ -384,7 +384,6 @@ def carrinho():
     nome = dadoJson['loja']
     if nome in lojas:
         chave = lojas[nome]
-
         try:
             if 'pedidos' not in ref.child(f'estoques/{chave}').get():
                 ref.child(f'estoques/{chave}/pedidos').set({'contador': 0})
@@ -487,6 +486,7 @@ def novo_pedido():
 
         if request.method == 'GET':
                 try:
+                    loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
                     lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
                     produtos = []
                     for produto in lista:
@@ -494,7 +494,7 @@ def novo_pedido():
                 except:
                     return render_template('novo_pedido.html', mensagem='Erro ao carregar lista de produtos')
                 else:
-                    return render_template('novo_pedido.html',mensagem=mensagem, produtos=produtos)
+                    return render_template('novo_pedido.html',mensagem=mensagem, produtos=produtos, loja=loja)
 
     else:
         session['usuario_logado'] = None
@@ -510,6 +510,7 @@ def visualizar(chave):
 
         if request.method == 'GET':
             try:
+                loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
                 pedido = ref.child(f'estoques/{cookie['uid']}/pedidos').child(chave).get()
                 lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
                 produtos = []
@@ -519,7 +520,7 @@ def visualizar(chave):
                 return render_template('visualizarPedido.html', pedido=[], mensagem='Erro ao ler os pedidos!')
 
             else:
-                return render_template('visualizarPedido.html', pedido=pedido, chave=chave, produtos=produtos)
+                return render_template('visualizarPedido.html', pedido=pedido, chave=chave, produtos=produtos, loja=loja)
 
     else:
         session['usuario_logado'] = None

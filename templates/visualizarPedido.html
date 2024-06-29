@@ -383,6 +383,8 @@
                 </div>
                 <p style="margin:0; margin-bottom: 22px;">Endereço: <b id="textoEndereco"></b></p>
                 <button id="btEndereco" onclick="editarEndereco()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;">Editar endereço</button>
+                <button id="btSalvarEndereco" onclick="salvarEndereco()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;">Salvar endereço</button>
+
                 <div id="endereco" style="height:0px; overflow:hidden; transition: height ease 0.5s;">
                     <div style="width:49%; display:inline-block;">
                         <label style="font-size:12px" for="cep">CEP</label>
@@ -415,11 +417,12 @@
                     </div>
                 </div>
                 <p style="margin:0;">Valor: <b>{{ pedido.total }}</b></p>
+                {% if pedido.ativo %}
                 <div style="text-align:center;">
                     <button id="btEditar" onclick="editar()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px;"><i class="fa fa-plus" aria-hidden="true"></i> Editar</button>
                     <button id="btEditarM" onclick="editarM()" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; display:none;"><i class="fa fa-minus" aria-hidden="true"></i> Editar</button>
-
                 </div>
+                {% endif %}
                 <h4 style="text-align:center; margin-top:0;" ><b>Armações</b></h4>
                 <div style="display: flex; justify-content: space-between; flex-wrap:wrap; margin-bottom:5px;">
 
@@ -493,12 +496,12 @@
             <div style="text-align:center;">
                 <div style="width:40%; display:inline-block;">
                     <label style="font-size:12px" for="origem">CEP remetente</label>
-                    <input autocomplete="false" class="campoCaixa" id="origem" maxlength="9" minlength="1" name="numero" placeholder="Origem" required="" type="text" value="{{ pedido.origem }}">
+                    <input autocomplete="false" class="campoCaixa" id="origem" maxlength="9" minlength="1" name="numero" placeholder="Origem" required="" type="text" value="{{ loja.cep }}">
                 </div>
                 <span><i class="fa fa-long-arrow-right" aria-hidden="true"></i></span>
                 <div style="width:40%; display:inline-block;">
                     <label style="font-size:12px" for="destino">CEP destinatário</label>
-                    <input autocomplete="false" class="campoCaixa" id="destino" maxlength="9" minlength="1" name="numero" placeholder="Destino" required="" type="text" value="{{ pedido.cep }}">
+                    <input autocomplete="false" class="campoCaixa" id="destino" maxlength="9" minlength="1" name="numero" placeholder="Destino" required="" type="text" value="">
                 </div>
 
             </div>
@@ -723,9 +726,17 @@
 
             $("#textoNome").text(pedido.cliente);
             $("#textoWhatsapp").text(pedido.celular);
-            var endereco = (pedido.cep).split("");
-            endereco.splice(5,0, "-");
-            $("#textoEndereco").text(pedido.rua + ", " + pedido.num + ", " + pedido.bairro + ", " + pedido.cidade + ", " + pedido.estado + ", " + endereco.join(""));
+            $("#nome").val(pedido.cliente);
+            $("#whatsapp").val(pedido.celular);
+            $("#textoEndereco").text(pedido.rua + ", " + pedido.num + " " + pedido.complemento +", " + pedido.bairro + ", " + pedido.cidade + ", " + pedido.estado + ", " + pedido.cep);
+            $("#rua").val(pedido.rua);
+            $("#numero").val(pedido.num);
+            $("#bairro").val(pedido.bairro);
+            $("#cidade").val(pedido.cidade);
+            $("#estado").val(pedido.estado);
+            $("#cep").val(pedido.cep);
+            $("#destino").val(pedido.cep);
+            $("#complemento").val(pedido.complemento);
 
             carregar(pedido);
         }else{
@@ -1111,10 +1122,14 @@
 
     function editarM(){
         $("#btNome").css("display", "none");
+        $("#conteiner-nome").css("display", "none");
         document.getElementById("btNome").previousElementSibling.style.marginBottom = "22px";
         $("#btWhatsapp").css("display", "none");
+        $("#conteiner-whatsapp").css("display", "none");
         document.getElementById("btWhatsapp").previousElementSibling.style.marginBottom = "22px";
         $("#btEndereco").css("display", "none");
+        $("#endereco").css("height", "0px");
+        $("#btSalvarEndereco").css("display", "none");
         document.getElementById("btEndereco").previousElementSibling.style.marginBottom = "22px"
         $("#btEditarM").css("display", "none");
         $("#btEditar").css("display", "inline-block");
@@ -1126,14 +1141,71 @@
     }
 
     function salvarNome(){
+        if($("#nome").val() != ""){
+            var pedido = JSON.parse(localStorage["{{chave}}"]);
+            pedido["cliente"] = $("#nome").val();
+            localStorage["{{chave}}"] = JSON.stringify(pedido)
+            $("#textoNome").text($("#nome").val());
+            $("#conteiner-nome").css("display", "none");
+            $("#btNome").css("display", "block");
+        }else{
+            mensagemR("Campo nome deve ser preenchido!");
+        }
+
+
+
+    }
+
+    function editarEndereco(){
+        $("#endereco").css("height", "230px");
+        $("#btEndereco").css("display", "none");
+        $("#btSalvarEndereco").css("display", "block");
+    }
+
+    function salvarEndereco(){
         var pedido = JSON.parse(localStorage["{{chave}}"]);
-        pedido["cliente"] = $("#nome").val();
-        localStorage["{{chave}}"] = JSON.stringify(pedido)
-        $("#textoNome").text($("#nome").val());
-        $("#conteiner-nome").css("display", "none");
-        $("#btNome").css("display", "block");
+        if($("#cep").val() != "" && $("#cep").val().length == 9 && $("#numero").val() != "" && $("#rua").val() != "" && $("#bairro").val() != "" && $("#cidade").val() != "" && $("#estado").val() != ""){
+            pedido.cep = $("#cep").val()
+            pedido.num = $("#numero").val();
+            pedido.rua = $("#rua").val();
+            pedido.cidade = $("#cidade").val();
+            pedido.estado = $("#estado").val();
+            pedido.bairro = $("#bairro").val();
+            pedido.complemento = $("#complemento").val();
+            localStorage["{{chave}}"] = JSON.stringify(pedido);
+            $("#textoEndereco").text(pedido.rua + ", " + pedido.num + " " + pedido.complemento +", " + pedido.bairro + ", " + pedido.cidade + ", " + pedido.estado + ", " + pedido.cep);
+            $("#destino").val($("#cep").val())
+            $("#endereco").css("height", "0px");
+            $("#btEndereco").css("display", "block");
+            $("#btSalvarEndereco").css("display", "none");
+        }else if($("#cep").val() == ""){
+            mensagemR("O campo cep deve ser preechido!")
+         }else if($("#numero").val() == ""){
+            mensagemR("O campo número deve ser preechido!")
+         }else if($("#rua").val() == ""){
+            mensagemR("O campo rua deve ser preechido!")
+         }else if($("#bairro").val() == ""){
+            mensagemR("O campo bairro deve ser preechido!")
+         }else if($("#cidade").val() == ""){
+            mensagemR("O campo cidade deve ser preechido!")
+         }else if($("#estado").val() == ""){
+            mensagemR("O campo estado deve ser preechido!")
+         }else if($("#cep").val().length < 9){
+            mensagemR("CEP inválido!")
+         }
+    }
 
-
+    function salvarWhatsapp(){
+        if($("#whatsapp").val() != "" && $("#whatsapp").val().length == 14){
+            var pedido = JSON.parse(localStorage["{{chave}}"]);
+            pedido["celular"] = $("#whatsapp").val();
+            localStorage["{{chave}}"] = JSON.stringify(pedido);
+            $("#textoWhatsapp").text($("#whatsapp").val());
+            $("#conteiner-whatsapp").css("display", "none");
+            $("#btWhatsapp").css("display", "block");
+        }else{
+            mensagemR("Whatsapp inválido!");
+        }
     }
 
     function editarWhatsapp(){
@@ -1141,21 +1213,13 @@
         $("#conteiner-whatsapp").css("display", "block");
     }
 
-    function salvarWhatsapp(){
-        var pedido = JSON.parse(localStorage["{{chave}}"]);
-        pedido["celular"] = $("#whatsapp").val();
-        localStorage["{{chave}}"] = JSON.stringify(pedido)
-        $("#textoWhatsapp").text($("#whatsapp").val());
-        $("#conteiner-whatsapp").css("display", "none");
-        $("#btWhatsapp").css("display", "block");
-
-
-    }
-
     function btAdicionar(){
         $('#adicionar').css('display','block');
         $("#codigo").val("");
-        document.getElementById("cor").value = "C1";
+        var checks = document.getElementsByName("cor");
+        for(var i = 0; i < checks.length; i++){
+            checks[i].checked = false;
+        }
     }
     function btBaixa(){
         $('#baixa').css('display','block');
@@ -1326,6 +1390,29 @@
       modal.style.display = "none";
     }
 
+    function celular(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+                    if(val.length == 3){
+                        val.splice(0,0,"(");
+                        val.splice(val.length -1,0,")");
+                    }else if( val.length == 10){
+                        val.splice(val.length -1,0, "-");
+                    }
+            }else{
+                  val.splice(val.length - 1,1);
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+            }
+            this.value = s;
+        });
+    }
     function cep(element){
         element.style.backgroundColor = "white";
         element.addEventListener("input",function(e){
@@ -1347,9 +1434,79 @@
         });
     }
 
-        cep(document.getElementById("origem"))
-        cep(document.getElementById("destino"))
+    function limpa_formulário_cep() {
+            //Limpa valores do formulário de cep.
+            document.getElementById('rua').value=("");
+            document.getElementById('bairro').value=("");
+            document.getElementById('cidade').value=("");
+            document.getElementById('estado').value=("");
+    }
 
+    function meu_callback(conteudo) {
+        if (!("erro" in conteudo)) {
+            //Atualiza os campos com os valores.
+            document.getElementById('rua').value=(conteudo.logradouro);
+            document.getElementById('bairro').value=(conteudo.bairro);
+            document.getElementById('cidade').value=(conteudo.localidade);
+            document.getElementById('estado').value=(conteudo.uf);
+        } //end if.
+        else {
+            //CEP não Encontrado.
+            limpa_formulário_cep();
+            mensagemR('CEP não encontrado!')
+
+        }
+    }
+
+    function pesquisacep(valor) {
+
+        //Nova variável "cep" somente com dígitos.
+        var cep = valor.replace('-', '');
+
+        //Verifica se campo cep possui valor informado.
+        if (cep != "") {
+
+            //Expressão regular para validar o CEP.
+            var validacep = /^[0-9]{8}$/;
+
+            //Valida o formato do CEP.
+            if(validacep.test(cep)) {
+
+                //Preenche os campos com "..." enquanto consulta webservice.
+                document.getElementById('rua').value="...";
+                document.getElementById('bairro').value="...";
+                document.getElementById('cidade').value="...";
+                document.getElementById('estado').value="...";
+
+                //Cria um elemento javascript.
+                var script = document.createElement('script');
+
+                //Sincroniza com o callback.
+                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+
+                //Insere script no documento e carrega o conteúdo.
+                document.body.appendChild(script);
+
+            } //end if.
+            else {
+                //cep é inválido.
+                limpa_formulário_cep();
+                mensagemR('Formato de CEP inválido!')
+
+            }
+        } //end if.
+        else {
+            //cep sem valor, limpa formulário.
+            limpa_formulário_cep();
+        }
+    };
+
+    document.getElementById("cep").onblur = function() {
+        pesquisacep(document.getElementById("cep").value)
+    };
+
+    cep(document.getElementById("cep"))
+    celular(document.getElementById("whatsapp"))
 
     function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,

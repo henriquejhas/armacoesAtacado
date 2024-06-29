@@ -1232,7 +1232,8 @@
             console.log(loja)
          }
          if(cliente != "" && celular.length == 14 && cep != "" && numero != "" && rua != "" && bairro != "" && cidade != "" && estado != ""){
-             fetch('{{url_for('carrinho')}}' , {
+
+            fetch('{{url_for('carrinho')}}' , {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': {{ csrf_token()|tojson }},
@@ -1245,7 +1246,7 @@
                     'carrinho': carrinho,
                     'total': total,
                     'data': dataCliente,
-                    'cep': cep.replace("-",""),
+                    'cep': cep,
                     'num': numero,
                     'complemento': complemento,
                     'rua': rua,
@@ -1262,7 +1263,7 @@
                 if(data.mensagem == true){
                     var numeroP = data.numero;
                     pedido = 'http://api.whatsapp.com/send?phone=5582987333558&text=Olá,%20meu%20nome%20é%20' + cliente + '.%0A' +
-                    'Esse%20é%20o%20meu%20endereço:%20' + rua + ', ' + numero + ' ' + complemento + ', ' + bairro + ', ' + cidade + ', ' + estado + ', ' + cep + '.%0A' +
+                    'Esse%20é%20o%20meu%20endereço:%20' + data.rua + ', ' + data.num + ' ' + data.complemento + ', ' + data.bairro + ', ' + data.cidade + ', ' + data.estado + ', ' + data.cep + '.%0A' +
                     'Esse%20é%20o%20meu%20pedido%20' + numeroP + ':%0A'
                     for(var i = 0; i < carrinho.length; i++){
                        cores = Object.keys(carrinho[i].cores);
@@ -1274,8 +1275,16 @@
                     }
                     $("#nome").val("");
                     $("#whatsapp").val("");
+                    var cep = $("#cep").val("");
+                    $("#numero").val("");
+                    $("#complemento").val("");
+                    $("#rua").val("");
+                    $("#bairro").val("");
+                    $("#cidade").val("");
+                    $("#estado").val("");
                     localStorage["carrinho"] = "[]";
                     document.getElementById("notificacao").textContent = 0;
+                    fecharCarrinho(document.getElementsByClassName("menu-closer")[0]);
                     document.location = pedido;
 
                 }else{

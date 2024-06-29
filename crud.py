@@ -18,39 +18,31 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 
 @app.route('/inicio')
 def dashboard():
-    try:
-        print('passou aqui: ', session['usuario_logado'])
-        token = session['usuario_logado']
-        print(token)
-        cookie = auth.verify_session_cookie(token, clock_skew_seconds=5)
-        print(cookie)
-        print('passou aqui também')
+    cookie, mensagem = conferir_cookie()
+    emProcesso = []
+    esgotados = []
+    if cookie and mensagem == '':
+        pedidos = None
+        try:
+            pedidos = ref.child(f'estoques/{cookie['uid']}/pedidos').get()
+            produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+            for pedido in pedidos:
 
-    except auth.ExpiredSessionCookieError:
-        session['usuario_logado'] = None
-        return redirect(url_for('logout', mensagem='O cookie de sessão expirou'))
-    except auth.RevokedSessionCookieError:
-        session['usuario_logado'] = None
-        return redirect(url_for('logout', mensagem='O cookie foi revogado'))
-    except auth.InvalidSessionCookieError:
-        session['usuario_logado'] = None
-        return redirect(url_for('logout', mensagem='Cookie de sessão inválido'))
-    except auth.CertificateFetchError:
-        session['usuario_logado'] = None
-        return redirect(url_for('logout', mensagem='erro ao buscar os certificados de chave pública'))
-    except auth.UserDisabledError:
-        session['usuario_logado'] = None
-        return redirect(url_for('logout', mensagem='Registro do usuário desabilitado'))
-    except ValueError:
-        session['usuario_logado'] = None
-        return redirect(url_for('logout', mensagem='Cookie de sessão ilegal'))
-    else:
-        if cookie['uid']:
-            return render_template('dashboard.html', cookie=cookie)
-
+                if pedido != 'contador' and pedidos[pedido]['ativo'] == True:
+                    emProcesso.append([pedido, pedidos[pedido]])
+            for armacao in produtos:
+                for cor in produtos[armacao]['cores']:
+                    if produtos[armacao]['cores'][cor] <= 0:
+                        esgotados.append([armacao, produtos[armacao]])
+                        continue
+        except:
+            return render_template('dashboard.html',mensagem="Erro ao carregar dados!")
         else:
-            session['usuario_logado'] = None
-            return redirect(url_for('logout', mensagem='Sessão encerrada!'))
+            print(pedidos)
+            return render_template('dashboard.html', pedidos=emProcesso, produtos=esgotados, mensagem=mensagem)
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
 
 @app.route('/adicionar', methods=['POST', 'GET'])
 def adicionar():
@@ -447,6 +439,40 @@ def deletar():
         else:
             session['usuario_logado'] = None
             return redirect(url_for('logout', mensagem='Sessão encerrada!'))
+
+
+def conferir_cookie():
+    global cookie
+    cookie = False
+    try:
+        if 'usuario_logado' in session:
+            token = session['usuario_logado']
+            cookie = auth.verify_session_cookie(token, clock_skew_seconds=5)
+        else:
+            return 'Usuário não logado!'
+
+    except auth.ExpiredSessionCookieError:
+
+        return cookie, 'O cookie de sessão expirou'
+    except auth.RevokedSessionCookieError:
+
+        return cookie, 'O cookie foi revogado'
+    except auth.InvalidSessionCookieError:
+
+        return cookie, 'Cookie de sessão inválido'
+    except auth.CertificateFetchError:
+
+        return cookie, 'erro ao buscar os certificados de chave pública'
+    except auth.UserDisabledError:
+
+        return cookie, 'Registro do usuário desabilitado'
+    except ValueError:
+
+        return cookie, 'Cookie de sessão ilegal'
+    except Exception as e:
+        return cookie, f"Ocorreu um erro: {e}"
+    else:
+        return cookie, ''
 
 
 def allowed_file(filename):

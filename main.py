@@ -75,16 +75,6 @@ def autenticar():
         return redirect(url_for('index', mensagem=mensagem))
 
 
-'''
-        except :
-            session['usuario_logado'] = None
-            return redirect(url_for('logout', mensagem='Ocorreu um erro ao criar cookie!'))
-        except :
-            session['usuario_logado'] = None
-            return redirect(url_for('index', mensagem='Sessão encerrada!'))
-'''
-
-
 @app.route('/uploads/<nome_arquivo>')
 def imagem(nome_arquivo):
     return send_from_directory('uploads', nome_arquivo)
