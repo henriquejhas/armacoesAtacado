@@ -186,7 +186,7 @@
         display: flex;
         justify-content: space-between;
         font-size: 14px;
-        padding-top:4px;
+        padding-bottom:4px;
     }
 
 
@@ -215,6 +215,27 @@
         transition: all ease .2s;
     }
 
+    #msg2{
+        margin: auto;
+        left: 250px;
+        right: 0;
+        z-index:1;
+        opacity: 0;
+        transition: 0.9s;
+        text-align:center;
+        width:calc(100% - 250px);
+        height:80px;
+        position:fixed;
+        bottom:40%;
+        display:none;
+    }
+
+    @media (max-width: 992px){
+        #msg2{
+            left: 0;
+            width:100%;
+        }
+    }
 
     @media screen and (max-width: 650px) {
       .column {
@@ -240,37 +261,10 @@
 </style>
 
 <div id="inicio">
-    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 40px;border-radius:5px;">
-        <div class="w3-blue" style="border-radius:5px;"><span style="position:absolute; top:0; margin-left:5px; cursor:pointer; " id="abrirPedidos" onclick="abrir(this)"><i class="fa fa-times" ></i></span><h4 style="margin:0; text-align:center;">Pedidos em processo</h4><span class="pop w3-red">{{pedidos | length}}</span></div>
-        <div class="row" data-altura="">
-            {% if not pedidos %}
-                <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:800px; margin-bottom: 100px; border-radius:5px;">
-                    <h2 style="text-align:center; padding:20px;">Nenhum pedido feito!</h2>
-                </div>
-            {% endif %}
-            {% for chave, pedido in pedidos %}
 
-                <div class="column">
-                    <div class="card">
-                        <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-red">Em Processo</span><br></p>
-
-                        <p style="text-align:center; margin:0;"><b>{{ pedido.numero}}</b><br><span style="font-size:12px;">{{pedido.data}}</span></p>
-                        <p><span>Nome: </span><b>{{pedido.cliente}}</b></p>
-                        <p><span>Whatsapp: </span><b style="white-space: nowrap;">{{pedido.celular}}</b></p>
-                        <p><span>Valor: </span><b style="white-space: nowrap;">R$ {{pedido.total}}</b></p>
-
-                        <a href="{{url_for('visualizar', chave=chave)}}"><button style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-blue  w3-large">Visualizar</button></a>
-                    </div>
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
 
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 15px;border-radius:5px;">
-        <div class="w3-blue" style="border-radius:5px;"><span style="position:absolute; top:0; margin-left:5px; cursor:pointer; " id="abrirArmacoes" onclick="abrir(this)"><i class="fa fa-times" ></i></span><h4 style="margin:0; text-align:center;">Estoque esgotado</h4><span class="pop w3-red">{{produtos | length}}</span></div>
+        <div class="w3-blue" style="border-radius:5px;"><h4 style="margin:0; text-align:center;">Estoque esgotado</h4><span class="pop w3-red">{{produtos | length}}</span></div>
         <div class="row" data-altura="">
             {% if not produtos %}
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:800px; margin-bottom: 100px; border-radius:5px;">
@@ -279,39 +273,52 @@
             {% endif %}
             {% for chave, armacao in produtos %}
 
-                <div class="cart--item cart--totalitem">
-                    <div>
-                        <img src="{{armacao.imagem}}" onclick="abrirImagem(this)">
-                    </div>
-                    <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">
-                        <div class="cart--item-nome"> {{armacao.codigo}} |
-                        {%  for c in armacao['cores'] %}
-                            {% if 'C10' not in c and armacao['cores'][c] <= 0 %}
-                                {{c}}
-                            {% endif %}
-                        {% endfor %}
-                        {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] <= 0 %}
-                            {{'C10'}}
-                        {% endif %}
+                {%  for c in armacao['cores'] %}
+                    {% if 'C10' not in c and armacao['cores'][c] <= 0 %}
+                        <div class="cart--item cart--totalitem">
+                            <div>
+                                <img src="{{armacao.imagem}}" onclick="abrirImagem(this)">
+                            </div>
+                            <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">
+                                <div class="cart--item-nome"> {{armacao.codigo}} | valor:R$ {{armacao.preco}}</div>
+                                <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">
+                                    <div class="cores" >
+                                        <label for="{{chave}}{{c}}" style="font-weight:900;">{{c}}:</label>
+                                        <input class="w3-border" id="{{chave}}{{c}}" max="1000" min="0"   style="width: 60px;" type="number" value="{{ armacao['cores'][c] }}">
+                                    </div>
+                                    <button onclick="salvar(this,'{{chave}}', '{{c}}')" class="w3-button w3-green" style="padding:2px 12px; font-size:12px; margin-right:10px;">Salvar</button>
+
+                                </div>
+                            </div>
+                            <div>
+                                </div>
                         </div>
-                        <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">
-                            <div style="inline-block; text-align: left;">valor:R$ {{armacao.preco}}</div>
+                    {% endif %}
+                {% endfor %}
+                {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] <= 0 %}
+                    <div class="cart--item cart--totalitem">
+                        <div>
+                            <img src="{{armacao.imagem}}" onclick="abrirImagem(this)">
                         </div>
+                        <div style="width: 100%; justify-content: space-between; flex-wrap: wrap;display:flex;">
+                            <div class="cart--item-nome"> {{armacao.codigo}} | valor:R$ {{armacao.preco}}</div>
+                            <div class="cart--item-subtotal" style="display: flex;justify-content: space-between;">
+                                <div class="cores" >
+                                    <label for="{{chave}}{{'C10'}}" style="font-weight:900; ">{{'C10'}}:</label>
+                                    <input class="w3-border" id="{{chave}}{{'C10'}}" max="1000" min="0"   style="width: 60px;" type="number" value="{{ armacao['cores']['C10'] }}">
+                                </div>
+                                <button  onclick="salvar(this,'{{chave}}', '{{'C10'}}')" class="w3-button w3-green" style="padding:2px 12px; font-size:12px; margin-right:10px;">Salvar</button>
+
+                            </div>
+                        </div>
+                        <div>
+                            </div>
                     </div>
-                    <div>
-                        <a href="{{url_for('editar', chave=chave)}}"><button id="btEditar" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; margin-right:5px;">Visualizar</button></a>
-                    </div>
-                </div>
+                {% endif %}
 
             {% endfor %}
-            <div style="text-align:center; margin:10px 0;">
-                <a href="{{url_for('edicao_rapida', chave=chave)}}"><button id="btEdicaoRapida" class="w3-button w3-blue" style="padding:2px 4px; font-size:12px; margin-right:5px;">Editar todos</button></a>
-
-            </div>
-
 
         </div>
-
     </div>
 </div>
 
@@ -321,26 +328,16 @@
 
 </div>
 
+<div id="msg2">
+    <div style="border-radius: 16px; display:inline-block; width:80%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+      <p id="mensagemR"></p>
+    </div>
+</div>
+
 <script>
     var opcao = document.getElementById("op1");
     opcao.style.backgroundColor = "#a9a9a9";
 
-    var rows = document.getElementsByClassName("row");
-    for(var i = 0; i < rows.length; i++){
-        rows[i].dataset.altura = rows[i].offsetHeight + "px";
-        rows[i].style.height = "0px";
-        rows[i].style.transition = "all 0.5s ease";
-    }
-
-    function abrir(elemento){
-        elemento.childNodes[0].classList.toggle("abrir");
-        var linha = elemento.parentNode.nextElementSibling
-        if(elemento.childNodes[0].classList.contains("abrir")){
-            linha.style.height = linha.dataset.altura;
-        }else{
-            linha.style.height = "0px";
-        }
-    }
 
     function abrirImagem(elemento){
     // Get the image and insert it inside the modal - use its "alt" text as a caption
@@ -357,8 +354,56 @@
       modal.style.display = "none";
     }
 
+    function salvar(elemento, chave, cor){
+
+         var quant = document.getElementById(chave + cor).value;
+         quant = parseInt(quant);
+         if(isNaN(quant)){
+            quant = 0;
+         }
+         fetch('/salvarrapido', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                'quant': quant,
+                'cor': cor,
+                'chave': chave,
+                'dados':{
+                    [cor]: quant
+                }
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if(data.mensagem == true){
+                mensagemR(data.dados.codigo + " " + cor + ": " + data.dados.quant + " salvo!");
+                document.getElementById(chave + cor).value = data.dados.quant ;
+            }else{
+                mensagemR("Erro ao salvar quantidade!");
+            }
+
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    }
+
+    function mensagemR(msg){
+        $("#mensagemR").empty()
+        $("#mensagemR").append(msg)
+         $("#msg2").css("display", "flex");
+            $("#msg2").css("opacity", "1");
+            setTimeout(()=>{
+               $("#msg2").css("opacity", "0");
+               setTimeout(() => $("#msg2").css("display", "none"),1000);
+            } ,4000);
+    }
+
 
 </script>
 
 {% endblock %}
-

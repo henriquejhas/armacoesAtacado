@@ -1,5 +1,5 @@
 from main import app, ref, firebase, bucket
-from flask import Flask
+from flask import Flask, jsonify
 import firebase_admin
 from firebase_admin import credentials, db,auth, storage
 from flask_wtf import CSRFProtect
@@ -34,15 +34,18 @@ def dashboard():
                 for cor in produtos[armacao]['cores']:
                     if produtos[armacao]['cores'][cor] <= 0:
                         esgotados.append([armacao, produtos[armacao]])
-                        continue
+                        break
+
         except:
             return render_template('dashboard.html',mensagem="Erro ao carregar dados!")
         else:
-            print(pedidos)
-            return render_template('dashboard.html', pedidos=emProcesso, produtos=esgotados, mensagem=mensagem)
+            emProcesso.reverse()
+            esgotados.reverse()
+            return render_template('dashboard.html', pedidos=emProcesso, produtos=esgotados[:20], mensagem=mensagem)
     else:
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem=mensagem))
+
 
 @app.route('/adicionar', methods=['POST', 'GET'])
 def adicionar():
@@ -220,6 +223,7 @@ def pesquisar():
                         else:
                             armacoes.append((produto, armacao))
 
+                    armacoes.reverse()
                     return render_template('pesquisaResultado.html', cookie=cookie, form=form, armacoes=armacoes)
                 else:
                     return redirect(url_for('pesquisar.html', form=form, mensagem='Há algum campo inválido!'))
@@ -308,21 +312,13 @@ def editar():
                 descricao = form.descricao.data
                 c = []
                 cores = {}
+                for i in range(1, 11):
+                    try:
+                        quant = int(request.form[f'c{i}'])
+                        cores[f'C{i}'] = quant
+                    except ValueError:
+                        pass
 
-                c.append(int(request.form['c1'] if request.form['c1'] != "" else 0))
-                c.append(int(request.form['c2'] if request.form['c2'] != "" else 0))
-                c.append(int(request.form['c3'] if request.form['c3'] != "" else 0))
-                c.append(int(request.form['c4'] if request.form['c4'] != "" else 0))
-                c.append(int(request.form['c5'] if request.form['c5'] != "" else 0))
-                c.append(int(request.form['c6'] if request.form['c6'] != "" else 0))
-                c.append(int(request.form['c7'] if request.form['c7'] != "" else 0))
-                c.append(int(request.form['c8'] if request.form['c8'] != "" else 0))
-                c.append(int(request.form['c9'] if request.form['c9'] != "" else 0))
-                c.append(int(request.form['c10'] if request.form['c10'] != "" else 0))
-
-                for i in range(0, 10):
-                    if c[i] > 0:
-                        cores[f'C{i + 1}'] = c[i]
 
                 usuario = cookie['uid']
                 if usuario:
@@ -385,6 +381,50 @@ def editar():
                 print('passou aqui deu ruim')
                 return redirect(url_for('editar', chave=chaveArmacao, mensagem='Há algum campo inválido!'))
 
+
+@app.route('/edicaorapida', methods=['POST', 'GET'])
+def edicao_rapida():
+    cookie, mensagem = conferir_cookie()
+
+    esgotados = []
+    if cookie and mensagem == '':
+        try:
+            produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+
+            for armacao in produtos:
+                for cor in produtos[armacao]['cores']:
+                    if produtos[armacao]['cores'][cor] <= 0:
+                        esgotados.append([armacao, produtos[armacao]])
+                        break
+        except:
+            return render_template('edicao_rapida.html', mensagem="Erro ao carregar dados!")
+        else:
+            esgotados.reverse()
+            return render_template('edicao_rapida.html', produtos=esgotados, mensagem=mensagem)
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/salvarrapido', methods=['POST', 'GET'])
+def salvar_rapido():
+    cookie, mensagem = conferir_cookie()
+    if cookie and mensagem == '':
+        dadoJson = request.get_json()
+
+        try:
+            ref.child(f'estoques/{cookie['uid']}/produtos/{dadoJson['chave']}/cores').update(dadoJson['dados'])
+        except:
+            return jsonify({'mensagem': False})
+        else:
+            armacao = ref.child(f'estoques/{cookie['uid']}/produtos/{dadoJson['chave']}').get()
+            dadoJson['codigo'] = armacao['codigo']
+            if armacao['cores'][dadoJson['cor']] == dadoJson['quant']:
+                return jsonify({'mensagem': True, "dados": dadoJson})
+            else:
+                return jsonify({'mensagem': False})
+    else:
+        return redirect(url_for('logout', mensagem=mensagem))
 @app.route('/deletar')
 def deletar():
     chave = request.args.get('chave')

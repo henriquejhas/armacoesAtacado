@@ -470,6 +470,7 @@ def pedidos():
                             pedido = pedidos[chave]
                             listaPedidos.append((chave, pedido))
 
+                listaPedidos.reverse()
                 return render_template('pedidos.html', pedidos=listaPedidos, mensagem=mensagem)
 
     else:
