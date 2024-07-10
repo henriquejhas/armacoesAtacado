@@ -1,0 +1,37 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<script type="text/javascript" src="https://stc.boacompra.com/payment.boacompra.min.js?p=999999"></script>
+
+        <script type="text/javascript">
+            // You MUST instance the payment object ASAP after add the javascript on page,
+            // it will prevent loading time issues in the flow.
+            var payment = new Boacompra.PaymentMethod();
+        </script>
+<div id="planos">
+
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 100px;border-radius:5px;">
+
+        <h2 style="text-align:center; padding-top:10px;">Planos</h2>
+
+       <form class="w3-container" method="POST" action="{{url_for('pagamento')}}" enctype="multipart/form-data" id="formCard" name="formCard">
+            <div class="w3-section">
+                <div>
+                    {{ form.csrf_token() }}
+                    <input type="text" class="cw3-border w3-margin-bottom" name="publicKey" id="publicKey" value="{{publickey}}">
+                    <input type="text" class="cw3-border w3-margin-bottom" name="encriptedCard" id="encriptedCard">
+                    <input type="text" class="cw3-border w3-margin-bottom" name="cardNumber" id="cardNumber" maxlength="16" placeholder="Número do cartão" style=" padding:4px 2px;">
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardHolder" id="cardHolder" maxlength="16" placeholder="Nome no cartão" style=" padding:4px 2px;"><br>
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardMonth" id="cardMonth" maxlength="2" placeholder="Mês de validade do cartão" style="width: 60px; padding:4px 2px;">
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardYear" id="cardYear" maxlength="4" placeholder="ano de validade do cartão" style="width: 60px; padding:4px 2px;">
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardCVV" id="cardCVV" maxlength="4" placeholder="CVV do cartão" style="width: 60px; padding:4px 2px;"><br>
+                    <input type="submit" class="w3-button w3-green" value="Pagar">
+                </div>
+
+            </div>
+       </form>
+    </div>
+
+</div>
+    <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}

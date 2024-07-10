@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
 import firebase_admin
@@ -12,12 +14,15 @@ from flask_bcrypt import generate_password_hash
 import requests
 import json
 
+#from flask_sslify import SSLify
+
 if not firebase_admin._apps:
     cred = credentials.Certificate('./ServiceAccountKey.json')
     default_app = firebase_admin.initialize_app(cred, {
         "databaseURL": "https://estoque-armacoes-default-rtdb.firebaseio.com/",
         "storageBucket": "estoque-armacoes.appspot.com"
     })
+
 
 firebase = pyrebase.initialize_app(config)
 
@@ -26,6 +31,9 @@ bucket = storage.bucket()
 ref = db.reference('/')
 
 app = Flask(__name__)
+
+#sslify = SSLify(app)
+
 CORS(app)
 app.config.from_pyfile('config.py')
 
@@ -187,4 +195,6 @@ from views import *
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    context = ('/etc/letsencrypt/live/jhas.armacaoatacado.com/fullchain.pem', '/etc/letsencrypt/live/jhas.armacaoatacado.com/privkey.pem')
+    #app.run(ssl_context=context, host='0.0.0.0')
+    app.run(host='0.0.0.0')

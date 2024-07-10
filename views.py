@@ -1,3 +1,5 @@
+import json
+
 from main import app, ref, firebase, bucket
 from flask import Flask, Response
 from flask_cors import CORS
@@ -745,6 +747,123 @@ def frete():
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem='Sessão encerrada!'))
 
+
+@app.route('/pagamento', methods=['POST'])
+def pagamento():
+    url = "https://sandbox.api.pagseguro.com/orders"
+
+    headers = {
+        "accept": "*/*",
+        "Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
+        "content-type": "application/json"
+    }
+
+    payload = {
+        "reference_id": "ex-00001",
+        "customer": {
+            "name": "Jose da Silva",
+            "email": "email@test.com",
+            "tax_id": "12345678909",
+            "phones": [
+                {
+                    "country": "55",
+                    "area": "11",
+                    "number": "999999999",
+                    "type": "MOBILE"
+                }
+            ]
+        },
+        "items": [
+            {
+                "reference_id": "referencia do item",
+                "name": "nome do item",
+                "quantity": 1,
+                "unit_amount": 500
+            }
+        ],
+        "shipping": {"address": {
+            "street": "Avenida Brigadeiro Faria Lima",
+            "number": "1384",
+            "complement": "apto 12",
+            "locality": "Pinheiros",
+            "city": "São Paulo",
+            "region_code": "SP",
+            "country": "BRA",
+            "postal_code": "01452002"
+        }},
+        "notification_urls": ["https://meusite.com/notificacoes"],
+        "charges": [
+            {
+                "reference_id": "referencia da cobranca",
+                "description": "descricao da cobranca",
+                "amount": {
+                    "value": 500,
+                    "currency": "BRL"
+                },
+                "payment_method": {
+                    "type": "CREDIT_CARD",
+                    "installments": 1,
+                    "capture": True,
+                    "card": {
+                        "number": "4111111111111111",
+                        "exp_month": "12",
+                        "exp_year": "2026",
+                        "security_code": "123",
+                        "holder": {
+                            "name": "Jose da Silva",
+                            "tax_id": "65544332211"
+                        },
+                        "store": False
+                    }
+                }
+            }
+        ]
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    print(response.text)
+
+
+    return render_template("pagamento_sucesso.html", response=response.text)
+
+
+@app.route('/planos', methods=['POST', 'GET'])
+def planos():
+    global loja
+    cookie, mensagem = conferir_cookie()
+
+    if cookie and mensagem == '':
+
+        if request.method == 'GET':
+            try:
+                loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
+                publickey = getPublicKey()
+            except:
+                return render_template('planos.html', mensagem='Erro ao ler dados da loja!')
+
+            else:
+                form = FormularioUpload()
+                return render_template('planos.html', loja=loja, publickey=publickey, form=form)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+def getPublicKey():
+    url = "https://sandbox.api.pagseguro.com/public-keys"
+
+    payload = {"type": "card"}
+    headers = {
+        "accept": "*/*",
+        "Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
+        "content-type": "application/json"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    print(response.text)
+    return response.json()['public_key']
 
 def conferir_cookie():
     global cookie
