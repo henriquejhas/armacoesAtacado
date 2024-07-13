@@ -401,7 +401,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 70%;
+            width: 90%;
             height: 2px;
             background-color: #ccc; /* Define a cor da borda */
           }
@@ -431,7 +431,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 70%;
+            width: 90%;
             height: 2px;
             background-color: red;
           }
@@ -678,6 +678,48 @@
             opacity:1;
         }
 
+        .button-container {
+          display: inline-flex;
+          flex-direction: column; /* Botoes na vertical */
+        }
+        .button {
+          width: 16px;
+          height: 15px;
+          border: 1px solid #ccc;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          margin-bottom: 0px; /* Espaçamento entre os botões */
+        }
+
+        .button:hover {
+          background-color: #f0f0f0;
+        }
+
+        .increase {
+          font-size: 10px;
+          border-radius: 50% 50% 0 0;
+          position: relative;
+        }
+
+        .decrease {
+          font-size: 10px;
+          border-radius: 0 0 50% 50%;
+          position: relative;
+        }
+
+        .increase i{
+          position: absolute;
+          top: 20%;
+          left: 3px;
+        }
+        .decrease i{
+          position: absolute;
+          top: 10%;
+          left: 3px;
+        }
+
 
 
         @media  screen and (max-width: 550px) {
@@ -789,7 +831,7 @@
                 <h3><b>Novidades</b></h3>
                 <div class="row" style="font-size:13px !important;">
 
-                    {% for i in range(-3, 0) %}
+                    {% for i in range(-4, 0) %}
 
                             <div class="column" style="transition: background-color 0.5s ease;">
                                 <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
@@ -814,23 +856,41 @@
                                                 <input type="hidden" value="{{ armacoes[i][1]['codigo'] }}">
                                                 {%  for c in armacoes[i][1]['cores'] %}
                                                     {% if 'C10' not in c and armacoes[i][1]['cores'][c] > 0 %}
-                                                        <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>{{c}}:</span> </b>
+                                                            </div>
                                                             <span class="input-with-bottom-border">
-                                                                <input max="{{armacoes[i][1]['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                                <input maxlength="4" data-estoque="{{armacoes[i][1]['cores'][c]}}" oninput="quantidade(this)" name="{{c}}" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
                                                             </span>
-                                                            / <span  class="quant">{{armacoes[i][1]['cores'][c]}}</span>
-                                                        </p>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacoes[i][1]['cores'][c]}}</span></div>
+                                                            </div>
+                                                        </div>
                                                     {% endif %}
                                                 {% endfor %}
                                                 {% if 'C10' in armacoes[i][1]['cores'] and armacoes[i][1]['cores']['C10'] > 0 %}
-                                                     <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
-                                                        <span class="input-with-bottom-border">
-                                                            <input max="{{armacoes[i][1]['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                        </span>
-                                                         / <span class="quant">{{armacoes[i][1]['cores']['C10']}}</span>
-                                                     </p>
+                                                     <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>C10:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacoes[i][1]['cores']['C10']}}" oninput="quantidade(this)" name="'C10'" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacoes[i][1]['cores']['C10']}}</span></div>
+                                                            </div>
+                                                        </div>
                                                 {% endif %}
-                                                <p class="column C" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                                <p class="column " style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
                                             </div>
                                         <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
 
@@ -877,21 +937,39 @@
                                                 <input type="hidden" value="{{ armacao['codigo'] }}">
                                                 {%  for c in armacao['cores'] %}
                                                     {% if 'C10' not in c and armacao['cores'][c] > 0 %}
-                                                        <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>{{c}}:</span> </b>
+                                                            </div>
                                                             <span class="input-with-bottom-border">
-                                                                <input max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores'][c]}}" oninput="quantidade(this)" name="{{c}}" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
                                                             </span>
-                                                            / <span  class="quant">{{armacao['cores'][c]}}</span>
-                                                        </p>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores'][c]}}</span></div>
+                                                            </div>
+                                                        </div>
                                                     {% endif %}
                                                 {% endfor %}
                                                 {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
-                                                     <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
-                                                        <span class="input-with-bottom-border">
-                                                            <input max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                        </span>
-                                                         / <span class="quant">{{armacao['cores']['C10']}}</span>
-                                                     </p>
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>C10:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores']['C10']}}" oninput="quantidade(this)" name="'C10'" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores']['C10']}}</span></div>
+                                                            </div>
+                                                        </div>
                                                 {% endif %}
                                                 <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
                                             </div>
@@ -917,55 +995,73 @@
             <div class="row" style="min-height:400px; font-size:13px !important;">
                {% for chave, armacao in armacoes %}
                     {% if armacao['secao'] == 'Masculino' %}
-                        <div class="column" style="transition: background-color 0.5s ease;">
-                            <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
-                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
-                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
-                                    <div style="font-zise:13px;">
-                                      <div style="padding:0 3px">
-                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
-                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
-                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
-                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
-                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
-                                      </div>
+                            <div class="column" style="transition: background-color 0.5s ease;">
+                                <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                    <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                        <div style="font-zise:13px;">
+                                          <div style="padding:0 3px">
+                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                              <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                              <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                              <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                          </div>
+                                        </div>
+
                                     </div>
+                                    <div  class="overlay" style="">
+                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                            <div class="row" style="padding-left:6px;">
+                                                <input class="codigo-chave" type="hidden" value="{{chave}}">
+                                                <input type="hidden" value="{{ armacao['preco'] }}">
+                                                <input type="hidden" value="{{ armacao['codigo'] }}">
+                                                {%  for c in armacao['cores'] %}
+                                                    {% if 'C10' not in c and armacao['cores'][c] > 0 %}
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>{{c}}:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores'][c]}}" oninput="quantidade(this)" name="{{c}}" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores'][c]}}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>C10:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores']['C10']}}" oninput="quantidade(this)" name="'C10'" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores']['C10']}}</span></div>
+                                                            </div>
+                                                        </div>
+                                                {% endif %}
+                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                            </div>
+                                        <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                        </div>
+                                    <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                    <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
 
                                 </div>
-                                <div  class="overlay" style="">
-                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
-                                        <div class="row" style="padding-left:6px;">
-                                            <input class="codigo-chave" type="hidden" value="{{chave}}">
-                                            <input type="hidden" value="{{ armacao['preco'] }}">
-                                            <input type="hidden" value="{{ armacao['codigo'] }}">
-                                            {%  for c in armacao['cores'] %}
-                                                {% if 'C10' not in c and armacao['cores'][c] > 0 %}
-                                                    <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class=" pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
-                                                        <span class="input-with-bottom-border">
-                                                            <input max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                        </span>
-                                                        / <span  class="quant">{{armacao['cores'][c]}}</span>
-                                                    </p>
-                                                {% endif %}
-                                            {% endfor %}
-                                            {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
-                                                 <p class="column" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class=" pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
-                                                    <span class="input-with-bottom-border">
-                                                        <input max="{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                    </span>
-                                                     / <span class="quant">{{armacao['cores']['C10']}}</span>
-                                                 </p>
-                                            {% endif %}
-                                            <p class="column C" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
-                                        </div>
-                                    <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
-
-                                    </div>
-                                <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
-                                <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
-
                             </div>
-                        </div>
                     {% endif %}
 
                {% endfor %}
@@ -981,55 +1077,73 @@
             <div class="row" style="min-height:400px; font-size:13px !important;">
                {% for chave, armacao in armacoes %}
                     {% if armacao['secao'] == 'Infantil' %}
-                       <div class="column" style="transition: background-color 0.5s ease;">
-                            <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
-                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
-                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
-                                    <div style="font-zise:13px;">
-                                      <div style="padding:0 3px">
-                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
-                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
-                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
-                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
-                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
-                                      </div>
+                            <div class="column" style="transition: background-color 0.5s ease;">
+                                <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                    <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                        <div style="font-zise:13px;">
+                                          <div style="padding:0 3px">
+                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                              <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                              <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                              <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                          </div>
+                                        </div>
+
                                     </div>
+                                    <div  class="overlay" style="">
+                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                            <div class="row" style="padding-left:6px;">
+                                                <input class="codigo-chave" type="hidden" value="{{chave}}">
+                                                <input type="hidden" value="{{ armacao['preco'] }}">
+                                                <input type="hidden" value="{{ armacao['codigo'] }}">
+                                                {%  for c in armacao['cores'] %}
+                                                    {% if 'C10' not in c and armacao['cores'][c] > 0 %}
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>{{c}}:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores'][c]}}" oninput="quantidade(this)" name="{{c}}" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores'][c]}}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>C10:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores']['C10']}}" oninput="quantidade(this)" name="'C10'" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores']['C10']}}</span></div>
+                                                            </div>
+                                                        </div>
+                                                {% endif %}
+                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                            </div>
+                                        <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                        </div>
+                                    <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                    <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
 
                                 </div>
-                                <div  class="overlay" style="">
-                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
-                                        <div class="row" style="padding-left:6px;">
-                                            <input class="codigo-chave" type="hidden" value="{{chave}}">
-                                            <input type="hidden" value="{{ armacao['preco'] }}">
-                                            <input type="hidden" value="{{ armacao['codigo'] }}">
-                                            {%  for c in armacao['cores'] %}
-                                                {% if 'C10' not in c and armacao['cores'][c] > 0 %}
-                                                    <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
-                                                        <span class="input-with-bottom-border">
-                                                            <input max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                        </span>
-                                                        / <span  class="quant">{{armacao['cores'][c]}}</span>
-                                                    </p>
-                                                {% endif %}
-                                            {% endfor %}
-                                            {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
-                                                 <p class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
-                                                    <span class="input-with-bottom-border">
-                                                        <input max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                    </span>
-                                                     / <span class="quant">{{armacao['cores']['C10']}}</span>
-                                                 </p>
-                                            {% endif %}
-                                            <p class="column C" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
-                                        </div>
-                                    <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
-
-                                    </div>
-                                <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
-                                <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
-
                             </div>
-                        </div>
                     {% endif %}
 
                {% endfor %}
@@ -1045,55 +1159,73 @@
              <div class="row" style="min-height:400px; font-size:13px !important;">
                {% for chave, armacao in armacoes %}
                     {% if armacao['secao'] == 'Solar' %}
-                        <div class="column" style="transition: background-color 0.5s ease;">
-                            <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
-                                <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
-                                <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
-                                    <div style="font-zise:13px;">
-                                      <div style="padding:0 3px">
-                                          <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
-                                          <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
-                                          <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
-                                          <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
-                                          <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
-                                      </div>
+                            <div class="column" style="transition: background-color 0.5s ease;">
+                                <div class="card" style="border-radius:5px; transition: transform 0.3s ease;">
+                                    <img class="myImg" src="{{ armacao['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                        <div style="font-zise:13px;">
+                                          <div style="padding:0 3px">
+                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacao['preco'] }}</b></p>
+                                              <p style="margin: 3px">Código: <b>{{ armacao['codigo'] }}</b></p>
+                                              <p style="margin: 3px">Dimensções <b>{{ armacao['dimensoes'] }}</b></p>
+                                              <p style="margin: 3px">Seção: <b>{{ armacao['secao'] }}</b></p>
+                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacao['descricao'] }}</b></p>
+                                          </div>
+                                        </div>
+
                                     </div>
+                                    <div  class="overlay" style="">
+                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                            <div class="row" style="padding-left:6px;">
+                                                <input class="codigo-chave" type="hidden" value="{{chave}}">
+                                                <input type="hidden" value="{{ armacao['preco'] }}">
+                                                <input type="hidden" value="{{ armacao['codigo'] }}">
+                                                {%  for c in armacao['cores'] %}
+                                                    {% if 'C10' not in c and armacao['cores'][c] > 0 %}
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>{{c}}:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores'][c]}}" oninput="quantidade(this)" name="{{c}}" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores'][c]}}</span></div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
+                                                        <div class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;">
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <b style="display:inline-block;; position:absolute; left:0; top:0px;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="legenda" style="position: absolute;"></span></span><span>C10:</span> </b>
+                                                            </div>
+                                                            <span class="input-with-bottom-border">
+                                                                <input maxlength="4" data-estoque="{{armacao['cores']['C10']}}" oninput="quantidade(this)" name="'C10'" style="width: 40px; padding:4px 2px; text-align:center;" type="text" value="0">
+                                                            </span>
+                                                            <div class="button-container">
+                                                                <div class="button increase" onclick="aumentarQuantidade(this)"><i class="fa fa-plus" aria-hidden="true"></i></div>
+                                                                <div class="button decrease" onclick="diminuirQuantidade(this)"><i class="fa fa-minus" aria-hidden="true"></i></div>
+                                                            </div>
+                                                            <div style="display:inline-block;height:10px;width:20px; position:relative;">
+                                                                <div style="display:inline-block;position:absolute;left:0;top:0px; white-space:nowrap;">/ <span  class="quant">{{armacao['cores']['C10']}}</span></div>
+                                                            </div>
+                                                        </div>
+                                                {% endif %}
+                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                            </div>
+                                        <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+
+                                        </div>
+                                    <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
+                                    <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
 
                                 </div>
-                                <div  class="overlay" style="">
-                                        <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
-                                        <div class="row" style="padding-left:6px;">
-                                            <input class="codigo-chave" type="hidden" value="{{chave}}">
-                                            <input type="hidden" value="{{ armacao['preco'] }}">
-                                            <input type="hidden" value="{{ armacao['codigo'] }}">
-                                            {%  for c in armacao['cores'] %}
-                                                {% if 'C10' not in c and armacao['cores'][c] > 0 %}
-                                                    <p  class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>{{c}}: </b>
-                                                        <span class="input-with-bottom-border">
-                                                            <input  max="{{armacao['cores'][c]}}" min="0" name="{{c}}" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                        </span>
-                                                        / <span  class="quant">{{armacao['cores'][c]}}</span>
-                                                    </p>
-                                                {% endif %}
-                                            {% endfor %}
-                                            {% if 'C10' in armacao['cores'] and armacao['cores']['C10'] > 0 %}
-                                                 <p  class="column C" style="text-align:center;width:100%; margin:0 0 5px 0;"><b style="position:relative;"><span class="pop mini"><i class="fa fa-shopping-cart" aria-hidden="true"></i></span>C10: </b>
-                                                    <span class="input-with-bottom-border">
-                                                        <input  max="{{armacao['cores']['C10']}}" min="0" name="C10" style="width: 60px; padding:4px 2px; " type="number" value="0">
-                                                    </span>
-                                                     / <span class="quant">{{armacao['cores']['C10']}}</span>
-                                                 </p>
-                                            {% endif %}
-                                            <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
-                                        </div>
-                                    <p onclick="fecharOverlay(this)" style="position:absolute; margin: 0 10px 10px 0; font-size: 16px; right:0; bottom:0;"><i  style="padding:0;bottom: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
-
-                                    </div>
-                                <button onclick="escolher(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
-                                <button onclick="adicionar(this)" style="position: absolute; bottom: 0px; left:0px;border-radius:5px; display:none;" class="w3-button w3-block w3-green w3-padding w3-large"><span style="margin-right:15px;">Adicionar</span><i class="fa fa-cart-plus" aria-hidden="true"></i></button>
-
                             </div>
-                        </div>
                     {% endif %}
 
                {% endfor %}
@@ -1261,9 +1393,9 @@
             .then(data => {
                 console.log(data)
                 if(data.mensagem == true){
-                    var numeroP = data.numero;
+                    var numeroP = data.dados.numero;
                     pedido = 'http://api.whatsapp.com/send?phone=5582987333558&text=Olá,%20meu%20nome%20é%20' + cliente + '.%0A' +
-                    'Esse%20é%20o%20meu%20endereço:%20' + data.rua + ', ' + data.num + ' ' + data.complemento + ', ' + data.bairro + ', ' + data.cidade + ', ' + data.estado + ', ' + data.cep + '.%0A' +
+                    'Esse%20é%20o%20meu%20endereço:%20' + data.dados.rua + ', ' + data.dados.num + ' ' + data.dados.complemento + ', ' + data.dados.bairro + ', ' + data.dados.cidade + ', ' + data.dados.estado + ', ' + data.dados.cep + '.%0A' +
                     'Esse%20é%20o%20meu%20pedido%20' + numeroP + ':%0A'
                     for(var i = 0; i < carrinho.length; i++){
                        cores = Object.keys(carrinho[i].cores);
@@ -1409,7 +1541,7 @@
             if(armacao.chave == chave){
                 if(armacao.cores[cor][0] < armacao.cores[cor][1]){
                     armacao.cores[cor][0] += 1;
-                    elemento.previousElementSibling.textContent = armacao.cores[cor][0] + "/" + armacao.cores[cor][1];
+                    elemento.previousElementSibling.children[0].textContent = armacao.cores[cor][0];
                     elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor][0] * armacao.preco));
 
                 }
@@ -1424,6 +1556,18 @@
         localStorage.setItem("carrinho",JSON.stringify(carrinho));
     }
 
+    function aumentarQuantidade(elemento){
+        var quant = elemento.parentNode.previousElementSibling.children[0].value;
+        var max = elemento.parentNode.nextElementSibling.children[0].children[0].textContent;
+        if(quant != ""){
+            quant = Math.abs(parseInt(quant))
+            if( quant < max){
+                quant = quant + 1;
+            }
+        }
+        elemento.parentNode.previousElementSibling.children[0].value = quant;
+    }
+
     function diminuir(elemento, chave, cor){
         var total = parseFloat(0);
         var objetoJSON = localStorage.getItem("carrinho");
@@ -1433,7 +1577,7 @@
                 if(armacao.cores[cor][0] > 1){
 
                     armacao.cores[cor][0] -= 1;
-                    elemento.nextElementSibling.textContent = armacao.cores[cor][0] + "/" + armacao.cores[cor][1];
+                    elemento.nextElementSibling.children[0].textContent = armacao.cores[cor][0];
                     elemento.parentNode.nextElementSibling.children[1].children[0].textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((armacao.cores[cor][0] * armacao.preco));
 
                 }else if(armacao.cores[cor][0] == 1){
@@ -1454,6 +1598,17 @@
         localStorage.setItem("carrinho",JSON.stringify(carrinho));
     }
 
+    function diminuirQuantidade(elemento){
+        var quant = elemento.parentNode.previousElementSibling.children[0].value;
+        if(quant != ""){
+            quant = Math.abs(parseInt(quant))
+            if( quant > 0){
+                quant = quant - 1;
+            }
+        }
+        elemento.parentNode.previousElementSibling.children[0].value = quant;
+    }
+
     function adicionar(elemento){
 
         var overlay = elemento.previousElementSibling.previousElementSibling;
@@ -1468,6 +1623,7 @@
         var img = overlay.previousElementSibling.previousElementSibling.src;
         var armacao = {};
         var tem = carrinho.filter((obj) => obj.chave === lista[0].value);
+        var acimaE = false;
         if(tem.length){
 
             armacao = tem[0];
@@ -1478,19 +1634,29 @@
                     if(typeof quantidade === 'number' && !isNaN(quantidade)){
 
                             if(armacao.cores[lista[i].name]!= undefined){
-                                if((armacao.cores[lista[i].name][0] + parseInt(quantidade)) <= armacao.cores[lista[i].name][1]){
-                                    armacao.cores[lista[i].name][0] += parseInt(quantidade);
+                                if((armacao.cores[lista[i].name][0] + quantidade) <= armacao.cores[lista[i].name][1]){
+                                    armacao.cores[lista[i].name][0] += quantidade;
+                                    lista[i].parentNode.classList.remove("acima");
                                 }else{
+                                    acimaE = true;
                                     lista[i].parentNode.classList.add("acima");
-                                    mensagemR("Quantidade acima do estoque. Verifique o carrinho!");
-                                    return
                                 }
                             }else{
-                                armacao.cores[lista[i].name] = [parseInt(quantidade),parseInt(lista[i].max)];
+                                if(quantidade <= parseInt(lista[i].getAttribute("data-estoque"))){
+                                    armacao.cores[lista[i].name] = [parseInt(quantidade),parseInt(lista[i].getAttribute("data-estoque"))];
+                                    lista[i].parentNode.classList.remove("acima");
+                                }else{
+                                    acimaE = true;
+                                    lista[i].parentNode.classList.add("acima");
+                                }
+
                             }
                     }
                 }
-                lista[i].value = "0";
+            }
+            if(acimaE){
+                mensagemR("Quantidade acima do estoque!");
+                return
             }
         }else{
             armacao["chave"] = chave;
@@ -1505,23 +1671,35 @@
                     ok = true;
                     var quantidade = Math.abs(parseInt(lista[i].value));
                     if(typeof quantidade === 'number' && !isNaN(quantidade)){
-                        armacao.cores[lista[i].name] = [parseInt(quantidade),parseInt(lista[i].max)];
+                        if(quantidade <= parseInt(lista[i].getAttribute("data-estoque"))){
+                            armacao.cores[lista[i].name] = [quantidade,parseInt(lista[i].getAttribute("data-estoque"))];
+                            lista[i].parentNode.classList.remove("acima");
+                        }else{
+                            acimaE = true;
+                            lista[i].parentNode.classList.add("acima");
+                        }
 
                     }
-                    lista[i].value = "0";
 
                 }
             }
             carrinho.push(armacao);
+            if(acimaE){
+                mensagemR("Quantidade acima do estoque!");
+                return
+            }
 
         }
 
         if(!ok){
             mensagemR("Nenhuma quantidade informada!");
         }else{
+            for(var i = 3; i < lista.length; i++){
+                lista[i].value = "0";
+            }
             localStorage.setItem("carrinho",JSON.stringify(carrinho));
             document.getElementById("notificacao").textContent = carrinho.length;
-
+            mensagemR("adicionado no carrinho!");
             elemento.parentNode.parentNode.classList.remove('column_escolher');
             elemento.parentNode.classList.remove('card_escolher');
             elemento.previousElementSibling.style.display = "inline-block";
@@ -1541,22 +1719,28 @@
         var tem = carrinho.filter((obj) => obj.chave === codigoChave.value);
         if(tem.length){
             armacao = tem[0];
-            for(var i = 0; i < (listaTem.length - 1); i++){
+            for(var i = 0; i < (listaTem.length); i++){
                 var noCarrinho = "";
                 if(listaTem[i].children[1].classList.contains("acima")){
                     listaTem[i].children[1].classList.remove("acima");
                 }
-                noCarrinho = listaTem[i].childNodes[0].textContent.replace(": ","");
+                noCarrinho = listaTem[i].children[0].children[0].children[1].textContent.replace(":","");
+                console.log("-- " + noCarrinho + " - " + armacao["cores"] )
                 if(noCarrinho in armacao["cores"]){
-                    listaTem[i].childNodes[0].childNodes[0].style.display = "block";
-                    var filho = document.createElement("span");
-                    filho.textContent = armacao.cores[noCarrinho][0];
-                    filho.style.position = "absolute";
-                    filho.classList.add("legenda");
-                    listaTem[i].childNodes[0].childNodes[0].appendChild(filho)
-
+                    listaTem[i].children[0].children[0].children[0].style.display = "block";
+                    listaTem[i].children[0].children[0].children[0].children[1].innerHTML = armacao["cores"][noCarrinho][0];
+                }else{
+                    listaTem[i].children[0].children[0].children[0].style.display = "none";
                 }
             }
+        }else{
+            for(var i = 0; i < (listaTem.length); i++){
+                console.log(i)
+                if(listaTem[i].children[1].classList.contains("acima")){
+                    listaTem[i].children[1].classList.remove("acima");
+                }
+            }
+
         }
         overlay.style.transition = "0.3s ease 0.3s";
         overlay.classList.add("overlay_escolher");
@@ -1808,6 +1992,19 @@
             limpa_formulário_cep();
         }
     };
+
+    function quantidade(input){
+      // Remove caracteres não numéricos
+      input.value = input.value.replace(/[^0-9]/g, '');
+
+      // Se o valor for vazio, mantenha-o vazio
+      if (input.value === "") {
+        return;
+      }
+
+      // Converte o valor para inteiro
+      input.value = parseInt(input.value, 10);
+    }
 
     document.getElementById("cep").onblur = function() {
         pesquisacep(document.getElementById("cep").value)

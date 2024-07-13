@@ -29,12 +29,12 @@ def painel_catalogo():
     if cookie and mensagem == '':
         try:
             armacoes = []
-            produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+            produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
             for produto in produtos:
                 armacao = produtos[produto]
                 armacoes.append((produto, armacao))
 
-            loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
+            loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
 
         except:
             return render_template('painel_catalogo.html', loja=loja, mensagem='Erro ao ler os dados do catálogo!')
@@ -76,7 +76,7 @@ def catalogo(nome):
             if cookie:
                 try:
 
-                    loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
+                    loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
                     nomeLoja= (loja['nomeLoja']).replace(' ', '').lower()
                 except:
                     return redirect(url_for('painel_catalogo'))
@@ -98,11 +98,11 @@ def add_historia():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'sobre': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'sobre': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/sobre').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/sobre').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "historia"})
             else:
                 return jsonify({'mensagem': False})
@@ -117,11 +117,11 @@ def add_whatsapp():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'whatsapp': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'whatsapp': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/whatsapp').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/whatsapp').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "whatsapp"})
             else:
                 return jsonify({'mensagem': False})
@@ -136,11 +136,11 @@ def add_instagram():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'instagram': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'instagram': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/instagram').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/instagram').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "instagram"})
             else:
                 return jsonify({'mensagem': False})
@@ -155,11 +155,11 @@ def add_facebook():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'facebook': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'facebook': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/facebook').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/facebook').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "facebook"})
             else:
                 return jsonify({'mensagem': False})
@@ -174,11 +174,11 @@ def add_youtube():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'youtube': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'youtube': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/youtube').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/youtube').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "youtube"})
             else:
                 return jsonify({'mensagem': False})
@@ -193,11 +193,11 @@ def add_endereco():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'endereco': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'endereco': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/endereco').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/endereco').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "endereco"})
             else:
                 return jsonify({'mensagem': False})
@@ -212,11 +212,11 @@ def add_funcionamento():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'aberto': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'aberto': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/aberto').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/aberto').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "funcionamento"})
             else:
                 return jsonify({'mensagem': False})
@@ -231,11 +231,11 @@ def add_cor():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'cor': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'cor': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/cor').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/cor').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "cor"})
             else:
                 return jsonify({'mensagem': False})
@@ -250,11 +250,11 @@ def add_fonte():
         dadoJson = request.get_json()
         dados = dadoJson.get('dado')
         try:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'fonte': dados})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'fonte': dados})
         except:
             return jsonify({'mensagem': False})
         else:
-            if ref.child(f'estoques/{cookie['uid']}/loja/fonte').get() == dados:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/fonte').get() == dados:
                 return jsonify({'mensagem': True, "dados": dados, "tipo": "fonte"})
             else:
                 return jsonify({'mensagem': False})
@@ -280,14 +280,14 @@ def add_logo():
                         if tipo in ALLOWED_EXTENSIONS:
                             imagem.save('somepic.jpg')
                             timestamp = time.time()
-                            local = f'estoques/{cookie['uid']}/{timestamp}.jpg'
+                            local = f'estoques/{cookie["uid"]}/{timestamp}.jpg'
                             blob = bucket.blob(local)
                             blob.upload_from_filename('somepic.jpg', content_type='image/jpg')
                             url = firebase.storage().child(local).get_url(token)
                         elif tipo in 'png':
                             imagem.save('somepic.png')
                             timestamp = time.time()
-                            local = f'estoques/{cookie['uid']}/{timestamp}.png'
+                            local = f'estoques/{cookie["uid"]}/{timestamp}.png'
                             blob = bucket.blob(local)
                             blob.upload_from_filename('somepic.png', content_type='image/png')
                             url = firebase.storage().child(local).get_url(token)
@@ -300,7 +300,7 @@ def add_logo():
         except:
             return redirect(url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
         else:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'logo': url})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'logo': url})
             return redirect(url_for('painel_catalogo', mensagem="Imagem salva com sucesso!!"))
     else:
         return redirect(url_for('logout', mensagem=mensagem))
@@ -324,7 +324,7 @@ def add_banner():
                         imagem.save('somepic.jpg')
                         print("ok3")
                         timestamp = time.time()
-                        local = f'estoques/{cookie['uid']}/{timestamp}.jpg'
+                        local = f'estoques/{cookie["uid"]}/{timestamp}.jpg'
                         blob = bucket.blob(local)
                         blob.upload_from_filename('somepic.jpg', content_type='image/jpg')
                         url = firebase.storage().child(local).get_url(token)
@@ -337,7 +337,7 @@ def add_banner():
         except:
             return redirect(url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
         else:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'banner': url})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'banner': url})
             return redirect(url_for('painel_catalogo', mensagem="Imagem salva com sucesso!!"))
     else:
         return redirect(url_for('logout', mensagem=mensagem))
@@ -358,7 +358,7 @@ def add_foto():
                         imagem = imagem.resize((700, 300))
                         imagem.save('somepic.jpg')
                         timestamp = time.time()
-                        local = f'estoques/{cookie['uid']}/{timestamp}.jpg'
+                        local = f'estoques/{cookie["uid"]}/{timestamp}.jpg'
                         blob = bucket.blob(local)
                         blob.upload_from_filename('somepic.jpg', content_type='image/jpg')
                         url = firebase.storage().child(local).get_url(token)
@@ -371,7 +371,7 @@ def add_foto():
         except:
             return redirect(url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
         else:
-            ref.child(f'estoques/{cookie['uid']}/loja').update({'foto': url})
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'foto': url})
             return redirect(url_for('painel_catalogo', mensagem="Imagem salva com sucesso!!"))
     else:
         return redirect(url_for('logout', mensagem=mensagem))
@@ -407,7 +407,7 @@ def carrinho():
             return jsonify({'mensagem': False,'erro': str(erro)})
         else:
             if res.key in ref.child(f'estoques/{chave}/pedidos').get():
-                return jsonify({'mensagem': True, 'numero': dadoJson['numero']})
+                return jsonify({'mensagem': True, 'dados': dadoJson})
             else:
                 return jsonify({'mensagem': False,'erro': '1'})
     else:
@@ -424,23 +424,23 @@ def salvar():
         dadoJson = request.get_json()
 
         try:
-            resNumero = ref.child(f'estoques/{cookie['uid']}/pedidos').child('contador').get()
+            resNumero = ref.child(f'estoques/{cookie["uid"]}/pedidos').child('contador').get()
             if resNumero != None:
-                ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': (resNumero + 1)})
+                ref.child(f'estoques/{cookie["uid"]}/pedidos').update({'contador': (resNumero + 1)})
                 dadoJson['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
                 dadoJson['ativo'] = True
-                res = ref.child(f'estoques/{cookie['uid']}/pedidos').push(dadoJson)
+                res = ref.child(f'estoques/{cookie["uid"]}/pedidos').push(dadoJson)
             else:
-                ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': 1})
+                ref.child(f'estoques/{cookie["uid"]}/pedidos').update({'contador': 1})
                 dadoJson['numero'] = ('0' * (5 - len(str(1)))) + str(1)
                 dadoJson['ativo'] = True
-                res = ref.child(f'estoques/{cookie['uid']}/pedidos').push(dadoJson)
+                res = ref.child(f'estoques/{cookie["uid"]}/pedidos').push(dadoJson)
 
         except Exception as erro:
             print(erro)
             return jsonify({'mensagem': False,'erro': str(erro)})
         else:
-            if res.key in ref.child(f'estoques/{cookie['uid']}/pedidos').get():
+            if res.key in ref.child(f'estoques/{cookie["uid"]}/pedidos').get():
                 return jsonify(dadoJson)
             else:
                 return jsonify({'mensagem': False,'erro': '1'})
@@ -461,7 +461,7 @@ def pedidos():
             mensagem = request.args.get('mensagem')
             try:
                 listaPedidos = []
-                pedidos = ref.child(f'estoques/{cookie['uid']}/pedidos').get()
+                pedidos = ref.child(f'estoques/{cookie["uid"]}/pedidos').get()
             except:
                 return render_template('pedidos.html', pedidos=[], mensagem='Erro ao ler os pedidos!')
 
@@ -489,8 +489,8 @@ def novo_pedido():
 
         if request.method == 'GET':
                 try:
-                    loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
-                    lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                    loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
+                    lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
                     produtos = []
                     for produto in lista:
                         produtos.append(lista[produto]['codigo'])
@@ -513,9 +513,9 @@ def visualizar(chave):
 
         if request.method == 'GET':
             try:
-                loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
-                pedido = ref.child(f'estoques/{cookie['uid']}/pedidos').child(chave).get()
-                lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
+                pedido = ref.child(f'estoques/{cookie["uid"]}/pedidos').child(chave).get()
+                lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
                 produtos = []
                 for produto in lista:
                     produtos.append(lista[produto]['codigo'])
@@ -539,7 +539,7 @@ def carregar_codigos():
 
         if request.method == 'GET':
             try:
-                lista = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
                 produtos = []
                 for produto in lista:
                     produtos.append(lista[produto]['codigo'])
@@ -563,7 +563,7 @@ def carregar_pedido(chave):
 
         if request.method == 'GET':
             try:
-                pedido = ref.child(f'estoques/{cookie['uid']}/pedidos').child(chave).get()
+                pedido = ref.child(f'estoques/{cookie["uid"]}/pedidos').child(chave).get()
             except:
                 return jsonify({'chave': False})
 
@@ -588,7 +588,7 @@ def adicionar_item():
             print(dadoJson)
             itens = None
             try:
-                produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
                 codigo = (dadoJson['codigo']).strip()
                 cores = dadoJson['cor']
                 for armacao in produtos:
@@ -636,27 +636,27 @@ def dar_baixa():
             try:
                 pedido['ativo'] = False
                 for armacao in pedido['carrinho']:
-                    if armacao['chave'] in ref.child(f'estoques/{cookie['uid']}/produtos').get():
-                        local = ref.child(f'estoques/{cookie['uid']}/produtos/{armacao['chave']}').child('cores')
+                    if armacao['chave'] in ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                        local = ref.child(f'estoques/{cookie["uid"]}/produtos/{armacao["chave"]}').child('cores')
                         for cor in armacao['cores']:
                             if armacao['cores'][cor][2] == True:
                                 local.update({cor: (local.child(cor).get() - armacao['cores'][cor][0])})
                 if 'chave' in pedido:
-                    ref.child(f'estoques/{cookie['uid']}/pedidos/{pedido['chave']}').update(pedido)
+                    ref.child(f'estoques/{cookie["uid"]}/pedidos/{pedido["chave"]}').update(pedido)
                 else:
-                    resNumero = ref.child(f'estoques/{cookie['uid']}/pedidos').child('contador').get()
+                    resNumero = ref.child(f'estoques/{cookie["uid"]}/pedidos').child('contador').get()
                     if resNumero != None:
-                        ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': (resNumero + 1)})
+                        ref.child(f'estoques/{cookie["uid"]}/pedidos').update({'contador': (resNumero + 1)})
                         pedido['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
 
                     else:
-                        ref.child(f'estoques/{cookie['uid']}/pedidos').update({'contador': 1})
+                        ref.child(f'estoques/{cookie["uid"]}/pedidos').update({'contador': 1})
                         pedido['numero'] = ('0' * (5 - len(str(1)))) + str(1)
 
                     pedido['ativo'] = False
-                    res = ref.child(f'estoques/{cookie['uid']}/pedidos').push(pedido)
+                    res = ref.child(f'estoques/{cookie["uid"]}/pedidos').push(pedido)
                     pedido['chave'] = res.key
-                    ref.child(f'estoques/{cookie['uid']}/pedidos').child(res.key).update(pedido)
+                    ref.child(f'estoques/{cookie["uid"]}/pedidos').child(res.key).update(pedido)
             except Exception as e:
                 print(e)
                 return jsonify({'chave': False})
@@ -680,7 +680,7 @@ def deletar_pedido():
 
 
         try:
-            referenciaDeletado = ref.child(f'estoques/{cookie['uid']}/pedidos/{chave}')
+            referenciaDeletado = ref.child(f'estoques/{cookie["uid"]}/pedidos/{chave}')
             referenciaDeletado.delete()
 
         except:
@@ -837,7 +837,7 @@ def planos():
 
         if request.method == 'GET':
             try:
-                loja = ref.child('estoques').child(f"{cookie['uid']}").child('loja').get()
+                loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
                 publickey = getPublicKey()
             except:
                 return render_template('planos.html', mensagem='Erro ao ler dados da loja!')

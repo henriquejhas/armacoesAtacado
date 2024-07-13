@@ -140,6 +140,17 @@ button {
         border-radius: 5px;
     }
 
+    .elemento-a-surgir {
+      opacity: 0;
+      transform: translateY(20px); /* ou outra transformação */
+      transition: opacity 0.5s ease, transform 0.5s ease; /* adicione transições */
+    }
+
+    .surgido {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
 
 </style>
 </head>
@@ -193,22 +204,22 @@ button {
     <div class="w3-center w3-padding-64">
       <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">O que nós oferecemos</span>
     </div>
-    <div class="w3-col l3 m6 w3-light-grey w3-container w3-padding-16" style="min-height:220px;">
+    <div class="w3-col l3 m6 w3-light-grey w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
       <h3>Sistema</h3>
       <p>Controle total do seu estoque de armações: do recebimento à venda, com informações precisas e atualizadas em tempo real.</p>
     </div>
 
-    <div class="w3-col l3 m6 w3-grey w3-container w3-padding-16" style="min-height:220px;">
+    <div class="w3-col l3 m6 w3-grey w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
       <h3>Catálogo online</h3>
       <p>Visualize seu estoque completo de armações em um catálogo online, sempre atualizado e disponível para seus clientes.</p>
     </div>
 
-    <div class="w3-col l3 m6 w3-dark-grey w3-container w3-padding-16" style="min-height:220px;">
+    <div class="w3-col l3 m6 w3-dark-grey w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
       <h3>Segurança</h3>
       <p>O sistema utiliza a tecnologia e os servidores do Google, garantindo a proteção dos seus dados e a tranquilidade do seu negócio.</p>
     </div>
 
-    <div class="w3-col l3 m6 w3-black w3-container w3-padding-16" style="min-height:220px;">
+    <div class="w3-col l3 m6 w3-black w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
       <h3>Suporte 24 horas</h3>
       <p>Estamos pronto para te auxiliar na implementação e utilização do sistema, garantindo o sucesso do seu negócio.</p>
     </div>
@@ -222,7 +233,7 @@ button {
     </div>
 
     <div style="display:flex;">
-        <div class="w3-half w3-margin-bottom" style="max-width:400px; margin:auto;">
+        <div class="w3-half w3-margin-bottom elemento-a-surgir" style="max-width:400px; margin:auto;">
           <ul class="w3-ul w3-border w3-center w3-hover-shadow">
             <li class="w3-black w3-xlarge w3-padding-32">Mensal</li>
             <li class="w3-padding-16"><b>Controle de Estoque</b></li>
@@ -238,7 +249,7 @@ button {
           </ul>
         </div>
 
-        <div class="w3-half w3-margin-bottom" style="max-width:400px; margin:auto;">
+        <div class="w3-half w3-margin-bottom elemento-a-surgir" style="max-width:400px; margin:auto;">
           <ul class="w3-ul w3-border w3-center w3-hover-shadow">
             <li class="w3-black w3-xlarge w3-padding-32">Anual</li>
             <li class="w3-padding-16"><b>Controle de Estoque</b></li>
@@ -375,4 +386,18 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+    const elementos = document.querySelectorAll('.elemento-a-surgir');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('surgido');
+        }
+      });
+    }, { threshold: 0.5 }); // 0.5 significa que o elemento deve estar 50% visível
+
+    elementos.forEach(elemento => {
+      observer.observe(elemento);
+    });
 </script>

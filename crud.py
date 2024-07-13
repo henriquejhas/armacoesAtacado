@@ -24,8 +24,8 @@ def dashboard():
     if cookie and mensagem == '':
         pedidos = None
         try:
-            pedidos = ref.child(f'estoques/{cookie['uid']}/pedidos').get()
-            produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+            pedidos = ref.child(f'estoques/{cookie["uid"]}/pedidos').get()
+            produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
             for pedido in pedidos:
 
                 if pedido != 'contador' and pedidos[pedido]['ativo'] == True:
@@ -213,7 +213,7 @@ def pesquisar():
                     busca = form.busca.data
                     tipo = request.form['tipo']
                     armacoes = []
-                    produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+                    produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
                     for produto in produtos:
                         armacao = produtos[produto]
                         if tipo != 'todos':
@@ -266,7 +266,7 @@ def editar():
             form = FormularioAdicionar()
 
             try:
-                produto = ref.child(f'estoques/{cookie['uid']}/produtos/{chaveArmacao}').get()
+                produto = ref.child(f'estoques/{cookie["uid"]}/produtos/{chaveArmacao}').get()
                 if produto == None:
                     mensagem = 'Modelo não encontrado!'
                     return redirect(url_for('editar', chave=chaveArmacao, form=form, mensagem=mensagem))
@@ -340,7 +340,7 @@ def editar():
                                     urlAntiga = request.form['imagem']
                                     imagemAntiga = urlAntiga.split('?')[0]
                                     imagemAntiga = imagemAntiga.split('%2F')[2]
-                                    localAntigo = f'estoques/{cookie['uid']}/{imagemAntiga}'
+                                    localAntigo = f'estoques/{cookie["uid"]}/{imagemAntiga}'
                                     bucket.blob(localAntigo).delete()
                                 except:
                                     print('Erro ao excluir imagem antiga!')
@@ -389,7 +389,7 @@ def edicao_rapida():
     esgotados = []
     if cookie and mensagem == '':
         try:
-            produtos = ref.child(f'estoques/{cookie['uid']}/produtos').get()
+            produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
 
             for armacao in produtos:
                 for cor in produtos[armacao]['cores']:
@@ -413,11 +413,11 @@ def salvar_rapido():
         dadoJson = request.get_json()
 
         try:
-            ref.child(f'estoques/{cookie['uid']}/produtos/{dadoJson['chave']}/cores').update(dadoJson['dados'])
+            ref.child(f'estoques/{cookie["uid"]}/produtos/{dadoJson["chave"]}/cores').update(dadoJson['dados'])
         except:
             return jsonify({'mensagem': False})
         else:
-            armacao = ref.child(f'estoques/{cookie['uid']}/produtos/{dadoJson['chave']}').get()
+            armacao = ref.child(f'estoques/{cookie["uid"]}/produtos/{dadoJson["chave"]}').get()
             dadoJson['codigo'] = armacao['codigo']
             if armacao['cores'][dadoJson['cor']] == dadoJson['quant']:
                 return jsonify({'mensagem': True, "dados": dadoJson})
@@ -457,13 +457,13 @@ def deletar():
 
 
             try:
-                referenciaDeletado = ref.child(f'estoques/{cookie['uid']}/produtos/{chave}')
+                referenciaDeletado = ref.child(f'estoques/{cookie["uid"]}/produtos/{chave}')
                 url = referenciaDeletado.get()['imagem']
                 referenciaDeletado.delete()
                 try:
                     imagem = url.split('?')[0]
                     imagem = imagem.split('%2F')[2]
-                    local = f'estoques/{cookie['uid']}/{imagem}'
+                    local = f'estoques/{cookie["uid"]}/{imagem}'
                     bucket.blob(local).delete()
                 except:
                     print('Erro ao excluir imagem antiga!')
