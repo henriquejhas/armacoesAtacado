@@ -7,7 +7,7 @@ import firebase_admin
 from firebase_admin import credentials, db,auth, storage
 from flask_wtf import CSRFProtect
 import pyrebase
-from formularios import FormularioUpload
+from formularios import FormularioUpload, FormularioCadastro, FormularioCadastro2
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory, jsonify, make_response
 from config import config
 from datetime import timedelta
@@ -845,6 +845,80 @@ def planos():
             else:
                 form = FormularioUpload()
                 return render_template('planos.html', loja=loja, publickey=publickey, form=form)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/conta', methods=['GET'])
+def conta():
+    cookie, mensagem = conferir_cookie()
+
+    if cookie and mensagem == '':
+        cadastro = None
+        form = FormularioCadastro2()
+        mensagem = request.args.get('mensagem')
+        if request.method == 'GET':
+            try:
+                chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+                cadastros = ref.child('cadastros').get()
+
+                for chaveC in cadastros:
+                    if check_password_hash(chave, chaveC):
+                        cadastro = cadastros[chaveC]
+
+            except:
+                return render_template('conta.html', mensagem='Erro ao ler dados da conta!')
+
+            else:
+                print(cadastro)
+                return render_template('conta.html', cadastro=cadastro, form=form, mensagem=mensagem)
+
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem=mensagem))
+
+
+@app.route('/alterardados', methods=['POST', "GET"])
+def alterar_dados():
+    cookie, mensagem = conferir_cookie()
+
+    if cookie and mensagem == '':
+        cadastro = None
+        if request.method == 'POST':
+            form = FormularioCadastro2(request.form)
+            if form.validate_on_submit():
+
+                nome = form.nome.data
+                loja = form.loja.data
+                endereco = form.endereco.data
+                cnpj = form.cnpj.data
+                celular = form.celular.data
+                print(nome)
+                print(celular)
+                try:
+                    cadastros = ref.child('cadastros').get()
+                    chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+                    for chaveC in cadastros:
+                        if check_password_hash(chave, chaveC):
+
+                            ref.child(f'cadastros/{chaveC}/dados').update({
+
+                                'nome': nome,
+                                'loja': loja,
+                                'endereco': endereco,
+                                'cnpj': cnpj,
+                                'celular': celular
+
+                            })
+
+                except:
+                    return redirect(url_for('conta', mensagem='Erro ao salvar alterações!'))
+                else:
+                    return redirect(url_for('conta', mensagem='Alterações salvas!'))
+            else:
+                return redirect(url_for('conta', mensagem='Há algum campo inválido!'))
 
     else:
         session['usuario_logado'] = None

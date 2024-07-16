@@ -1,0 +1,151 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<style>
+.plano{
+    margin: 20px 25px;
+    background-color: white;
+    border-radius: 10px;
+}
+.plano h4{
+    background-color: black;
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+    margin:0;
+}
+.plano p{
+    text-align: center;
+    font-size: 17px;
+    color: #858383;
+    border-bottom: 1px solid #e3e3e3;
+    margin: 0 40px;
+    padding: 10px;
+}
+.plano div{
+    padding: 10px 20px;
+    background-color: #e5e5e5;
+    border-radius: 0 0 10px 10px;
+}
+.plano div button{
+    border-radius: 25px;
+    font-size: 19px;
+    padding: 10px;
+    background-color: #009c99;
+
+
+</style>
+<div id="planos">
+
+
+
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px;">
+
+        <h2 style="text-align:center; padding-top:10px;">Conta</h2>
+
+       <form class="w3-container" method="POST" action="{{url_for('alterar_dados')}}" enctype="multipart/form-data" id="formCard" name="formCard">
+                 {{ form.csrf_token() }}
+            <div class="w3-section">
+
+              {{ form.nome.label(style="font-weight:900;") }}
+              {{ form.nome(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome completo", style="border-radius:6px;", disabled="true") }}
+
+              {{ form.loja.label(style="font-weight:900;") }}
+              {{ form.loja(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome da loja", style="border-radius:6px;", disabled="true") }}
+
+              {{ form.endereco.label(style="font-weight:900;") }}
+              {{ form.endereco(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja", style="border-radius:6px;", disabled="true") }}
+
+              {{ form.cnpj.label(style="font-weight:900;") }}
+              {{ form.cnpj(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu CNPJ", style="border-radius:6px;", disabled="true") }}
+
+              {{ form.celular.label(style="font-weight:900;") }}
+              {{ form.celular(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu celular", style="border-radius:6px;", disabled="true") }}
+                <label style="font-weight:900;" >Email</label>
+                <p id="email" class="w3-input w3-border w3-margin-bottom" style="border-radius:6px; background-color:#f7f7f6; margin-top:0;"></p>
+
+                <div id="btAlterar"class="w3-button w3-block w3-blue w3-section w3-padding w3-large" style="border-radius:6px;">Alterar</div>
+                <button id="btSalvar"  type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large" style="display:none; border-radius:6px;">Salvar Alterações</button>
+
+            </div>
+       </form>
+    </div>
+
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 100px;padding: 0 16px 16px;border-radius:5px;">
+        <h2 style="text-align:center; padding-top:10px;">Plano atual</h2>
+
+        {% if cadastro.dados.plano.tipo  == "mensal" %}
+
+            <div class="plano w3-card-4">
+                <h4>Mensal</h4>
+                <p>Controle de estoque</p>
+                <p>Catálogo online</p>
+                <p>Tráfego pago incluso</p>
+                <p>Suporte 24h</p>
+                <p class="valor">R$ 119,00<br><span>por mês</span></p>
+                <div>
+                    {% if cadastro.dados.plano.pago %}
+                        <p style="padding:0;">Status: <span class="w3-text-green" style="font-weight:900;">Ativo</span></p>
+                    {% else %}
+                        <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                    {% endif%}
+                    <p style="padding:0;">Válido até o dia <span class="w3-text-black" style="font-weight:900;">{{cadastro.dados.plano.validade}}</span></p>
+                </div>
+            </div>
+        {% elif cadastro.dados.plano.tipo  == "anual" %}
+
+            <div class="plano w3-card-4">
+                <h4>Anual</h4>
+                <p>Controle de estoque</p>
+                <p>Catálogo online</p>
+                <p>Tráfego pago incluso</p>
+                <p>Suporte 24h</p>
+                <p class="valor">R$ 1190,00<br><span>por ano</span></p>
+                <div>
+                    {% if cadastro.dados.plano.pago %}
+                        <p style="padding:0;">Status: <span class="w3-text-green" style="font-weight:900;">Ativo</span></p>
+                    {% else %}
+                        <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                    {% endif%}
+                    <p style="padding:0;">Válido até o dia <span class="w3-text-black" style="font-weight:900;">{{cadastro.dados.plano.validade}}</span></p>
+                </div>
+            </div>
+
+        {% elif cadastro.dados.plano.tipo  == "teste" %}
+            <div class="plano w3-card-4">
+                <h4>Teste</h4>
+                <p>Controle de estoque</p>
+                <p>Catálogo online</p>
+                <p>Suporte 24h</p>
+                <p class="valor">R$ 0,00<br><span>por 15 dias</span></p>
+                <div>
+                    {% if cadastro.dados.plano.pago %}
+                        <p style="padding:0;">Status: <span class="w3-text-green" style="font-weight:900;">Ativo</span></p>
+                    {% else %}
+                        <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                    {% endif%}
+                    <p style="padding:0;">Válido até o dia <span class="w3-text-black" style="font-weight:900;">{{cadastro.dados.plano.validade}}</span></p>
+                </div>
+            </div>
+        {% endif %}
+
+        <div id="btPagar" onclick="location.href='{{ url_for('planos')}}'" class="w3-button w3-block w3-green w3-padding w3-large" style="border-radius:6px;">Pagamento</div>
+    </div>
+
+</div>
+<script>
+    $("#nome").val("{{cadastro.dados.nome}}");
+    $("#loja").val("{{cadastro.dados.loja}}");
+    $("#endereco").val("{{cadastro.dados.endereco}}");
+    $("#cnpj").val("{{cadastro.dados.cnpj}}");
+    $("#celular").val("{{cadastro.dados.celular}}");
+    $("#email").text("{{cadastro.dados.email}}");
+
+    $("#btAlterar").click(function(){
+        $("input").prop("disabled", false);
+        $("#btAlterar").css("display", "none");
+        $("#btSalvar").css("display", "block");
+    });
+
+</script>
+{% endblock %}

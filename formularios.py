@@ -11,12 +11,20 @@ class FormularioCadastro(FlaskForm):
     nome = StringField('Nome', [validators.DataRequired(), validators.length(min=1, max=40)])
     loja = StringField('Loja', [validators.DataRequired(), validators.length(min=1, max=20)])
     endereco = StringField('Endereço', [validators.DataRequired(), validators.length(min=1, max=100)])
-    cnpj = StringField('CNPJ', [validators.DataRequired(), validators.length(min=14, max=18)])
+    cnpj = StringField('CPF/CNPJ', [validators.DataRequired(), validators.length(min=14, max=18)])
     celular = StringField('Celular', [validators.DataRequired(), validators.length(min=11, max=15, message="O número de celular deve ter 11 dígitos!")])
     email = EmailField('Email', [validators.DataRequired(), validators.Email()])
     senha = PasswordField('Senha', [validators.DataRequired(), validators.length(min=1, max=100)])
     senha2 = PasswordField('Confirmar Senha', [validators.DataRequired(), validators.length(min=1, max=100)])
     cadastrar = SubmitField('Cadasstrar')
+
+class FormularioCadastro2(FlaskForm):
+    nome = StringField('Nome', [validators.DataRequired(), validators.length(min=1, max=40)])
+    loja = StringField('Loja', [validators.DataRequired(), validators.length(min=1, max=20)])
+    endereco = StringField('Endereço', [validators.DataRequired(), validators.length(min=1, max=100)])
+    cnpj = StringField('CPF/CNPJ', [validators.DataRequired(), validators.length(min=14, max=18)])
+    celular = StringField('Celular', [validators.DataRequired(), validators.length(min=11, max=15, message="O número de celular deve ter 11 dígitos!")])
+
 
 class FormularioAdicionar(FlaskForm):
     codigo = StringField('Código', [validators.DataRequired(), validators.length(min=1, max=30)])

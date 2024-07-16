@@ -16,7 +16,7 @@
 <div id="adicionar">
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 30px;border-radius:5px;">
 
-    	<h2 style="text-align:center; padding-top:10px;">Adicionar Armação</h2>
+    	<h2 style="text-align:center; padding-top:10px;">Editar Armação</h2>
 
        <form class="w3-container" method="POST" action="{{ url_for('editar', chave=chave)}}" enctype="multipart/form-data">
            <figure style="text-align:center; overflow:hidden; padding-bottom:10px; margin:0px;">
@@ -34,7 +34,7 @@
                  {{ form.csrf_token() }}
             <div class="w3-section">
                 {%if form.codigo.errors%}
-                    {{ form.codigo(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o modelo da armação") }}
+                    {{ form.codigo(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o modelo da armação", style="border-radius:6px;") }}
                     <div style="display:block; border: 1px solid red">
                         {%for error in form.codigo.errors%}
                           <span>{{error}}</span>
@@ -42,12 +42,12 @@
                     </div>
                 {%else%}
                     {{ form.codigo.label(style="font-weight:900;") }}
-                    {{ form.codigo(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o modelo da armação") }}
+                    {{ form.codigo(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o modelo da armação", style="border-radius:6px;") }}
                 {%endif%}
 
 
                 {{ form.dimensoes.label(style="font-weight:900;") }}
-                {{ form.dimensoes(class="w3-input w3-border w3-margin-bottom", placeholder="Digite as dimensões da armação") }}
+                {{ form.dimensoes(class="w3-input w3-border w3-margin-bottom", placeholder="Digite as dimensões da armação", style="border-radius:6px;") }}
 
                 <label for="secao" style="font-weight:900;">Seção</label>
                 <select name="secao" id="secao" class="w3-input w3-border w3-margin-bottom">
@@ -80,54 +80,50 @@
                 </select>
 
                 {{ form.preco.label(style="font-weight:900;") }}
-                {{ form.preco(id="dinheiro", class="w3-input w3-border w3-margin-bottom", placeholder="Digite o preço da armação") }}
+                {{ form.preco(id="dinheiro", class="w3-input w3-border w3-margin-bottom", placeholder="Digite o preço da armação", style="border-radius:6px;") }}
                 <fieldset >
                     <legend>Quantidade por cor</legend>
                     <div style="display:ruby-text;">
                             <div class="cores" >
-                                <label for="c1" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C1</label><br>
-                                <input class="w3-border w3-margin-bottom" id="c1" max="1000" min="0" name="c1"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C1'] }}">
+                                <label for="c1" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C8</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c1" max="1000" min="0" name="c1"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C1']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c2" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C2</label><br>
-                                <input class="w3-border w3-margin-bottom" id="c2" max="1000" min="0" name="c2"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C2'] }}">
+                                <label for="c2" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C9</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c2" max="1000" min="0" name="c2"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C2']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c3" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C3</label><br>
-                                <input class="w3-border w3-margin-bottom" id="c3" max="1000" min="0" name="c3"  style="width: 60px; padding:4px 2px; " type="number" value="{{ armacao['C3'] }}">
+                                <label for="c3" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C10</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c3" max="1000" min="0" name="c3"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C3']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c4" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C4</label><br>
-                                <input class=" w3-border w3-margin-bottom" id="c4" max="1000" min="0" name="c4"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C4'] }}">
+                                <label for="c4" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C8</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c4" max="1000" min="0" name="c4"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C4']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c5" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C5</label><br>
-                                <input class="w3-border w3-margin-bottom" id="c5" max="1000" min="0" name="c5"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C5'] }}">
-                            </div><br>
-                            <div class="cores" >
-                                <label for="c6" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C6</label><br>
-                                <input class=" w3-border w3-margin-bottom" id="c6" max="1000" min="0" name="c6"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C6'] }}">
+                                <label for="c5" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C9</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c5" max="1000" min="0" name="c5"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C5']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c7" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C7</label><br>
-                                <input class=" w3-border w3-margin-bottom" id="c7" max="1000" min="0" name="c7"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C7'] }}">
+                                <label for="c6" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C10</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c6" max="1000" min="0" name="c6"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C6']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c8" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C8</label><br>
-                                <input class=" w3-border w3-margin-bottom" id="c8" max="1000" min="0" name="c8"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C8'] }}">
+                                <label for="c7" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C8</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c7" max="1000" min="0" name="c7"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C7']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c9" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C9</label><br>
-                                <input class=" w3-border w3-margin-bottom" id="c9" max="1000" min="0" name="c9"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C9'] }}">
+                                <label for="c8" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C9</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c8" max="1000" min="0" name="c8"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C8']}}">
                             </div>
                             <div class="cores" >
-                                <label for="c10" style="font-weight:900; display:inline-block; text-align:center; width:60px;">C10</label><br>
-                                <input class=" w3-border w3-margin-bottom" id="c10" max="1000" min="0" name="c10"  style="width: 60px; padding:4px 2px;" type="number" value="{{ armacao['C10'] }}">
+                                <label for="c9" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C10</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c9" max="1000" min="0" name="c9"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C9']}}">
                             </div>
-
-
-
-
+                            <div class="cores" >
+                                <label for="c10" style="font-weight:900; display:inline-block; text-align:center; width:50px;">C10</label><br>
+                                <input class=" w3-border w3-margin-bottom" id="c10" max="1000" min="0" name="c10"  style="width: 50px; padding:4px 2px;" type="number" value="{{armacao['C10']}}">
+                            </div>
                     </div>
 
 
@@ -149,7 +145,7 @@
 </div>
 
 <script>
-    var opcao = document.getElementById("op2");
+    var opcao = document.getElementById("op4");
     opcao.style.backgroundColor = "#a9a9a9";
 
     $('form input[type="file"]').change(event => {

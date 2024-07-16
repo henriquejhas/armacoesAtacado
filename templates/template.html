@@ -18,6 +18,7 @@
         #menu a{
             text-align:center;
             border-bottom: 1px solid #c1c1c1;
+            font-size:18px;
         }
 
         input[type="number"]::-webkit-outer-spin-button,
@@ -31,20 +32,20 @@
         }
 
         input[type="number"], input[type="number"],select {
-            border-radius:5px;
+            border-radius:6px;
         }
 
         .suporte, .compartilhar{
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            display: block;
+            display: inline-block;
             font-size: 24px;
             padding: 2px 0px;
             color: white;
             border: none;
             background-color: #34af23;
-            margin: 10px;
+            margin: 10px 0px;
         }
 
 
@@ -68,8 +69,12 @@
       <a id="op5" href="{{ url_for('adicionar') }}" class="w3-bar-item w3-button w3-padding" >Adicionar</a>
       <a id="op6" href="{{ url_for('painel_catalogo') }}" class="w3-bar-item w3-button w3-padding" >Editar catálogo</a>
       <a id="op7" href="{{ url_for('catalogo', nome='0') }}" class="w3-bar-item w3-button w3-padding" >Catálogo</a>
-      <a id="op8" href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-padding" >Sair</a>
-      <a href="http://api.whatsapp.com/send?phone=5582987333558&amp;text=Ol%C3%A1%20suporte%20Minha%20Loja" class="w3-card-4 suporte" id="suporte"><i class="fa fa-whatsapp"></i></a>
+      <a id="op8" href="{{ url_for('conta',) }}" class="w3-bar-item w3-button w3-padding" >Sua conta</a>
+      <a id="op9" href="{{ url_for('logout') }}" class="w3-bar-item w3-button w3-padding" >Sair</a>
+      <div>
+            <a href="http://api.whatsapp.com/send?phone=5582987333558&amp;text=Ol%C3%A1,%20preciso%20de%20mais%20informações%20sobre%20o%20sistema%20Armação%20Atacado." class="w3-card-4 suporte" style="font-size:24px;" id="suporte"><i class="fa fa-whatsapp"></i></a>
+            <span style="font-weight: 900; color: #34af23; text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2), 0px 4px 20px rgba(0, 0, 0, 0.19);"> Suporte</span>
+      </div>
 
   </div>
 </nav>
@@ -83,8 +88,8 @@
   <header  class="w3-bottombar w3-margin-bottom" >
   	<div>
 
-	    <span id="abrirMenu" class="w3-button w3-hide-large  w3-hover-text-grey"  ><i class="fa fa-bars" style="font-size:30px;"></i></span>
-        <h1  style="text-align: center; width: 85%;display: inline-block; font-size: 25px;"><b>Estoque</b></h1>
+	    <span id="abrirMenu" style="position:absolute; top:10px;"  class="w3-button w3-hide-large  w3-hover-text-grey"  ><i class="fa fa-bars" style="font-size:30px;"></i></span>
+        <h1  style="text-align: center; width: 100%;display: inline-block; font-size: 25px;"><b>Estoque</b></h1>
 
   	</div>
   </header>

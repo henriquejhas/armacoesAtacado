@@ -164,6 +164,28 @@
   z-index:1
 }
 
+.voltar{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 5px;
+  left: 5px;
+  text-align: center;
+  z-index: 50;
+  display: block;
+  font-size: 30px;
+  padding: 2px 0px;
+  color: white;
+  border: none;
+  background-color: #34af23;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  cursor: pointer;
+  bottom: 5px;
+  background-color: rgb(177 15 15);
+
+}
+
 @media screen and (max-width: 650px) {
   .column {
     width: 50%;
@@ -244,6 +266,8 @@
         {% endfor %}
 
     </div>
+
+    <a href="{{ url_for('pesquisar')}}"><button class="w3-card-4 voltar" id="voltar" ><i class="fa fa-arrow-left" aria-hidden="true"></i></button></a>
 
 </div>
 

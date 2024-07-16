@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<style>
+html,body,h1,h2,h3,h4 {font-family:"Lato", sans-serif}
+.mySlides {display:none}
+.w3-tag, .fa {cursor:pointer}
+.w3-tag {height:15px;width:15px;padding:0;margin-top:6px}
+
+/* Botão Login*/
+
+/* Full-width input fields */
+input[type=text], input[type=password], .login {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+/* Center the image and position the close button */
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+  position: relative;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)}
+  to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom {
+  from {transform: scale(0)}
+  to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+}
+
+button {
+        border-radius: 5px;
+    }
+
+    .elemento-a-surgir {
+      opacity: 0;
+      transform: translateY(20px); /* ou outra transformação */
+      transition: opacity 0.5s ease, transform 0.5s ease; /* adicione transições */
+    }
+
+    .surgido {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+</style>
+</head>
+<body>
+<!-- Links (sit on top) -->
+<div class="w3-top">
+  <div class="w3-row w3-large w3-light-grey">
+    <div class="w3-col s3">
+      <a href="#" class="w3-button w3-block">Início</a>
+    </div>
+    <div class="w3-col s3">
+      <a href="#plans" class="w3-button w3-block">Planos</a>
+    </div>
+    <div class="w3-col s3">
+      <a href="#about" class="w3-button w3-block">Sobre</a>
+    </div>
+    <div class="w3-col s3">
+      <a href="#contact" class="w3-button w3-block">Contatos</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- Content -->
+<div class="w3-content" style="max-width:1100px;margin-top:80px;margin-bottom:80px">
+
+  <div class="w3-panel">
+    <h1><b>Estoque de armações de óculos</b></h1>
+    <p>Diga adeus à frustração de clientes que pedem uma armação específica e você não tem mais em estoque! Com nosso sistema de estoque de armações de óculos, você terá um catálogo em tempo real, atualizado a cada venda e entrada de mercadorias. Assim, seus clientes podem visualizar, escolher e adquirir a armação dos sonhos com total segurança, evitando perdas de vendas por falta de informação. Impressione seus clientes com a praticidade e a modernidade do seu negócio, garantindo a melhor experiência de compra!</p>
+  </div>
+
+  <!-- Slideshow -->
+
+  <!-- Grid -->
+  <div class="w3-row w3-container">
+
+    <div class="w3-col l8 m8 w3-dark-grey w3-container" style="height: 370px; background-image:url({{ url_for('imagem', nome_arquivo='imagem1.jpg') }}); background-size:cover; ">
+      <img src="" style="max-height: 360px;">
+    </div>
+
+    <div class="w3-col l4 m4 w3-black w3-container w3-padding-16" style="height: 370px;">
+      <dvi style="text-align:center;">
+        <h3>Entrar no Estoque</h3>
+        <p><button onclick="document.getElementById('id01').style.display='block'" style="width:50%;">Login</button></p>
+      </dvi>
+     </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="w3-row w3-container">
+    <div class="w3-center w3-padding-64">
+      <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">O que nós oferecemos</span>
+    </div>
+    <div class="w3-col l3 m6 w3-light-grey w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
+      <h3>Sistema</h3>
+      <p>Controle total do seu estoque de armações: do recebimento à venda, com informações precisas e atualizadas em tempo real.</p>
+    </div>
+
+    <div class="w3-col l3 m6 w3-grey w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
+      <h3>Catálogo online</h3>
+      <p>Visualize seu estoque completo de armações em um catálogo online, sempre atualizado e disponível para seus clientes.</p>
+    </div>
+
+    <div class="w3-col l3 m6 w3-dark-grey w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
+      <h3>Segurança</h3>
+      <p>O sistema utiliza a tecnologia e os servidores do Google, garantindo a proteção dos seus dados e a tranquilidade do seu negócio.</p>
+    </div>
+
+    <div class="w3-col l3 m6 w3-black w3-container w3-padding-16 elemento-a-surgir" style="min-height:220px;">
+      <h3>Suporte 24 horas</h3>
+      <p>Estamos pronto para te auxiliar na implementação e utilização do sistema, garantindo o sucesso do seu negócio.</p>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="w3-row-padding" id="plans" style="text-align:center;">
+    <div class="w3-center w3-padding-64">
+      <h3>Planos</h3>
+      <p>Todos os planos oferecem os mesmos serviços e suporte. </p>
+    </div>
+
+    <div style="display:flex;">
+        <div class="w3-half w3-margin-bottom elemento-a-surgir" style="max-width:400px; margin:auto;">
+          <ul class="w3-ul w3-border w3-center w3-hover-shadow">
+            <li class="w3-black w3-xlarge w3-padding-32">Mensal</li>
+            <li class="w3-padding-16"><b>Controle de Estoque</b></li>
+            <li class="w3-padding-16"><b>Catálogo online</b></li>
+            <li class="w3-padding-16"><b>Suporte 24 horas</b></li>
+            <li class="w3-padding-16">
+              <h2 class="w3-wide">R$ 200,00</h2>
+              <span class="w3-opacity">por mês</span>
+            </li>
+            <li class="w3-light-grey w3-padding-24">
+              <button class="w3-button w3-green w3-padding-large">Contratar</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="w3-half w3-margin-bottom elemento-a-surgir" style="max-width:400px; margin:auto;">
+          <ul class="w3-ul w3-border w3-center w3-hover-shadow">
+            <li class="w3-black w3-xlarge w3-padding-32">Anual</li>
+            <li class="w3-padding-16"><b>Controle de Estoque</b></li>
+            <li class="w3-padding-16"><b>Catálogo online</b></li>
+            <li class="w3-padding-16"><b>Suporte 24 horas</b></li>
+            <li class="w3-padding-16">
+              <h2 class="w3-wide">R$ 2.000,00</h2>
+              <span class="w3-opacity">por ano</span>
+            </li>
+            <li class="w3-light-grey w3-padding-24">
+              <button class="w3-button w3-green w3-padding-large">Contratar</button>
+            </li>
+          </ul>
+        </div>
+
+    </div>
+
+
+
+  </div>
+
+  <!-- Grid -->
+  <div class="w3-row-padding" id="about">
+    <div class="w3-center w3-padding-64">
+      <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">Sobre nós</span>
+    </div>
+    <div>
+      <p>Nosso sistema de estoque de armações de óculos veio para solucionar um problema comum para as lojas de atacado. Entendemos os desafios que você enfrenta no dia a dia e, por isso, desenvolvemos uma solução completa, que te coloca no controle total do seu estoque e impulsiona suas vendas.</p>
+      <p><b>Nosso compromisso é:</b></p>
+      <p>
+        <b>Simplicidade:</b> Um sistema fácil de usar, com interface amigável e intuitiva, para que você e sua equipe se adaptem rapidamente.<br>
+        <b>Eficiência:</b> Gestão completa do seu estoque, com controle preciso de entradas e saídas, evitando perdas e otimizando seus lucros.<br>
+        <b>Em tempo real:</b> Catálogo online atualizado em tempo real, para que seus clientes visualizem as armações disponíveis e você realize vendas com mais segurança.<br>
+        <b>Segurança:</b> Utilizamos a tecnologia e os servidores do Google, garantindo a proteção dos seus dados e a tranquilidade do seu negócio.<br>
+        <b>Suporte:</b> Estamos pronto para te auxiliar na implementação e utilização do sistema, garantindo o sucesso do seu negócio.<br>
+      </p>
+      <p>Com o nosso sistema de estoque, você terá a tecnologia que precisa para impulsionar suas vendas, otimizar seus processos e oferecer a melhor experiência para seus clientes!</p>
+    </div>
+
+  </div>
+
+  <!-- Contact -->
+  <div class="w3-center w3-padding-64" id="contact">
+    <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">Contato</span>
+  </div>
+
+  <form class="w3-container" action="/action_page.php" target="_blank">
+
+    <div  style="margin:auto;display:inline-block; width: 100%;
+    text-align: center; margin-top:16px;">
+      <label>Nome</label><br>
+      <input class="w3-input w3-border w3-hover-border-black" style="width:80%; margin:0; padding:0;" type="text" name="nome" required>
+    </div>
+    <div  style="margin:auto;display:inline-block; width: 100%;
+    text-align: center; margin-top:16px;">
+      <label>Email</label><br>
+      <input class="w3-input w3-border w3-hover-border-black" style="width:80%; margin:0; padding:0; " type="text" name="emailMensagem" required>
+    </div>
+    <div  style="margin:auto;display:inline-block; width: 100%;
+    text-align: center; margin-top:16px;">
+      <label>Assunto</label><br>
+      <input class="w3-input w3-border w3-hover-border-black" style="width:80%; margin:0; padding:0;" type="text" name="assunto" required>
+    </div>
+    <div  style="margin:auto;display:inline-block; width: 100%;
+    text-align: center; margin-top:16px;">
+      <label>Mensagem</label><br>
+      <input class="w3-input w3-border w3-hover-border-black" style="width:80%; margin:0; padding:0;" type="text" name="mensagem" required>
+    </div>
+    <button type="submit" name="enviarMensagem" class="w3-button w3-block w3-black" style="width:80%;margin:auto;margin-top:16px;">Enviar</button>
+  </form>
+  <div class="w3-container" style="text-align:center;">
+    <br>
+    <p><b>Nosso Whatsapp:</b> <a href="http://api.whatsapp.com/send?phone=5582987333558&amp;text=Olá%20Ótica%20Amora" target="_blank" style="border-bottom: none; text-decoration:none;">&nbsp 82 98733-3558 &nbsp&nbsp<i style="font-size:25px; color:#11b310;" class="fa fa-whatsapp" aria-hidden="true"></i></a></p>
+
+  </div>
+
+</div>
+
+<div id="id01" class="modal">
+
+  <form class="modal-content animate" action="{{ url_for('autenticar') }}" method="post">
+    <div class="imgcontainer">
+      <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+      <p>Minhas Armações</p>
+    </div>
+    {{ form.csrf_token() }}
+    <div class="container">
+      {{ form.email.label() }}
+      {{ form.email(class="login") }}
+
+      {{ form.senha.label() }}
+      {{ form.senha(class="login") }}
+
+      <button type="submit">Login</button>
+    </div>
+
+    <div class="container" style="background-color:#f1f1f1">
+
+    </div>
+  </form>
+</div>
+
+
+<footer class="w3-container w3-padding-32 w3-light-grey w3-center">
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+</footer>
+  {% if mensagem  %}
+      <div id="msg" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%;">
+        <div style="border-radius: 16px; display:inline-block; width:50%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+          <p>{{ mensagem }}</p>
+          <script>
+                $("#msg").css("display", "flex");
+                $("#msg").css("opacity", "1");
+                setTimeout(()=>{
+                   $("#msg").css("opacity", "0");
+
+                   setTimeout(() => $("#msg").css("display", "none"),1000);
+                } ,4000);
+
+           </script>
+        </div>
+      </div>
+  {% endif %}
+</body>
+</html>
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+    const elementos = document.querySelectorAll('.elemento-a-surgir');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('surgido');
+        }
+      });
+    }, { threshold: 0.5 }); // 0.5 significa que o elemento deve estar 50% visível
+
+    elementos.forEach(elemento => {
+      observer.observe(elemento);
+    });
+</script>

@@ -43,7 +43,7 @@ csrf = CSRFProtect(app)
 def index():
     form = FormularioUsuario()
     mensagem = request.args.get('mensagem')
-    return render_template('index2.html', form=form, mensagem=mensagem)
+    return render_template('index.html', form=form, mensagem=mensagem)
 
 
 @app.route('/autenticar', methods=['POST', 'GET'])

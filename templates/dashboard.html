@@ -63,7 +63,7 @@
         font-size: 14px;
         display: inline-block;
         border-radius: 50%;
-        margin-right: 5px;
+        margin:5px;
         width: 20px;
         height: 20px;
         line-height: 1.5;
@@ -241,7 +241,7 @@
 
 <div id="inicio">
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 40px;border-radius:5px;">
-        <div class="w3-blue" style="border-radius:5px;"><span style="position:absolute; top:0; margin-left:5px; cursor:pointer; " id="abrirPedidos" onclick="abrir(this)"><i class="fa fa-times" ></i></span><h4 style="margin:0; text-align:center;">Pedidos em processo</h4><span class="pop w3-red">{{pedidos | length}}</span></div>
+        <div class="w3-blue" style="border-radius:5px; padding:5px;"><span style="position:absolute; top:0; margin-left:5px; cursor:pointer;margin-top:5px;" id="abrirPedidos" onclick="abrir(this)"><i class="fa fa-times" ></i></span><h4 style="margin:0; text-align:center;">Pedidos em processo</h4><span class="pop w3-red">{{pedidos | length}}</span></div>
         <div class="row" data-altura="">
             {% if not pedidos %}
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:800px; margin-bottom: 100px; border-radius:5px;">
@@ -270,7 +270,7 @@
     </div>
 
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 15px;border-radius:5px;">
-        <div class="w3-blue" style="border-radius:5px;"><span style="position:absolute; top:0; margin-left:5px; cursor:pointer; " id="abrirArmacoes" onclick="abrir(this)"><i class="fa fa-times" ></i></span><h4 style="margin:0; text-align:center;">Estoque esgotado</h4><span class="pop w3-red">{{produtos | length}}</span></div>
+        <div class="w3-blue" style="border-radius:5px;padding:5px;"><span style="position:absolute; top:0; cursor:pointer;margin:5px; " id="abrirArmacoes" onclick="abrir(this)"><i class="fa fa-times" ></i></span><h4 style="margin:0; text-align:center;">Estoque esgotado</h4><span class="pop w3-red">{{produtos | length}}</span></div>
         <div class="row" data-altura="">
             {% if not produtos %}
                 <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:800px; margin-bottom: 100px; border-radius:5px;">

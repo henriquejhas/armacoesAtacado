@@ -2,7 +2,7 @@
 {% block conteudo %}
 
 <div id="pesquisar">
-    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:800px; margin-bottom: 100px;border-radius:5px;">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:700px; margin-bottom: 100px;border-radius:5px;">
         <h2 style="text-align:center; padding-top:10px;">Pesquisar</h2>
         <form class="w3-container" action="{{ url_for('pesquisar') }}" method="post">
             <fieldset >
@@ -31,7 +31,7 @@
             {{ form.csrf_token() }}
 
             {{ form.busca.label(style="font-weight:900;") }}
-            {{ form.busca(autocomplete="false", class="w3-input w3-border w3-margin-bottom", placeholder="Digite sua pesquisa") }}
+            {{ form.busca(autocomplete="false", class="w3-input w3-border w3-margin-bottom", placeholder="Digite sua pesquisa", style="border-radius:6px;") }}
             <button type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Pesquisar</button>
 
         </form>

@@ -9,6 +9,8 @@
         </script>
 <div id="planos">
 
+
+
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 100px;border-radius:5px;">
 
         <h2 style="text-align:center; padding-top:10px;">Planos</h2>
@@ -17,14 +19,24 @@
             <div class="w3-section">
                 <div>
                     {{ form.csrf_token() }}
-                    <input type="text" class="cw3-border w3-margin-bottom" name="publicKey" id="publicKey" value="{{publickey}}">
-                    <input type="text" class="cw3-border w3-margin-bottom" name="encriptedCard" id="encriptedCard">
-                    <input type="text" class="cw3-border w3-margin-bottom" name="cardNumber" id="cardNumber" maxlength="16" placeholder="Número do cartão" style=" padding:4px 2px;">
-                    <input type="text" class="w3-border w3-margin-bottom" name="cardHolder" id="cardHolder" maxlength="16" placeholder="Nome no cartão" style=" padding:4px 2px;"><br>
-                    <input type="text" class="w3-border w3-margin-bottom" name="cardMonth" id="cardMonth" maxlength="2" placeholder="Mês de validade do cartão" style="width: 60px; padding:4px 2px;">
-                    <input type="text" class="w3-border w3-margin-bottom" name="cardYear" id="cardYear" maxlength="4" placeholder="ano de validade do cartão" style="width: 60px; padding:4px 2px;">
-                    <input type="text" class="w3-border w3-margin-bottom" name="cardCVV" id="cardCVV" maxlength="4" placeholder="CVV do cartão" style="width: 60px; padding:4px 2px;"><br>
-                    <input type="submit" class="w3-button w3-green" value="Pagar">
+                    <input type="hidden" class="cw3-border w3-margin-bottom" name="publicKey" id="publicKey" value="{{publickey}}">
+                    <input type="hidden" class="cw3-border w3-margin-bottom" name="encriptedCard" id="encriptedCard">
+                    <label for="cardNumber">Número do Cartão</label>
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardNumber" id="cardNumber" maxlength="16" placeholder="XXXX XXXX XXXX XXXX" style=" padding:4px 2px; border-radius:6px; width:100%;">
+                    <label for="cardHolder">Nome do Titular</label>
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardHolder" id="cardHolder" maxlength="16" placeholder="Nome Completo" style=" padding:4px 2px; border-radius:6px; width:100%;"><br>
+                    <div style="display: flex; justify-content: space-between;padding-right: 70px;">
+                        <div>
+                            <label>Data de Validade</label><br>
+                            <input type="text" class="w3-border w3-margin-bottom" name="cardMonth" id="cardMonth" maxlength="2" placeholder="MM" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;"> /
+                            <input type="text" class="w3-border w3-margin-bottom" name="cardYear" id="cardYear" maxlength="4" placeholder="AA" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;">
+                        </div>
+                        <div>
+                            <label for="cardCVV">CVV</label><br>
+                            <input type="text" class="w3-border w3-margin-bottom" name="cardCVV" id="cardCVV" maxlength="4" placeholder="XXX" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;">
+                        </div>
+                    </div>
+                    <input type="submit" class="w3-button w3-block w3-green w3-padding w3-large" style="border-radius:6px;" value="Finalizar Pagamento">
                 </div>
 
             </div>
