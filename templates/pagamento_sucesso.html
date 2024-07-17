@@ -1,10 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{{response}}
-</body>
-</html>
+{% extends "template.html" %}
+{% block conteudo %}
+<style>
+
+    .voltar{
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      position: fixed;
+      bottom: 5px;
+      left: 5px;
+      text-align: center;
+      z-index: 50;
+      display: block;
+      font-size: 30px;
+      padding: 2px 0px;
+      color: white;
+      border: none;
+      background-color: #34af23;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      cursor: pointer;
+      bottom: 5px;
+      background-color: rgb(177 15 15);
+
+    }
+</style>
+<div id="pesquisar">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="text-align:center; padding:20px; max-width:700px; margin-top: 150px;border-radius:5px;">
+        {% if response.status == 'Pago'%}
+
+            <p>Status da transação: <span class="w3-text-green" style="font-weight:900;">Pago</span></p>
+            <p>Mensagem:<br> <span style="font-weight:900;">Pagamento realizado com sucesso! Obrigado.</span></p>
+        {% else %}
+            <p>Status da transação: <span class="w3-text-red" style="font-weight:900;">Recusado</span></p>
+            <p>Mensagem:<br> <span style="font-weight:900;">{{response.mensagem}}</span></p>
+        {% endif%}
+
+    </div>
+</div>
+<a href="{{ url_for('conta')}}"><button class="w3-card-4 voltar" id="voltar" ><i class="fa fa-arrow-left" aria-hidden="true"></i></button></a>
+
+<script>
+    var opcao = document.getElementById("op8");
+    opcao.style.backgroundColor = "#a9a9a9";
+
+</script>
+
+
+{% endblock %}

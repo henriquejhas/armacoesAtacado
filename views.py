@@ -10,10 +10,11 @@ import pyrebase
 from formularios import FormularioUpload, FormularioCadastro, FormularioCadastro2
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory, jsonify, make_response
 from config import config
-from datetime import timedelta
+from datetime import timedelta, datetime
 from flask_bcrypt import generate_password_hash, check_password_hash
 import requests
 import time
+import re
 from PIL import Image
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
@@ -750,82 +751,104 @@ def frete():
 
 @app.route('/pagamento', methods=['POST'])
 def pagamento():
-    url = "https://sandbox.api.pagseguro.com/orders"
+    cookie, mensagem = conferir_cookie()
+    cadastro = None
+    data_atual = datetime.now()
+    data = data_atual.strftime("%d/%m/%Y %H:%M:%S")
+    if cookie and mensagem == '':
 
-    headers = {
-        "accept": "*/*",
-        "Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
-        "content-type": "application/json"
-    }
+        try:
+            chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+            cadastros = ref.child('cadastros').get()
 
-    payload = {
-        "reference_id": "ex-00001",
-        "customer": {
-            "name": "Jose da Silva",
-            "email": "email@test.com",
-            "tax_id": "12345678909",
-            "phones": [
-                {
-                    "country": "55",
-                    "area": "11",
-                    "number": "999999999",
-                    "type": "MOBILE"
-                }
-            ]
-        },
-        "items": [
-            {
-                "reference_id": "referencia do item",
-                "name": "nome do item",
-                "quantity": 1,
-                "unit_amount": 500
+            for chaveC in cadastros:
+                if check_password_hash(chave, chaveC):
+                    cadastro = cadastros[chaveC]
+
+        except:
+            mensagem = 'Erro ao finalizar pagamento!'
+            return redirect(url_for('planos',mensagem=mensagem))
+        else:
+            numeros = re.findall(r'\)\s*(\d+.*)', cadastro['dados']['celular'])[0]
+            numeros = re.sub(r'-', '', numeros)
+            url = "https://sandbox.api.pagseguro.com/orders"
+
+            headers = {
+                "accept": "*/*",
+                "Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
+                "content-type": "application/json"
             }
-        ],
-        "shipping": {"address": {
-            "street": "Avenida Brigadeiro Faria Lima",
-            "number": "1384",
-            "complement": "apto 12",
-            "locality": "Pinheiros",
-            "city": "São Paulo",
-            "region_code": "SP",
-            "country": "BRA",
-            "postal_code": "01452002"
-        }},
-        "notification_urls": ["https://meusite.com/notificacoes"],
-        "charges": [
-            {
-                "reference_id": "referencia da cobranca",
-                "description": "descricao da cobranca",
-                "amount": {
-                    "value": 500,
-                    "currency": "BRL"
+
+            payload = {
+                "reference_id": f"{cadastro['dados']['loja']}-{data}",
+                "customer": {
+                    "name": cadastro['dados']['nome'],
+                    "email": cadastro['dados']['email'],
+                    "tax_id": cadastro['dados']['cnpj'],
+                    "phones": [
+                        {
+                            "country": "55",
+                            "area": re.findall(r'\((.*?)\)', cadastro['dados']['celular'])[0],
+                            "number": numeros,
+                            "type": "MOBILE"
+                        }
+                    ]
                 },
-                "payment_method": {
-                    "type": "CREDIT_CARD",
-                    "installments": 1,
-                    "capture": True,
-                    "card": {
-                        "number": "4111111111111111",
-                        "exp_month": "12",
-                        "exp_year": "2026",
-                        "security_code": "123",
-                        "holder": {
-                            "name": "Jose da Silva",
-                            "tax_id": "65544332211"
-                        },
-                        "store": False
+                "items": [
+                    {
+                        "reference_id": request.form.get('tipo'),
+                        "name": f"plano {request.form.get('tipo')}",
+                        "quantity": 1,
+                        "unit_amount": 500
                     }
-                }
+                ],
+                "notification_urls": ["https://jhas.armacaoatacado.com/notificacoes"],
+                "charges": [
+                    {
+                        "reference_id": f"{cadastro['dados']['loja']}-{data}",
+                        "description": f"Plano {request.form.get('tipo')} Armação Atacado",
+                        "amount": {
+                            "value": 500,
+                            "currency": "BRL"
+                        },
+                        "payment_method": {
+                            "type": "CREDIT_CARD",
+                            "installments": 1,
+                            "capture": True,
+                            "card": {
+                                "number": request.form.get('cardNumber'),
+                                "exp_month": request.form.get('cardMonth'),
+                                "exp_year": request.form.get('cardYear'),
+                                "security_code": request.form.get('cardCVV'),
+                                "holder": {
+                                    "name": request.form.get('cardHolder'),
+                                    "tax_id": cadastro['dados']['cnpj']
+                                },
+                                "store": False
+                            }
+                        }
+                    }
+                ]
             }
-        ]
-    }
 
-    response = requests.post(url, json=payload, headers=headers)
+            response = requests.post(url, json=payload, headers=headers)
 
-    print(response.text)
+            resposta = response.json()
+            res = {}
+            if resposta['charges'][0]['status'] == 'AUTHORIZED' or resposta['charges'][0]['status'] =='PAID':
+                res['status'] = 'Pago'
+                res['mensagem'] = resposta['charges'][0]['payment_response']['message']
+            else:
+                res['status'] = 'Recusado'
+                res['mensagem'] = resposta['charges'][0]['payment_response']['message']
+
+            return render_template("pagamento_sucesso.html", response=res)
 
 
-    return render_template("pagamento_sucesso.html", response=response.text)
+    else:
+        session['usuario_logado'] = None
+        return redirect(url_for('logout', mensagem='Sessão encerrada!'))
+
 
 
 @app.route('/planos', methods=['POST', 'GET'])

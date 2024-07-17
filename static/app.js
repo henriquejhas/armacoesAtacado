@@ -27,7 +27,20 @@
         })
     }
 
+    var sitekey = $("#sitekey").text()
 
+    var script = document.createElement('script');
+    script.src = "https://www.google.com/recaptcha/api.js?render=6LdpoREqAAAAACdhkHz_ou9CGjEasooZo4yegM3t";
+
+    // Adicione o script ao head
+    //document.head.appendChild(script);
+
+    /*grecaptcha.ready(function() {
+      grecaptcha.execute(sitekey, {action: 'submit'}).then(function(token) {
+          // Add your logic to submit to your backend server here.
+          //$("#formCard").append('<input type="hidden" name="sitetoken" value="' + token + '">')
+      });
+    });*/
 
 
 })(window, document);
