@@ -8,6 +8,7 @@ from formularios import FormularioUsuario, FormularioCadastro, FormularioAdicion
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory
 from config import config
 from datetime import timedelta
+import datetime
 from flask_bcrypt import generate_password_hash, check_password_hash
 import time
 from PIL import Image
@@ -23,7 +24,17 @@ def dashboard():
     esgotados = []
     if cookie and mensagem == '':
         pedidos = None
+        cadastro = None
+        cadastroChave = None
         try:
+            chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+            cadastros = ref.child('cadastros').get()
+
+            for chaveC in cadastros:
+                if check_password_hash(chave, chaveC):
+                    cadastro = cadastros[chaveC]
+                    cadastroChave = chaveC
+
             pedidos = ref.child(f'estoques/{cookie["uid"]}/pedidos').get()
             produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
             for pedido in pedidos:
@@ -36,12 +47,28 @@ def dashboard():
                         esgotados.append([armacao, produtos[armacao]])
                         break
 
+            data_atual = datetime.date.today()
+            data = data_atual.strftime("%d/%m/%Y").split("/")
+            validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+            data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+            data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+            diferenca_dias = (data_final - data_inicial).days
+
+            if cadastro['dados']['plano']['ativo'] == True and diferenca_dias < 0:
+                ref.child(f'cadastros/{cadastroChave}/dados/plano').update({
+                            'ativo': False
+                        })
+
+
         except:
             return render_template('dashboard.html',mensagem="Erro ao carregar dados!")
         else:
             emProcesso.reverse()
             esgotados.reverse()
-            return render_template('dashboard.html', pedidos=emProcesso, produtos=esgotados[:20], mensagem=mensagem)
+
+            plano = {'validade': cadastro['dados']['plano']['validade'], 'dias':diferenca_dias}
+            return render_template('dashboard.html', pedidos=emProcesso, produtos=esgotados[:20], mensagem=mensagem, plano= plano)
     else:
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem=mensagem))

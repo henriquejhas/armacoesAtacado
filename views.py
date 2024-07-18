@@ -10,7 +10,8 @@ import pyrebase
 from formularios import FormularioUpload, FormularioCadastro, FormularioCadastro2
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory, jsonify, make_response
 from config import config
-from datetime import timedelta, datetime
+from datetime import timedelta
+import datetime
 from flask_bcrypt import generate_password_hash, check_password_hash
 import requests
 import time
@@ -753,96 +754,147 @@ def frete():
 def pagamento():
     cookie, mensagem = conferir_cookie()
     cadastro = None
-    data_atual = datetime.now()
+    cadastroChave = None
+    data_atual = datetime.datetime.now()
+    dataP = data_atual.strftime("%d/%m/%Y")
     data = data_atual.strftime("%d/%m/%Y %H:%M:%S")
+
+    planos = {'mensal': (data_atual + datetime.timedelta(days=30)).strftime("%d/%m/%Y"),
+              'anual': (data_atual + datetime.timedelta(days=365)).strftime("%d/%m/%Y")
+              }
     if cookie and mensagem == '':
+        if recaptcha(request.form.get('sitetoken')):
+            try:
+                chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+                cadastros = ref.child('cadastros').get()
 
-        try:
-            chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
-            cadastros = ref.child('cadastros').get()
+                for chaveC in cadastros:
+                    if check_password_hash(chave, chaveC):
+                        cadastro = cadastros[chaveC]
+                        cadastroChave = chaveC
 
-            for chaveC in cadastros:
-                if check_password_hash(chave, chaveC):
-                    cadastro = cadastros[chaveC]
+            except:
+                mensagem = 'Erro ao finalizar pagamento!'
+                return redirect(url_for('planos',mensagem=mensagem))
+            else:
+                ok = True
+                cardNumber = request.form.get('cardNumber').replace(" ", "")
+                if not (len(cardNumber) == 16):
+                    ok = False
 
-        except:
-            mensagem = 'Erro ao finalizar pagamento!'
-            return redirect(url_for('planos',mensagem=mensagem))
-        else:
-            numeros = re.findall(r'\)\s*(\d+.*)', cadastro['dados']['celular'])[0]
-            numeros = re.sub(r'-', '', numeros)
-            url = "https://sandbox.api.pagseguro.com/orders"
+                cardMonth = int(request.form.get('cardMonth'))
+                if not (12 >= cardMonth >= 1):
+                    ok = False
 
-            headers = {
-                "accept": "*/*",
-                "Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
-                "content-type": "application/json"
-            }
+                cardYear = request.form.get('cardYear')
+                if not (len(cardYear) == 4):
+                    ok = False
 
-            payload = {
-                "reference_id": f"{cadastro['dados']['loja']}-{data}",
-                "customer": {
-                    "name": cadastro['dados']['nome'],
-                    "email": cadastro['dados']['email'],
-                    "tax_id": cadastro['dados']['cnpj'],
-                    "phones": [
+                cardCVV = request.form.get('cardCVV')
+                if not (len(cardCVV) == 3):
+                    ok = False
+
+                cardHolder = request.form.get('cardHolder')
+                if not (len(cardHolder) <= 50):
+                    ok = False
+
+                if not ok:
+                    return redirect( url_for('planos',mensagem='Ops, parece que algo deu errado. Por favor, tente novamente.'))
+
+                tipo = request.form.get('tipo')
+                valores = {'mensal':11900, 'anual':199000}
+                numeros = re.findall(r'\)\s*(\d+.*)', cadastro['dados']['celular'])[0]
+                numeros = re.sub(r'-', '', numeros)
+                url = "https://sandbox.api.pagseguro.com/orders"
+
+                headers = {
+                    "accept": "*/*",
+                    "Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
+                    "content-type": "application/json"
+                }
+
+                payload = {
+                    "reference_id": f"{cadastro['dados']['loja']}-{data}",
+                    "customer": {
+                        "name": cadastro['dados']['nome'],
+                        "email": cadastro['dados']['email'],
+                        "tax_id": cadastro['dados']['cnpj'],
+                        "phones": [
+                            {
+                                "country": "55",
+                                "area": re.findall(r'\((.*?)\)', cadastro['dados']['celular'])[0],
+                                "number": numeros,
+                                "type": "MOBILE"
+                            }
+                        ]
+                    },
+                    "items": [
                         {
-                            "country": "55",
-                            "area": re.findall(r'\((.*?)\)', cadastro['dados']['celular'])[0],
-                            "number": numeros,
-                            "type": "MOBILE"
+                            "reference_id": tipo,
+                            "name": f"plano {tipo}",
+                            "quantity": 1,
+                            "unit_amount": valores[tipo]
                         }
-                    ]
-                },
-                "items": [
-                    {
-                        "reference_id": request.form.get('tipo'),
-                        "name": f"plano {request.form.get('tipo')}",
-                        "quantity": 1,
-                        "unit_amount": 500
-                    }
-                ],
-                "notification_urls": ["https://jhas.armacaoatacado.com/notificacoes"],
-                "charges": [
-                    {
-                        "reference_id": f"{cadastro['dados']['loja']}-{data}",
-                        "description": f"Plano {request.form.get('tipo')} Armação Atacado",
-                        "amount": {
-                            "value": 500,
-                            "currency": "BRL"
-                        },
-                        "payment_method": {
-                            "type": "CREDIT_CARD",
-                            "installments": 1,
-                            "capture": True,
-                            "card": {
-                                "number": request.form.get('cardNumber'),
-                                "exp_month": request.form.get('cardMonth'),
-                                "exp_year": request.form.get('cardYear'),
-                                "security_code": request.form.get('cardCVV'),
-                                "holder": {
-                                    "name": request.form.get('cardHolder'),
-                                    "tax_id": cadastro['dados']['cnpj']
-                                },
-                                "store": False
+                    ],
+                    "notification_urls": ["https://jhas.armacaoatacado.com/notificacoes"],
+                    "charges": [
+                        {
+                            "reference_id": f"{cadastro['dados']['loja']}-{data}",
+                            "description": f"Plano {tipo} Armação Atacado",
+                            "amount": {
+                                "value": valores[tipo],
+                                "currency": "BRL"
+                            },
+                            "payment_method": {
+                                "type": "CREDIT_CARD",
+                                "installments": 1,
+                                "capture": True,
+                                "card": {
+                                    "number": cardNumber,
+                                    "exp_month": cardMonth,
+                                    "exp_year": cardYear,
+                                    "security_code": cardCVV,
+                                    "holder": {
+                                        "name": cardHolder,
+                                        "tax_id": cadastro['dados']['cnpj']
+                                    },
+                                    "store": False
+                                }
                             }
                         }
-                    }
-                ]
-            }
+                    ]
+                }
 
-            response = requests.post(url, json=payload, headers=headers)
+                response = requests.post(url, json=payload, headers=headers)
 
-            resposta = response.json()
-            res = {}
-            if resposta['charges'][0]['status'] == 'AUTHORIZED' or resposta['charges'][0]['status'] =='PAID':
-                res['status'] = 'Pago'
-                res['mensagem'] = resposta['charges'][0]['payment_response']['message']
-            else:
-                res['status'] = 'Recusado'
-                res['mensagem'] = resposta['charges'][0]['payment_response']['message']
+                resposta = response.json()
+                print(resposta)
+                if 'error_messages' in resposta:
+                    return redirect(
+                        url_for('planos', mensagem=f"Ops, parece que algo deu errado({resposta['error_messages'][0]['code']}). Por favor, tente novamente."))
+                else:
+                    res = {}
+                    if resposta['charges'][0]['status'] == 'AUTHORIZED' or resposta['charges'][0]['status'] =='PAID':
+                        res['status'] = 'Pago'
+                        res['mensagem'] = resposta['charges'][0]['payment_response']['message']
 
-            return render_template("pagamento_sucesso.html", response=res)
+                        ref.child(f'cadastros/{cadastroChave}/dados/plano').update({
+                            'ativo': True,
+                            'data': dataP,
+                            'pago': True,
+                            'tipo': tipo,
+                            'validade': planos[tipo],
+                            'valor': valores[tipo]
+                        })
+
+
+                    else:
+                        res['status'] = 'Recusado'
+                        res['mensagem'] = resposta['charges'][0]['payment_response']['message']
+
+                    return render_template("pagamento_sucesso.html", response=res)
+        else:
+            return redirect(url_for('planos', mensagem='"Ops, parece que algo deu errado. Por favor, tente novamente."'))
 
 
     else:
@@ -857,7 +909,7 @@ def planos():
     cookie, mensagem = conferir_cookie()
 
     if cookie and mensagem == '':
-
+        mensagem = request.args.get('mensagem')
         if request.method == 'GET':
             try:
                 loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
@@ -866,8 +918,12 @@ def planos():
                 return render_template('planos.html', mensagem='Erro ao ler dados da loja!')
 
             else:
+                data_atual = datetime.date.today()
+                planos = {'mensal': (data_atual + datetime.timedelta(days=30)).strftime("%d/%m/%Y"),
+                          'anual': (data_atual + datetime.timedelta(days=365)).strftime("%d/%m/%Y")
+                          }
                 form = FormularioUpload()
-                return render_template('planos.html', loja=loja, publickey=publickey, form=form)
+                return render_template('planos.html', loja=loja, publickey=publickey, form=form, mensagem=mensagem, planos=planos)
 
     else:
         session['usuario_logado'] = None
@@ -895,7 +951,16 @@ def conta():
                 return render_template('conta.html', mensagem='Erro ao ler dados da conta!')
 
             else:
+                data_atual = datetime.date.today()
+                data = data_atual.strftime("%d/%m/%Y").split("/")
+                validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+                data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+                data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+                diferenca_dias = (data_final - data_inicial).days
+                cadastro['dias'] = diferenca_dias
                 print(cadastro)
+
                 return render_template('conta.html', cadastro=cadastro, form=form, mensagem=mensagem)
 
     else:
@@ -961,6 +1026,18 @@ def getPublicKey():
     response = requests.post(url, json=payload, headers=headers)
     print(response.text)
     return response.json()['public_key']
+
+def recaptcha(token):
+    url = f"https://www.google.com/recaptcha/api/siteverify?secret=6LdpoREqAAAAAKs0plrMEPbGvLtY1FfxKBPaWqdv&response={token}"
+
+    headers = {
+        "accept": "*/*","Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
+        "content-type": "application/json"
+    }
+
+    response = requests.post(url, headers=headers)
+    print(response.text)
+    return response.json()['success']
 
 def conferir_cookie():
     global cookie

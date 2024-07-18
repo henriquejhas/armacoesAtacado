@@ -7,7 +7,7 @@
             const card = PagSeguro.encryptCard({
               publicKey: doc.querySelector("#publicKey").value,
               holder: doc.querySelector("#cardHolder").value,
-              number: doc.querySelector("#cardNumber").value,
+              number: doc.querySelector("#cardNumber").value.replace(/\s/g, ""),
               expMonth: doc.querySelector("#cardMonth").value,
               expYear: doc.querySelector("#cardYear").value,
               securityCode: doc.querySelector("#cardCVV").value
@@ -29,18 +29,12 @@
 
     var sitekey = $("#sitekey").text()
 
-    var script = document.createElement('script');
-    script.src = "https://www.google.com/recaptcha/api.js?render=6LdpoREqAAAAACdhkHz_ou9CGjEasooZo4yegM3t";
-
-    // Adicione o script ao head
-    //document.head.appendChild(script);
-
-    /*grecaptcha.ready(function() {
+    grecaptcha.ready(function() {
       grecaptcha.execute(sitekey, {action: 'submit'}).then(function(token) {
           // Add your logic to submit to your backend server here.
-          //$("#formCard").append('<input type="hidden" name="sitetoken" value="' + token + '">')
+          $("#formCard").append('<input type="hidden" name="sitetoken" value="' + token + '">');
       });
-    });*/
+    });
 
 
 })(window, document);

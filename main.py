@@ -10,6 +10,7 @@ from formularios import FormularioUsuario, FormularioCadastro
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory
 from config import config
 from datetime import timedelta
+import datetime
 from flask_bcrypt import generate_password_hash
 import requests
 import json
@@ -113,6 +114,11 @@ def cadastrar():
         form = FormularioCadastro(request.form)
         if form.validate_on_submit():
 
+            data_atual = datetime.date.today()
+            data = data_atual.strftime("%d/%m/%Y")
+            validade = data_atual + datetime.timedelta(days=15)
+            validade = validade.strftime("%d/%m/%Y")
+
             nome = form.nome.data
             loja = form.loja.data
             endereco = form.endereco.data
@@ -137,7 +143,15 @@ def cadastrar():
                             'cnpj': cnpj,
                             'celular': celular,
                             'email': email,
-                            'id': generate_password_hash(usuario.uid).decode('utf-8')
+                            'id': generate_password_hash(usuario.uid).decode('utf-8'),
+                            'plano':{
+                                'ativo': True,
+                                'data': data,
+                                'pago': True,
+                                'tipo': 'teste',
+                                'validade': '',
+                                'valor': 0.0
+                            }
                         }
                     })
 

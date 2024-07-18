@@ -63,14 +63,14 @@
                 <label style="font-weight:900;" >Email</label>
                 <p id="email" class="w3-input w3-border w3-margin-bottom" style="border-radius:6px; background-color:#f7f7f6; margin-top:0;"></p>
 
-                <div id="btAlterar"class="w3-button w3-block w3-blue w3-section w3-padding w3-large" style="border-radius:6px;">Alterar</div>
+                <div id="btAlterar" class="w3-button w3-block w3-blue w3-section w3-padding w3-large" style="border-radius:6px;">Alterar</div>
                 <button id="btSalvar"  type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large" style="display:none; border-radius:6px;">Salvar Alterações</button>
 
             </div>
        </form>
     </div>
 
-    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 100px;padding: 0 16px 16px;border-radius:5px;">
+    <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 50px;padding: 0 16px 16px;border-radius:5px;">
         <h2 style="text-align:center; padding-top:10px;">Plano atual</h2>
 
         {% if cadastro.dados.plano.tipo  == "mensal" %}
@@ -83,10 +83,14 @@
                 <p>Suporte 24h</p>
                 <p class="valor">R$ 119,00<br><span>por mês</span></p>
                 <div>
-                    {% if cadastro.dados.plano.pago %}
+                    {% if cadastro.dados.plano.ativo %}
                         <p style="padding:0;">Status: <span class="w3-text-green" style="font-weight:900;">Ativo</span></p>
                     {% else %}
-                        <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                        {% if cadastro.dias <= -1 and cadastro.dias >= -2 %}
+                            <p style="padding:0;">Status: <span class="w3-text-orange" style="font-weight:900;">Desativado</span></p>
+                        {% elif cadastro.dias < -2 %}
+                            <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                        {% endif %}
                     {% endif%}
                     <p style="padding:0;">Válido até o dia <span class="w3-text-black" style="font-weight:900;">{{cadastro.dados.plano.validade}}</span></p>
                 </div>
@@ -101,10 +105,14 @@
                 <p>Suporte 24h</p>
                 <p class="valor">R$ 1190,00<br><span>por ano</span></p>
                 <div>
-                    {% if cadastro.dados.plano.pago %}
+                    {% if cadastro.dados.plano.ativo %}
                         <p style="padding:0;">Status: <span class="w3-text-green" style="font-weight:900;">Ativo</span></p>
                     {% else %}
-                        <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                        {% if cadastro.dias <= -1 and cadastro.dias >= -2 %}
+                            <p style="padding:0;">Status: <span class="w3-text-orange" style="font-weight:900;">Desativado</span></p>
+                        {% elif cadastro.dias < -2 %}
+                            <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                        {% endif %}
                     {% endif%}
                     <p style="padding:0;">Válido até o dia <span class="w3-text-black" style="font-weight:900;">{{cadastro.dados.plano.validade}}</span></p>
                 </div>
@@ -118,10 +126,14 @@
                 <p>Suporte 24h</p>
                 <p class="valor">R$ 0,00<br><span>por 15 dias</span></p>
                 <div>
-                    {% if cadastro.dados.plano.pago %}
+                    {% if cadastro.dados.plano.ativo %}
                         <p style="padding:0;">Status: <span class="w3-text-green" style="font-weight:900;">Ativo</span></p>
                     {% else %}
-                        <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                        {% if cadastro.dias <= -1 and cadastro.dias >= -2 %}
+                            <p style="padding:0;">Status: <span class="w3-text-orange" style="font-weight:900;">Desativado</span></p>
+                        {% elif cadastro.dias < -2 %}
+                            <p style="padding:0;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+                        {% endif %}
                     {% endif%}
                     <p style="padding:0;">Válido até o dia <span class="w3-text-black" style="font-weight:900;">{{cadastro.dados.plano.validade}}</span></p>
                 </div>
@@ -130,6 +142,19 @@
 
         <div id="btPagar" onclick="location.href='{{ url_for('planos')}}'" class="w3-button w3-block w3-green w3-padding w3-large" style="border-radius:6px;">Pagamento</div>
     </div>
+    {% if not cadastro.dados.plano.ativo %}
+    <div style="display:flex; justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;border: 1px solid black; margin:10px;padding:10px; text-align:justify; max-width:400px;" >
+            <p style="padding:0;text-align:center;">Status: <span class="w3-text-orange" style="font-weight:900;">Desativado</span></p>
+            <p>O Sistema de estoque e o catálogo funciona normalmente.</p>
+        </div>
+        <div style="text-align:center;border: 1px solid black; margin:10px;padding:10px; text-align:justify; max-width:400px;" >
+            <p style="padding:0; text-align:center;">Status: <span class="w3-text-red" style="font-weight:900;">Desativado</span></p>
+            <p>O Sistema de estoque fica em funcionamento até 8 dias após a validade do plano.<br><br> O catálogo é desativado e não poderá ser visto pelos seus clientes.</p>
+        </div>
+    </div>
+    {% endif %}
+
 
 </div>
 <script>

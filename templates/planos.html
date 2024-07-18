@@ -1,7 +1,9 @@
 {% extends "template.html" %}
 {% block conteudo %}
 <style>
-
+iframe{
+    position:fixed;
+}
 
 .voltar{
   width: 50px;
@@ -150,7 +152,7 @@
             </section>
             <p class="valor">R$ 119,00<span>por mês</span></p>
             <div>
-                <p style="padding:0; font-size:15px; margin:0;">Válido até o dia <span class="w3-text-black" style="font-weight:700;">25/07/2025</span></p>
+                <p style="padding:0; font-size:15px; margin:0;">Válido até o dia <span class="w3-text-black" style="font-weight:700;">{{ planos.mensal }}</span></p>
             </div>
         </div>
 
@@ -173,7 +175,7 @@
 
                 <p class="valor">R$ 1190,00<span>por ano</span></p>
                 <div>
-                    <p style="padding:0; font-size:15px; margin:0;">Válido até o dia <span class="w3-text-black" style="font-weight:700;">25/07/2025</span></p>
+                    <p style="padding:0; font-size:15px; margin:0;">Válido até o dia <span class="w3-text-black" style="font-weight:700;">{{ planos.anual }}</span></p>
                 </div>
             </div>
 
@@ -182,34 +184,48 @@
 
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 50px;border-radius:5px;">
 
-        <h2 style="text-align:center; padding-top:10px;">Planos</h2>
+        <h3 style="text-align:center; padding-top:10px;">Cartão de Crédito</h3>
 
        <form class="w3-container" method="POST" action="{{url_for('pagamento')}}" enctype="multipart/form-data" id="formCard" name="formCard">
             <div class="w3-section">
-                <div>
+                <div style="max-width:400px;margin:auto;">
                     {{ form.csrf_token() }}
                     <input type="hidden" class="cw3-border w3-margin-bottom" name="publicKey" id="publicKey" value="{{publickey}}">
                     <input type="hidden" class="cw3-border w3-margin-bottom" name="encriptedCard" id="encriptedCard">
                     <span style="display:none;" id="sitekey">6LdpoREqAAAAACdhkHz_ou9CGjEasooZo4yegM3t</span>
                     <label for="cardNumber">Número do Cartão</label>
-                    <input type="text" class="w3-border w3-margin-bottom" name="cardNumber" id="cardNumber" maxlength="16" placeholder="XXXX XXXX XXXX XXXX" style=" padding:4px 2px; border-radius:6px; width:100%;">
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardNumber" id="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" style="letter-spacing:2px; text-align:center; padding:4px 2px; border-radius:6px; width:100%;">
                     <label for="cardHolder">Nome do Titular</label>
-                    <input type="text" class="w3-border w3-margin-bottom" name="cardHolder" id="cardHolder" maxlength="16" placeholder="Nome Completo" style=" padding:4px 2px; border-radius:6px; width:100%;"><br>
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardHolder" id="cardHolder" maxlength="50" placeholder="Nome Completo" style=" padding:4px 2px; border-radius:6px; width:100%;"><br>
                     <div style="display: flex; justify-content: space-between;padding-right: 70px;">
                         <div>
                             <label>Data de Validade</label><br>
-                            <input type="text" class="w3-border w3-margin-bottom" name="cardMonth" id="cardMonth" maxlength="2" placeholder="MM" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;"> /
-                            <input type="text" class="w3-border w3-margin-bottom" name="cardYear" id="cardYear" maxlength="4" placeholder="AA" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;">
+                            <select class="w3-border w3-margin-bottom" name="cardMonth" id="cardMonth" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;">
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select> /
+                            <select class="w3-border w3-margin-bottom" name="cardYear" id="cardYear" style="width: 70px; padding:4px 2px;border-radius:6px; text-align:center;">
+                            </select>
                         </div>
                         <div>
                             <label for="cardCVV">CVV</label><br>
-                            <input type="text" class="w3-border w3-margin-bottom" name="cardCVV" id="cardCVV" maxlength="4" placeholder="XXX" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;">
+                            <input type="text" class="w3-border w3-margin-bottom" name="cardCVV" id="cardCVV" maxlength="3" placeholder="XXX" style="width: 60px; padding:4px 2px;border-radius:6px; text-align:center;">
                         </div>
                     </div>
                     <div>
                         <input type="hidden" id="valor" name="valor" value="119">
                         <input type="hidden" id="tipo" name="tipo" value="mensal">
-                        <p>Valor Total: <b><span id="valorTotal">R$ 119,00</span></b></p>
+                        <p>Plano: <b><span id="plano">Mensal</span></b><br>Valor Total: <b><span id="valorTotal">R$ 119,00</span></b></p>
                     </div>
 
                     <input type="submit" class="w3-button w3-block w3-green w3-padding w3-large" style="border-radius:6px;" value="Finalizar Pagamento">
@@ -223,14 +239,10 @@
 </div>
 
     <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js"></script>
-
+    <script src = "https://www.google.com/recaptcha/api.js?render=6LdpoREqAAAAACdhkHz_ou9CGjEasooZo4yegM3t"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
 
     <script>
-       function onSubmit(token) {
-            document.getElementById("demo-form").submit();
-       }
-
         function mais(elemento){
             elemento.parentNode.nextElementSibling.style.height = "auto";
             elemento.style.display = "none";
@@ -247,11 +259,53 @@
             $("#valor").val("119");
             $("#tipo").val("mensal");
             $("#valorTotal").text("R$ 119,00");
+            $("#plano").text("Mensal");
         }
         function anual(){
             $("#valor").val("1190");
             $("#tipo").val("anual");
             $("#valorTotal").text("R$ 1190,00");
+            $("#plano").text("Anual");
         }
+
+        function numeros(element){
+            element.addEventListener("input",function(e){
+                var val = this.value.replace(/\s/g, "").split("");
+                var s = "";
+                if(val[val.length - 1].search("[0-9]") != -1 ){
+                        if(val.length >= 13){
+                            val.splice(4,0, " ");
+                            val.splice(9,0, " ");
+                            val.splice(14,0, " ");
+                        }else if(val.length >= 9){
+                            val.splice(4,0, " ");
+                            val.splice(9,0, " ");
+                        }else if(val.length >= 5){
+                            val.splice(4,0, " ");
+                        }
+
+
+                }else{
+                      val.splice(val.length - 1,1);
+                }
+                for(var i = 0; i < val.length; i++){
+                    s += val[i];
+
+                }
+                this.value = s;
+            });
+        }
+        var anoAtual = new Date().getFullYear();
+        var anoSelect = document.getElementById("cardYear");
+
+        for (let i = anoAtual; i <= anoAtual + 10; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.text = i;
+          anoSelect.appendChild(option);
+        }
+
+        numeros(document.getElementById("cardNumber"))
+        numeros(document.getElementById("cardCVV"))
     </script>
 {% endblock %}
