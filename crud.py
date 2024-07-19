@@ -102,14 +102,59 @@ def adicionar():
     else:
 
         if request.method == "GET":
-            mensagem = request.args.get('mensagem')
-            form = FormularioAdicionar()
-            return render_template('adicionar.html', armacao={},form=form, mensagem=mensagem)
+            cadastro = None
+            try:
+
+                chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+                cadastros = ref.child('cadastros').get()
+
+                for chaveC in cadastros:
+                    if check_password_hash(chave, chaveC):
+                        cadastro = cadastros[chaveC]
+            except:
+                return render_template('novo_pedido.html', mensagem='Erro ao carregar lista de produtos')
+            else:
+                mensagem = request.args.get('mensagem')
+                form = FormularioAdicionar()
+
+                data_atual = datetime.date.today()
+                data = data_atual.strftime("%d/%m/%Y").split("/")
+                validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+                data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+                data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+                diferenca_dias = (data_final - data_inicial).days
+
+                plano = {'validade': cadastro['dados']['plano']['validade'], 'dias': diferenca_dias}
+                return render_template('adicionar.html', armacao={},form=form, mensagem=mensagem, plano=plano)
         elif request.method == 'POST':
             cores = {}
             form = FormularioAdicionar(request.form)
-
+            cadastro = None
             if form.validate_on_submit():
+
+                try:
+
+                    chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+                    cadastros = ref.child('cadastros').get()
+
+                    for chaveC in cadastros:
+                        if check_password_hash(chave, chaveC):
+                            cadastro = cadastros[chaveC]
+                except:
+                    return redirect(url_for('adicionar', mensagem='Erro ao verificar dados'))
+                else:
+                    data_atual = datetime.date.today()
+                    data = data_atual.strftime("%d/%m/%Y").split("/")
+                    validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+                    data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+                    data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+                    diferenca_dias = (data_final - data_inicial).days
+
+                    if diferenca_dias < -8:
+                        return redirect(url_for('adicionar', mensagem='Plano desativado'))
+
                 codigo = form.codigo.data
                 secao = request.form['secao']
                 dimensoes = form.dimensoes.data

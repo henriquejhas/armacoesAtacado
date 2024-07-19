@@ -36,28 +36,28 @@
             <div class="w3-section">
 
               {{ form.nome.label(style="font-weight:900;") }}
-              {{ form.nome(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome completo") }}
+              {{ form.nome(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome completo", style="border-radius:6px;") }}
 
               {{ form.loja.label(style="font-weight:900;") }}
-              {{ form.loja(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome da loja") }}
+              {{ form.loja(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o nome da loja", style="border-radius:6px;") }}
 
               {{ form.endereco.label(style="font-weight:900;") }}
-              {{ form.endereco(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja") }}
+              {{ form.endereco(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja", style="border-radius:6px;") }}
 
               {{ form.cnpj.label(style="font-weight:900;") }}
-              {{ form.cnpj(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu CNPJ") }}
+              {{ form.cnpj(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu CNPJ", style="border-radius:6px;") }}
 
               {{ form.celular.label(style="font-weight:900;") }}
-              {{ form.celular(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu celular") }}
+              {{ form.celular(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu celular", style="border-radius:6px;") }}
 
               {{ form.email.label(style="font-weight:900;") }}
-              {{ form.email(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da óptica") }}
+              {{ form.email(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da óptica", style="border-radius:6px;") }}
 
               {{ form.senha.label(style="font-weight:900;") }}
-              {{ form.senha(class="w3-input w3-border w3-margin-bottom", placeholder="Digite sua senha") }}
+              {{ form.senha(class="w3-input w3-border w3-margin-bottom", placeholder="Digite sua senha", style="border-radius:6px;") }}
 
               {{ form.senha2.label(style="font-weight:900;") }}
-              {{ form.senha2(class="w3-input w3-border w3-margin-bottom", placeholder="Confirme sua senha") }}
+              {{ form.senha2(class="w3-input w3-border w3-margin-bottom", placeholder="Confirme sua senha", style="border-radius:6px;") }}
 
                 <button id="btcadastrar"  type="submit" class="w3-button w3-block w3-green w3-section w3-padding w3-large">Me Cadastrar</button>
             </div>
@@ -87,66 +87,69 @@
 
     <script>
 
-
-
-
-        function telefone(element){
+        function celular(element){
             element.style.backgroundColor = "white";
             element.addEventListener("input",function(e){
-                var val = this.value.split("");
+                var val = this.value.replace(",", "").split("");
                 var s = "";
 
-               if(val[val.length - 1].search("[0-9]") != -1 ){
-
-                   if(val.length == 1){
-                        val.splice(0,0, "(");
-                   }
-                   if(val.length == 4){
-                       val.splice(val.length -1,0, ")");
-                   }
-                   if(val.length == 10){
-                       val.splice(val.length - 1,0, "-");
-                   }
-                   if(val.length > 10){
-                       if(val[9] == "-"){
-
-                       }else{
-                            for(var i = 0; i < val.length; i++){
-                                if(val[i] == "-"){
-                                    val.splice(i,1);
-                                    val.splice(9,0, "-");
-
-                                }
-
-                           }
-                       }
-                   }
-                   if(val.length > 14){
-                       val.splice(val.length - 1,1);
-                   }
-
+                if(val[val.length - 1].search("[0-9]") != -1 ){
+                        if(val.length == 3){
+                            val.splice(0,0,"(");
+                            val.splice(val.length -1,0,")");
+                        }else if( val.length == 10){
+                            val.splice(val.length -1,0, "-");
+                        }
                 }else{
-
                       val.splice(val.length - 1,1);
-
-
                 }
 
                 for(var i = 0; i < val.length; i++){
                     s += val[i];
-
-               }
-
+                }
                 this.value = s;
-
             });
-
         }
 
-        function offline(){
-            alert("você está offline");
-            location.reload();
+        function cpf(element){
+            element.addEventListener("input",function(e){
+                var val = this.value.replace(/\./g, "").replace(/\-/g, "").replace(/\//g, "").split("");
+                var s = "";
+                if(val[val.length - 1].search("[0-9]") != -1 ){
+                        if(val.length >= 13){
+                            val.splice(2,0, ".");
+                            val.splice(6,0, ".");
+                            val.splice(10,0, "/");
+                            val.splice(15,0, "-");
+                        }else if(val.length >= 12){
+                            val.splice(2,0, ".");
+                            val.splice(6,0, ".");
+                            val.splice(10,0, "/");
+                        }else if(val.length >= 10){
+                            val.splice(3,0, ".");
+                            val.splice(7,0, ".");
+                            val.splice(11,0, "-");
+                        }else if(val.length >= 7){
+                            val.splice(3,0, ".");
+                            val.splice(7,0, ".");
+                        }else if(val.length >= 4){
+                            val.splice(3,0, ".");
+                        }
+
+
+                }else{
+                      val.splice(val.length - 1,1);
+                }
+                for(var i = 0; i < val.length; i++){
+                    s += val[i];
+
+                }
+                this.value = s;
+            });
         }
+
+        cpf(document.getElementById("cnpj"));
+        celular(document.getElementById("celular"));
 
     </script>
 

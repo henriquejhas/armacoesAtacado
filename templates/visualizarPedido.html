@@ -981,16 +981,45 @@
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            if(data.ativo == false){
-                delete localStorage["{{chave}}"];
-                location.reload();
+            if(!data.mensagem){
+                if(data.ativo == false){
+                    $("#baixa").css("display", "none");
+                    $("#loading").css("display", "none");
+                    delete localStorage["{{chave}}"];
+                    var celular = data.celular.replace(/[()-]/g, '');
+                    var numeroP = data.numero;
+                    pedido = 'http://api.whatsapp.com/send?phone=' + celular + '&text=Olá,%20' + data.cliente + '.%0A' +
+                    'O%20seu%20pedido%20' + numeroP + '%20está%20pronto:%0A'
+                    for(var i = 0; i < data.carrinho.length; i++){
+                       cores = Object.keys(data.carrinho[i].cores);
+                       for(var j = 0; j < cores.length; j++){
+                            var codigo = '*' + data.carrinho[i].codigo + '*%20-%20*' + cores[j] + '*%20'
+                            var traco = 40 - codigo.length;
+                            if(traco < 0){
+                                traco = 0;
+                            }
+                            codigo = codigo + '-'.repeat(35 - codigo.length);
+                            pedido += codigo + '%20qt:%20*' + data.carrinho[i].cores[cores[j]][0] + '*%20---%20pç:%20*R$' + (data.carrinho[i].preco).toFixed(2).replace(".", ",") + '*%0A'
+                       }
+                    }
+                    document.location = pedido;
 
+                }
+            }else{
+                 mensagemR("Erro ao salvar pedido! " + data.erro);
+                    setTimeout(()=>{
+                    location.reload();
+                } ,4000);
             }
+
         })
         .catch(error => {
             console.log('Erro:', error);
-            mensagemR("Erro ao dar baixa no pedido!");
+            mensagemR("Erro ao dar baixa no pedido! " + error);
             $("#loading").css("display", "flex");
+            setTimeout(()=>{
+                location.reload();
+            } ,4000);
         });
     }
 

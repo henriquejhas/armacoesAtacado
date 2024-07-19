@@ -5,6 +5,7 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, db, auth, exceptions, storage
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import CSRFError
 import pyrebase
 from formularios import FormularioUsuario, FormularioCadastro
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory
@@ -37,8 +38,25 @@ app = Flask(__name__)
 
 CORS(app)
 app.config.from_pyfile('config.py')
-
+app.config['CSRF_SESSION_TIMEOUT'] = 3600 * 10
 csrf = CSRFProtect(app)
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    print('erro csrf', e)
+    return render_template('errocsrf.html')
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    # note that we set the 500 status explicitly
+    return render_template('500.html'), 500
 
 @app.route('/')
 def index():
@@ -120,7 +138,7 @@ def cadastrar():
             validade = validade.strftime("%d/%m/%Y")
 
             nome = form.nome.data
-            loja = form.loja.data
+            loja = (form.loja.data).lower().replace(" ", "")
             endereco = form.endereco.data
             cnpj = form.cnpj.data
             celular = form.celular.data
@@ -128,11 +146,22 @@ def cadastrar():
             senha = form.senha.data
             senha2 = form.senha2.data
 
+            if loja in ref.child('lojas').get():
+                return render_template('cadastro.html', form=form, mensagem='O nome da loja já está em uso!')
+
+
             if senha == senha2:
                 try:
                     usuario = auth.create_user(email=email, password=senha)
                 except auth.EmailAlreadyExistsError:
                     return render_template('cadastro.html', form=form, mensagem='O email já está em uso!')
+                except Exception as e:
+                    mensagem = ''
+                    print(str(e))
+                    if 'Invalid password string' in str(e):
+                        mensagem = 'A senha deve ter pelo menos 6 caracteres'
+
+                    return render_template('cadastro.html', form=form, mensagem=mensagem)
                 else:
 
                     chave = ref.child('cadastros').push({
@@ -194,7 +223,11 @@ def cadastrar():
             else:
                 return render_template('cadastro.html', form=form, mensagem='A senha de confirmação não está igual!')
         else:
-            return render_template('cadastro.html', form=form, mensagem='Há algum campo inválido!')
+
+            for field, errors in form.errors.items():
+                for error in errors:
+                    mensagem = f'{field}: inválido!'
+            return render_template('cadastro.html', form=form, mensagem=mensagem)
 
 
 @app.route('/confirmacao')

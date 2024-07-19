@@ -4,11 +4,12 @@ from main import app, ref, firebase, bucket
 from flask import Flask, Response
 from flask_cors import CORS
 import firebase_admin
-from firebase_admin import credentials, db,auth, storage
+from firebase_admin import credentials, db, auth, storage
 from flask_wtf import CSRFProtect
 import pyrebase
 from formularios import FormularioUpload, FormularioCadastro, FormularioCadastro2
-from flask import render_template, request, redirect, session, flash, url_for, send_from_directory, jsonify, make_response
+from flask import render_template, request, redirect, session, flash, url_for, send_from_directory, jsonify, \
+    make_response
 from config import config
 from datetime import timedelta
 import datetime
@@ -20,7 +21,6 @@ from PIL import Image
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 ALLOWED_EXTENSIONS2 = {'jpg', 'jpeg', 'png'}
-
 
 
 @app.route('/painel/catalogo')
@@ -43,7 +43,7 @@ def painel_catalogo():
         else:
             form = FormularioUpload()
             mensagem = request.args.get('mensagem')
-            return render_template('painel_catalogo.html', loja=loja,armacoes=armacoes, mensagem=mensagem, form=form)
+            return render_template('painel_catalogo.html', loja=loja, armacoes=armacoes, mensagem=mensagem, form=form)
     else:
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem=mensagem))
@@ -55,7 +55,7 @@ def catalogo(nome):
     lojas = ref.child('lojas').get()
     if nome in lojas:
         chave = lojas[nome]
-
+        cadastro = None
         try:
             armacoes = []
             produtos = ref.child(f'estoques/{chave}/produtos').get()
@@ -65,12 +65,32 @@ def catalogo(nome):
 
             loja = ref.child('estoques').child(f"{chave}").child('loja').get()
 
+            chave = ref.child('estoques').child(f'{chave}').child('cadastro').get()
+            cadastros = ref.child('cadastros').get()
+
+            for chaveC in cadastros:
+                if check_password_hash(chave, chaveC):
+                    cadastro = cadastros[chaveC]
+
         except:
             return render_template('catalogo.html', loja=loja, mensagem='Erro ao ler os dados do catálogo!')
         else:
+
+            data_atual = datetime.date.today()
+            data = data_atual.strftime("%d/%m/%Y").split("/")
+            validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+            data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+            data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+            diferenca_dias = (data_final - data_inicial).days
+
+            if diferenca_dias < -2:
+                return render_template('catalogo_nao_encontrado.html', mensagem='Erro ao ler os dados do catálogo!')
+
             form = FormularioUpload()
             mensagem = request.args.get('mensagem')
-            return render_template('catalogo.html', loja=loja,armacoes=armacoes, mensagem=mensagem, form=form, nome=nome)
+            return render_template('catalogo.html', loja=loja, armacoes=armacoes, mensagem=mensagem, form=form,
+                                   nome=nome)
     else:
         if nome == '0':
             cookie, mensagem = conferir_cookie()
@@ -79,7 +99,7 @@ def catalogo(nome):
                 try:
 
                     loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
-                    nomeLoja= (loja['nomeLoja']).replace(' ', '').lower()
+                    nomeLoja = (loja['nomeLoja']).replace(' ', '').lower()
                 except:
                     return redirect(url_for('painel_catalogo'))
                 else:
@@ -90,7 +110,7 @@ def catalogo(nome):
                 session['usuario_logado'] = None
                 return redirect(url_for('logout', mensagem=mensagem))
         else:
-            return render_template('catalogo_nao_encontrado.html',mensagem='Erro ao ler os dados do catálogo!')
+            return render_template('catalogo_nao_encontrado.html', mensagem='Erro ao ler os dados do catálogo!')
 
 
 @app.route('/historia', methods=['POST'])
@@ -300,7 +320,8 @@ def add_logo():
             else:
                 return redirect(url_for('painel_catalogo', mensagem="Formulário inválido!"))
         except:
-            return redirect(url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
+            return redirect(
+                url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
         else:
             ref.child(f'estoques/{cookie["uid"]}/loja').update({'logo': url})
             return redirect(url_for('painel_catalogo', mensagem="Imagem salva com sucesso!!"))
@@ -337,7 +358,8 @@ def add_banner():
             else:
                 return redirect(url_for('painel_catalogo', mensagem="Formulário inválido!"))
         except:
-            return redirect(url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
+            return redirect(
+                url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
         else:
             ref.child(f'estoques/{cookie["uid"]}/loja').update({'banner': url})
             return redirect(url_for('painel_catalogo', mensagem="Imagem salva com sucesso!!"))
@@ -371,7 +393,8 @@ def add_foto():
             else:
                 return redirect(url_for('painel_catalogo', mensagem="Formulário inválido!"))
         except:
-            return redirect(url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
+            return redirect(
+                url_for('painel_catalogo', mensagem="Tivemos um problema com a imagem, fale com o suporte!"))
         else:
             ref.child(f'estoques/{cookie["uid"]}/loja').update({'foto': url})
             return redirect(url_for('painel_catalogo', mensagem="Imagem salva com sucesso!!"))
@@ -381,7 +404,6 @@ def add_foto():
 
 @app.route('/carrinho', methods=['POST'])
 def carrinho():
-
     global loja, res
     dadoJson = request.get_json()
     lojas = ref.child('lojas').get()
@@ -406,14 +428,14 @@ def carrinho():
 
         except Exception as erro:
             print(erro)
-            return jsonify({'mensagem': False,'erro': str(erro)})
+            return jsonify({'mensagem': False, 'erro': str(erro)})
         else:
             if res.key in ref.child(f'estoques/{chave}/pedidos').get():
                 return jsonify({'mensagem': True, 'dados': dadoJson})
             else:
-                return jsonify({'mensagem': False,'erro': '1'})
+                return jsonify({'mensagem': False, 'erro': '1'})
     else:
-        return jsonify({'mensagem': False,'erro': '2'})
+        return jsonify({'mensagem': False, 'erro': '2'})
 
 
 @app.route('/salvar', methods=['POST'])
@@ -424,8 +446,27 @@ def salvar():
     if cookie and mensagem == '':
         global loja, res
         dadoJson = request.get_json()
-
+        cadastro = None
         try:
+            chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+            cadastros = ref.child('cadastros').get()
+
+            for chaveC in cadastros:
+                if check_password_hash(chave, chaveC):
+                    cadastro = cadastros[chaveC]
+
+            data_atual = datetime.date.today()
+            data = data_atual.strftime("%d/%m/%Y").split("/")
+            validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+            data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+            data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+            diferenca_dias = (data_final - data_inicial).days
+
+            if diferenca_dias < -8:
+                print("passou para redirecionar")
+                return jsonify({'mensagem': True, 'erro': 'Plano desativado.'})
+
             resNumero = ref.child(f'estoques/{cookie["uid"]}/pedidos').child('contador').get()
             if resNumero != None:
                 ref.child(f'estoques/{cookie["uid"]}/pedidos').update({'contador': (resNumero + 1)})
@@ -440,12 +481,13 @@ def salvar():
 
         except Exception as erro:
             print(erro)
-            return jsonify({'mensagem': False,'erro': str(erro)})
+            return jsonify({'mensagem': True, 'erro': str(erro)})
         else:
+
             if res.key in ref.child(f'estoques/{cookie["uid"]}/pedidos').get():
                 return jsonify(dadoJson)
             else:
-                return jsonify({'mensagem': False,'erro': '1'})
+                return jsonify({'mensagem': True, 'erro': '1'})
 
     else:
         session['usuario_logado'] = None
@@ -488,18 +530,34 @@ def novo_pedido():
     cookie, mensagem = conferir_cookie()
 
     if cookie and mensagem == '':
-
+        cadastro = None
         if request.method == 'GET':
-                try:
-                    loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
-                    lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
-                    produtos = []
-                    for produto in lista:
-                        produtos.append(lista[produto]['codigo'])
-                except:
-                    return render_template('novo_pedido.html', mensagem='Erro ao carregar lista de produtos')
-                else:
-                    return render_template('novo_pedido.html',mensagem=mensagem, produtos=produtos, loja=loja)
+            try:
+                loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
+                lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
+                produtos = []
+                for produto in lista:
+                    produtos.append(lista[produto]['codigo'])
+
+                chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+                cadastros = ref.child('cadastros').get()
+
+                for chaveC in cadastros:
+                    if check_password_hash(chave, chaveC):
+                        cadastro = cadastros[chaveC]
+            except:
+                return render_template('novo_pedido.html', mensagem='Erro ao carregar lista de produtos')
+            else:
+                data_atual = datetime.date.today()
+                data = data_atual.strftime("%d/%m/%Y").split("/")
+                validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+                data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+                data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+                diferenca_dias = (data_final - data_inicial).days
+
+                plano = {'validade': cadastro['dados']['plano']['validade'], 'dias': diferenca_dias}
+                return render_template('novo_pedido.html', mensagem=mensagem, produtos=produtos, loja=loja, plano=plano)
 
     else:
         session['usuario_logado'] = None
@@ -525,7 +583,8 @@ def visualizar(chave):
                 return render_template('visualizarPedido.html', pedido=[], mensagem='Erro ao ler os pedidos!')
 
             else:
-                return render_template('visualizarPedido.html', pedido=pedido, chave=chave, produtos=produtos, loja=loja)
+                return render_template('visualizarPedido.html', pedido=pedido, chave=chave, produtos=produtos,
+                                       loja=loja)
 
     else:
         session['usuario_logado'] = None
@@ -608,9 +667,9 @@ def adicionar_item():
                                 if produtos[armacao]['cores'][cor] > 0:
                                     itens['cores'][cor] = [1, produtos[armacao]['cores'][cor], False]
                                 else:
-                                    itens['add'].append([cor,'esgotada'])
+                                    itens['add'].append([cor, 'esgotado'])
                             else:
-                                itens['add'].append([cor, 'não encontrada'])
+                                itens['add'].append([cor, 'não encontrado'])
             except:
                 return jsonify({'chave': False})
 
@@ -619,7 +678,7 @@ def adicionar_item():
                 if itens != None:
                     return jsonify(itens)
                 else:
-                    return jsonify({'chave':'vazia', 'erro':'3', 'msg': 'Código não encontrado!'})
+                    return jsonify({'chave': 'vazia', 'erro': '3', 'msg': 'Código não encontrado!'})
 
     else:
         session['usuario_logado'] = None
@@ -634,8 +693,28 @@ def dar_baixa():
 
         if request.method == 'POST':
             pedido = request.get_json()
-
+            cadastro = None
             try:
+
+                '''chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
+                cadastros = ref.child('cadastros').get()
+
+                for chaveC in cadastros:
+                    if check_password_hash(chave, chaveC):
+                        cadastro = cadastros[chaveC]
+
+                data_atual = datetime.date.today()
+                data = data_atual.strftime("%d/%m/%Y").split("/")
+                validade = str(cadastro['dados']['plano']['validade']).split("/")
+
+                data_inicial = datetime.date(int(data[2]), int(data[1]), int(data[0]))
+                data_final = datetime.date(int(validade[2]), int(validade[1]), int(validade[0]))
+                diferenca_dias = (data_final - data_inicial).days
+                
+
+                if diferenca_dias < -8:
+                    return jsonify({'mensagem': True, 'erro': 'Plano desativado.'})
+                '''
                 pedido['ativo'] = False
                 for armacao in pedido['carrinho']:
                     if armacao['chave'] in ref.child(f'estoques/{cookie["uid"]}/produtos').get():
@@ -661,7 +740,7 @@ def dar_baixa():
                     ref.child(f'estoques/{cookie["uid"]}/pedidos').child(res.key).update(pedido)
             except Exception as e:
                 print(e)
-                return jsonify({'chave': False})
+                return jsonify({'mensagem': True, 'erro': e})
 
             else:
 
@@ -679,7 +758,6 @@ def deletar_pedido():
     cookie, mensagem = conferir_cookie()
 
     if cookie and mensagem == '':
-
 
         try:
             referenciaDeletado = ref.child(f'estoques/{cookie["uid"]}/pedidos/{chave}')
@@ -775,34 +853,40 @@ def pagamento():
 
             except:
                 mensagem = 'Erro ao finalizar pagamento!'
-                return redirect(url_for('planos',mensagem=mensagem))
+                return redirect(url_for('planos', mensagem=mensagem))
             else:
                 ok = True
                 cardNumber = request.form.get('cardNumber').replace(" ", "")
                 if not (len(cardNumber) == 16):
+                    print(cardNumber)
                     ok = False
 
                 cardMonth = int(request.form.get('cardMonth'))
-                if not (12 >= cardMonth >= 1):
+                if not (12 >= int(cardMonth) >= 1):
+                    print(cardMonth)
                     ok = False
 
                 cardYear = request.form.get('cardYear')
                 if not (len(cardYear) == 4):
+                    print(cardYear)
                     ok = False
 
                 cardCVV = request.form.get('cardCVV')
                 if not (len(cardCVV) == 3):
+                    print(cardCVV)
                     ok = False
 
                 cardHolder = request.form.get('cardHolder')
                 if not (len(cardHolder) <= 50):
+                    print(cardHolder)
                     ok = False
 
                 if not ok:
-                    return redirect( url_for('planos',mensagem='Ops, parece que algo deu errado. Por favor, tente novamente.'))
+                    return redirect(
+                        url_for('planos', mensagem='Ops, parece que algo deu errado. Por favor, tente novamente.'))
 
                 tipo = request.form.get('tipo')
-                valores = {'mensal':11900, 'anual':199000}
+                valores = {'mensal': 11900, 'anual': 199000}
                 numeros = re.findall(r'\)\s*(\d+.*)', cadastro['dados']['celular'])[0]
                 numeros = re.sub(r'-', '', numeros)
                 url = "https://sandbox.api.pagseguro.com/orders"
@@ -871,10 +955,11 @@ def pagamento():
                 print(resposta)
                 if 'error_messages' in resposta:
                     return redirect(
-                        url_for('planos', mensagem=f"Ops, parece que algo deu errado({resposta['error_messages'][0]['code']}). Por favor, tente novamente."))
+                        url_for('planos',
+                                mensagem=f"Ops, parece que algo deu errado({resposta['error_messages'][0]['code']}). Por favor, tente novamente."))
                 else:
                     res = {}
-                    if resposta['charges'][0]['status'] == 'AUTHORIZED' or resposta['charges'][0]['status'] =='PAID':
+                    if resposta['charges'][0]['status'] == 'AUTHORIZED' or resposta['charges'][0]['status'] == 'PAID':
                         res['status'] = 'Pago'
                         res['mensagem'] = resposta['charges'][0]['payment_response']['message']
 
@@ -894,13 +979,13 @@ def pagamento():
 
                     return render_template("pagamento_sucesso.html", response=res)
         else:
-            return redirect(url_for('planos', mensagem='"Ops, parece que algo deu errado. Por favor, tente novamente."'))
+            return redirect(
+                url_for('planos', mensagem='"Ops, parece que algo deu errado. Por favor, tente novamente."'))
 
 
     else:
         session['usuario_logado'] = None
         return redirect(url_for('logout', mensagem='Sessão encerrada!'))
-
 
 
 @app.route('/planos', methods=['POST', 'GET'])
@@ -923,7 +1008,8 @@ def planos():
                           'anual': (data_atual + datetime.timedelta(days=365)).strftime("%d/%m/%Y")
                           }
                 form = FormularioUpload()
-                return render_template('planos.html', loja=loja, publickey=publickey, form=form, mensagem=mensagem, planos=planos)
+                return render_template('planos.html', loja=loja, publickey=publickey, form=form, mensagem=mensagem,
+                                       planos=planos)
 
     else:
         session['usuario_logado'] = None
@@ -979,18 +1065,20 @@ def alterar_dados():
             if form.validate_on_submit():
 
                 nome = form.nome.data
-                loja = form.loja.data
+                loja = (form.loja.data).lower().replace(" ", "")
                 endereco = form.endereco.data
                 cnpj = form.cnpj.data
                 celular = form.celular.data
-                print(nome)
-                print(celular)
+                nomeLoja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja/nomeLoja').get()
+                if loja != nomeLoja.lower().replace("", ""):
+                    if loja in ref.child('lojas').get():
+                        return redirect(url_for('conta', mensagem='O nome da loja já está em uso!'))
+
                 try:
                     cadastros = ref.child('cadastros').get()
                     chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
                     for chaveC in cadastros:
                         if check_password_hash(chave, chaveC):
-
                             ref.child(f'cadastros/{chaveC}/dados').update({
 
                                 'nome': nome,
@@ -1006,7 +1094,10 @@ def alterar_dados():
                 else:
                     return redirect(url_for('conta', mensagem='Alterações salvas!'))
             else:
-                return redirect(url_for('conta', mensagem='Há algum campo inválido!'))
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        mensagem = f'{field}: inválido!'
+                return redirect(url_for('conta', mensagem=mensagem))
 
     else:
         session['usuario_logado'] = None
@@ -1027,17 +1118,20 @@ def getPublicKey():
     print(response.text)
     return response.json()['public_key']
 
+
 def recaptcha(token):
     url = f"https://www.google.com/recaptcha/api/siteverify?secret=6LdpoREqAAAAAKs0plrMEPbGvLtY1FfxKBPaWqdv&response={token}"
 
     headers = {
-        "accept": "*/*","Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
+        "accept": "*/*",
+        "Authorization": "Bearer f6e70f44-7176-4707-bf10-440194f5faf7131fe88343f3adc865ef6fd4368f24aabc13-bb59-46b2-aa4b-d4c1704252b7",
         "content-type": "application/json"
     }
 
     response = requests.post(url, headers=headers)
     print(response.text)
     return response.json()['success']
+
 
 def conferir_cookie():
     global cookie
@@ -1081,9 +1175,3 @@ def allowed_file_jpg(filename):
 def allowed_file_png(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS2
-
-
-
-
-
-

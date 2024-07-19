@@ -171,5 +171,69 @@
         $("#btSalvar").css("display", "block");
     });
 
+    function celular(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+                    if(val.length == 3){
+                        val.splice(0,0,"(");
+                        val.splice(val.length -1,0,")");
+                    }else if( val.length == 10){
+                        val.splice(val.length -1,0, "-");
+                    }
+            }else{
+                  val.splice(val.length - 1,1);
+            }
+
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+            }
+            this.value = s;
+        });
+    }
+
+    function cpf(element){
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(/\./g, "").replace(/\-/g, "").replace(/\//g, "").split("");
+            var s = "";
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+                    if(val.length >= 13){
+                        val.splice(2,0, ".");
+                        val.splice(6,0, ".");
+                        val.splice(10,0, "/");
+                        val.splice(15,0, "-");
+                    }else if(val.length >= 12){
+                        val.splice(2,0, ".");
+                        val.splice(6,0, ".");
+                        val.splice(10,0, "/");
+                    }else if(val.length >= 10){
+                        val.splice(3,0, ".");
+                        val.splice(7,0, ".");
+                        val.splice(11,0, "-");
+                    }else if(val.length >= 7){
+                        val.splice(3,0, ".");
+                        val.splice(7,0, ".");
+                    }else if(val.length >= 4){
+                        val.splice(3,0, ".");
+                    }
+
+
+            }else{
+                  val.splice(val.length - 1,1);
+            }
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+
+            }
+            this.value = s;
+        });
+    }
+
+    cpf(document.getElementById("cnpj"));
+    celular(document.getElementById("celular"));
+
 </script>
 {% endblock %}
