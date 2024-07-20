@@ -956,7 +956,7 @@
             var bairro = $("#bairro").val();
             var cidade = $("#cidade").val();
             var estado = $("#estado").val();
-            pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
+            pedido.total = (total - ( total * (pedido.desconto/100)));
             pedido["tipo"] = "local";
             pedido['cep'] = cep;
             pedido['num'] = numero;
@@ -1040,7 +1040,7 @@
         var bairro = $("#bairro").val();
         var cidade = $("#cidade").val();
         var estado = $("#estado").val();
-        pedido.total = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - ( total * (pedido.desconto/100)));
+        pedido.total = (total - ( total * (pedido.desconto/100)));
         pedido["tipo"] = "local";
         pedido['cep'] = cep;
         pedido['num'] = numero;

@@ -17,11 +17,12 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 import requests
 import time
 import re
+import locale
 from PIL import Image
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 ALLOWED_EXTENSIONS2 = {'jpg', 'jpeg', 'png'}
-
+locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
 
 @app.route('/painel/catalogo')
 def painel_catalogo():
@@ -401,6 +402,23 @@ def add_foto():
     else:
         return redirect(url_for('logout', mensagem=mensagem))
 
+@app.route('/salvarminimo', methods=['POST'])
+def add_minimo():
+    cookie, mensagem = conferir_cookie()
+    if cookie and mensagem == '':
+        dadoJson = request.get_json()
+        dados = float(dadoJson.get('minimo').replace(",", "."))
+        try:
+            ref.child(f'estoques/{cookie["uid"]}/loja').update({'minimo': dados})
+        except:
+            return jsonify({'mensagem': False})
+        else:
+            if ref.child(f'estoques/{cookie["uid"]}/loja/minimo').get() == dados:
+                return jsonify({'mensagem': True, "dados": dados, "tipo": "minimo"})
+            else:
+                return jsonify({'mensagem': False})
+    else:
+        return redirect(url_for('logout', mensagem=mensagem))
 
 @app.route('/carrinho', methods=['POST'])
 def carrinho():
@@ -409,31 +427,64 @@ def carrinho():
     lojas = ref.child('lojas').get()
     nome = dadoJson['loja']
     if nome in lojas:
-        chave = lojas[nome]
-        try:
-            if 'pedidos' not in ref.child(f'estoques/{chave}').get():
-                ref.child(f'estoques/{chave}/pedidos').set({'contador': 0})
-            resNumero = ref.child(f'estoques/{chave}/pedidos').child('contador').get()
-            if resNumero != None:
-                ref.child(f'estoques/{chave}/pedidos').update({'contador': (resNumero + 1)})
-                dadoJson['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
-                dadoJson['ativo'] = True
-                dadoJson['desconto'] = 0.0
-                res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
-            else:
-                ref.child(f'estoques/{chave}/pedidos').update({'contador': 1})
-                dadoJson['numero'] = ('0' * (5 - len(str(1)))) + str(1)
-                dadoJson['ativo'] = True
-                res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
+        if recaptcha(dadoJson['sitetoken']):
+            chave = lojas[nome]
+            try:
+                if 'pedidos' not in ref.child(f'estoques/{chave}').get():
+                    ref.child(f'estoques/{chave}/pedidos').set({'contador': 0})
+                resNumero = ref.child(f'estoques/{chave}/pedidos').child('contador').get()
+                if resNumero != None:
+                    ref.child(f'estoques/{chave}/pedidos').update({'contador': (resNumero + 1)})
+                    dadoJson['numero'] = ('0' * (5 - len(str((resNumero + 1))))) + str((resNumero + 1))
+                    dadoJson['ativo'] = True
+                    dadoJson['desconto'] = 0.0
 
-        except Exception as erro:
-            print(erro)
-            return jsonify({'mensagem': False, 'erro': str(erro)})
-        else:
-            if res.key in ref.child(f'estoques/{chave}/pedidos').get():
-                return jsonify({'mensagem': True, 'dados': dadoJson})
+                    print(f'total antes: {dadoJson['total']}')
+                    carrinho = dadoJson['carrinho']
+                    total = 0
+                    for i in range(len(carrinho)):
+                        dadoJson['carrinho'][i]['preco'] = float((ref.child(
+                            f'estoques/{chave}/produtos/{dadoJson['carrinho'][i]['chave']}/preco').get()).replace(",",
+                                                                                                                  "."))
+                        for cor in dadoJson['carrinho'][i]['cores']:
+                            total += (dadoJson['carrinho'][i]['cores'][cor][0] * dadoJson['carrinho'][i]['preco'])
+
+                    dadoJson['total'] = total
+                    print(f'total depois: {dadoJson['total']}')
+
+                    res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
+                else:
+                    ref.child(f'estoques/{chave}/pedidos').update({'contador': 1})
+                    dadoJson['numero'] = ('0' * (5 - len(str(1)))) + str(1)
+                    dadoJson['ativo'] = True
+                    dadoJson['desconto'] = 0.0
+
+                    print(f'total antes: {dadoJson['total']}')
+                    carrinho = dadoJson['carrinho']
+                    total = 0
+                    for i in range(len(carrinho)):
+                        dadoJson['carrinho'][i]['preco'] = float((ref.child(
+                            f'estoques/{chave}/produtos/{dadoJson['carrinho'][i]['chave']}/preco').get()).replace(",",
+                                                                                                                  "."))
+                        for cor in dadoJson['carrinho'][i]['cores']:
+                            total += (dadoJson['carrinho'][i]['cores'][cor][0] * dadoJson['carrinho'][i]['preco'])
+
+                    dadoJson['total'] = total
+                    print(f'total depois: {dadoJson['total']}')
+
+                    res = ref.child(f'estoques/{chave}/pedidos').push(dadoJson)
+
+            except Exception as erro:
+                print(erro)
+                return jsonify({'mensagem': False, 'erro': str(erro)})
             else:
-                return jsonify({'mensagem': False, 'erro': '1'})
+                if res.key in ref.child(f'estoques/{chave}/pedidos').get():
+                    return jsonify({'mensagem': True, 'dados': dadoJson})
+                else:
+                    return jsonify({'mensagem': False, 'erro': '1'})
+        else:
+            return jsonify({'mensagem': False, 'erro': '3'})
+
     else:
         return jsonify({'mensagem': False, 'erro': '2'})
 
@@ -514,6 +565,7 @@ def pedidos():
                     for chave in pedidos:
                         if chave != 'contador':
                             pedido = pedidos[chave]
+                            pedido['total'] = locale.currency(pedido['total'], grouping=True, symbol=False)
                             listaPedidos.append((chave, pedido))
 
                 listaPedidos.reverse()
@@ -1019,7 +1071,6 @@ def planos():
 @app.route('/conta', methods=['GET'])
 def conta():
     cookie, mensagem = conferir_cookie()
-
     if cookie and mensagem == '':
         cadastro = None
         form = FormularioCadastro2()
@@ -1065,14 +1116,19 @@ def alterar_dados():
             if form.validate_on_submit():
 
                 nome = form.nome.data
-                loja = (form.loja.data).lower().replace(" ", "")
+                loja = form.loja.data
                 endereco = form.endereco.data
                 cnpj = form.cnpj.data
                 celular = form.celular.data
                 nomeLoja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja/nomeLoja').get()
-                if loja != nomeLoja.lower().replace("", ""):
-                    if loja in ref.child('lojas').get():
+                nomeLoja = nomeLoja.lower().replace(" ", "")
+                print(loja,' - ', nomeLoja)
+                if loja.lower().replace(" ", "") != nomeLoja:
+                    print('Nome diferente!')
+                    if loja.lower().replace(" ", "") in ref.child('lojas').get():
+                        print('Nome ja existe!')
                         return redirect(url_for('conta', mensagem='O nome da loja já está em uso!'))
+
 
                 try:
                     cadastros = ref.child('cadastros').get()
@@ -1088,6 +1144,14 @@ def alterar_dados():
                                 'celular': celular
 
                             })
+
+                    if loja.lower().replace(" ", "") != nomeLoja:
+                        lojas = ref.child('lojas').get()
+                        for lojaC in lojas:
+                            if lojas[lojaC] == cookie["uid"]:
+                                ref.child(f'lojas/{lojaC}').delete()
+                        ref.child('lojas').update({f'{loja.lower().replace(" ", "")}':cookie["uid"]})
+                        ref.child('estoques').child(f'{cookie["uid"]}').child('loja').update({'nomeLoja':loja.lower().replace(" ", "")})
 
                 except:
                     return redirect(url_for('conta', mensagem='Erro ao salvar alterações!'))

@@ -214,7 +214,7 @@
                     <p style="text-align:center; margin:0;"><b>Pedido número: {{ pedido.numero}}</b><br><span style="font-size:12px;">{{pedido.data}}</span></p>
                     <p><span>Nome: </span><b>{{pedido.cliente}}</b></p>
                     <p><span>Whatsapp: </span><b style="white-space: nowrap;">{{pedido.celular}}</b></p>
-                    <p><span>Valor: </span><b style="white-space: nowrap;">R$ {{pedido.total}}</b></p>
+                    <p><span>Valor: </span><b style="white-space: nowrap;">R$ {{ pedido.total | format(locale='pt_BR', currency='BRL') }}</b></p>
                     {% if pedido.ativo %}
                         <p style="text-align:center; line-height:1;"><span style="font-weight:bold;" class="w3-text-red">Em Processo</span><br>
                             <span style="font-size:12px;">Esse pedido não foi dado baixa!</span>

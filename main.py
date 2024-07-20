@@ -138,7 +138,7 @@ def cadastrar():
             validade = validade.strftime("%d/%m/%Y")
 
             nome = form.nome.data
-            loja = (form.loja.data).lower().replace(" ", "")
+            loja = form.loja.data
             endereco = form.endereco.data
             cnpj = form.cnpj.data
             celular = form.celular.data
@@ -146,9 +146,8 @@ def cadastrar():
             senha = form.senha.data
             senha2 = form.senha2.data
 
-            if loja in ref.child('lojas').get():
+            if loja.lower().replace(" ", "") in ref.child('lojas').get():
                 return render_template('cadastro.html', form=form, mensagem='O nome da loja já está em uso!')
-
 
             if senha == senha2:
                 try:
@@ -198,18 +197,16 @@ def cadastrar():
                                 "foto": "https://firebasestorage.googleapis.com/v0/b/minhas-lojas.appspot.com/o/lojas%2FXRY5iXL2KUa0i1wgzDRiHiUen192%2Ffoto.webp?alt=media&token=8c6d54ce-b40e-49b5-94a5-fcaa97471b7d",
                                 "instagram": "https://www.instagram.com/siteminhaloja/",
                                 "logo": "https://firebasestorage.googleapis.com/v0/b/minhas-lojas.appspot.com/o/lojas%2FXRY5iXL2KUa0i1wgzDRiHiUen192%2Flogo.webp?alt=media&token=ba8f856a-1afb-49b3-9723-e50b9fc50579",
-                                "nomeLoja": "Minha Loja",
-                                "pagamento": "12/10/2022",
+                                "nomeLoja": loja.lower().replace(" ", ""),
                                 "sobre": "A Minha Loja é um site focado na conexão entre clientes e vendedores. Fundada no início de 2022, a Minha Loja tem como objetivo, fazer com que as pessoas pesquisem um produto em toda a cidade e cidades vizinhas sem sair de casa, assim como facilitar as pessoas a divulgarem seus produtos e serviços. Ao se conectar com o site Minha Loja qualquer pessoa do Brasil e do mundo poderá encontrar sua loja. Seja bem vindo a Minha Loja.",
-                                "status": True,
-                                "valor": "R$0,00",
-                                "vencimento": "12/01/2023",
                                 "whatsapp": "82987333558",
                                 "youtube": ""
                             }
                         }
 
                     })
+
+                    ref.child('lojas').update({f'{loja.lower().replace(" ", "")}':usuario.uid})
 
                     if usuario.uid in ref.child('estoques').get() and chave.key in ref.child('cadastros').get():
                         user = firebase.auth().sign_in_with_email_and_password(email, senha)

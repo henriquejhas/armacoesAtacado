@@ -11,11 +11,12 @@ from datetime import timedelta
 import datetime
 from flask_bcrypt import generate_password_hash, check_password_hash
 import time
+import locale
 from PIL import Image
 
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
-
+locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
 
 @app.route('/inicio')
 def dashboard():
@@ -40,6 +41,7 @@ def dashboard():
             for pedido in pedidos:
 
                 if pedido != 'contador' and pedidos[pedido]['ativo'] == True:
+                    pedidos[pedido]['total'] = locale.currency(pedidos[pedido]['total'], grouping=True, symbol=False)
                     emProcesso.append([pedido, pedidos[pedido]])
             for armacao in produtos:
                 for cor in produtos[armacao]['cores']:

@@ -416,7 +416,7 @@
                         <input autocomplete="false" class="campoCaixa" id="estado" maxlength="50" minlength="1" name="estado" placeholder="Seu estado" required="" type="text" value="">
                     </div>
                 </div>
-                <p style="margin:0;">Valor: <b>{{ pedido.total }}</b></p>
+                <p style="margin:0;">Valor: <b>R$ <span id="valor">{{ pedido.total }}</span></b></p>
                 {% if pedido.ativo %}
                 <div style="text-align:center;">
                     <button id="btEditar" onclick="editar()" class="w3-button w3-blue" style="padding:4px 8px; font-size:14px;"><i class="fa fa-plus" aria-hidden="true"></i> Editar</button>
@@ -739,6 +739,7 @@
             $("#cep").val(pedido.cep);
             $("#destino").val(pedido.cep);
             $("#complemento").val(pedido.complemento);
+            $("#valor").text(new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format("{{pedido.total}}"));
 
             carregar(pedido);
         }else{
@@ -1130,7 +1131,7 @@
 
 
         }
-        $("#total").text(pedido.total);
+        $("#total").text(new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(pedido.total));
         document.getElementById("subtotal").textContent = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total - (total * (pedido.desconto/100)));
         document.getElementById("quant").textContent = quant;
         document.getElementById("desconto").value = pedido.desconto;

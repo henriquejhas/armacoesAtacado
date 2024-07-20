@@ -699,7 +699,7 @@
         }
 
         .rodape{
-            height: 70px;
+            height: 180px;
             background-color: #305b37;
         }
 
@@ -798,6 +798,7 @@
             border-radius:5px;
             background-color: #629fcf;
             color: white;
+            cursor:pointer;
 
         }
         button{
@@ -935,7 +936,7 @@
                 <h3><b>Novidades</b></h3>
                 <div class="row" style="font-size:13px !important;">
 
-                    {% for i in range(-3, 0) %}
+                    {% for i in range(-1, -5, -1) %}
 
                             <div class="column">
                                 <div class="card" style="border-radius:5px;">
@@ -1175,13 +1176,17 @@
         </div>
 
         <div class="rodape" style="background-color: #{{ loja.cor }};">
-            <form>
-                <label class="fonte" style="color: #{{ loja.fonte }};">Cor do site: </label><input type="color" value="#{{loja.cor}}" id="cor" name="cor">
-
-                <label class="fonte" style="color: #{{ loja.fonte }};">Cor das Letras: </label><input type="color" value="#{{loja.fonte}}" id="corFonte" name="corFonte">
-            </form>
-
-
+            <div style="margin-left:20px;">
+                <div style="width:100%;">
+                    <label class="fonte" style="color: #{{ loja.fonte }};">Cor do site: </label><input type="color" value="#{{loja.cor}}" id="cor" name="cor">
+                    <label class="fonte" style="color: #{{ loja.fonte }};">Cor das Letras: </label><input type="color" value="#{{loja.fonte}}" id="corFonte" name="corFonte"><br><br>
+                </div>
+                <div>
+                    <label style="color: #{{ loja.fonte }};">Compra mínima: </label>
+                    <input style="width:70%; padding-left:10px;" autocomplete="off" class="campoCaixa " id="minimo" maxlength="7" minlength="1" name="minimo" placeholder="Compra mínima" type="text" value="{{loja.minimo}}">
+                    <button style="font-size: 12px;" class="addMinimo editar">Salvar </button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -1350,12 +1355,6 @@
         </div>
 
 
-
-
-
-
-
-
     <a href="{{ url_for('dashboard')}}"><button class="w3-card-4 voltar" id="voltar" ><i class="fa fa-arrow-left" aria-hidden="true"></i></button></a>
     <a href="http://api.whatsapp.com/send?phone=5582987333558&amp;text=Ol%C3%A1,%20preciso%20de%20mais%20informações%20sobre%20o%20sistema%20Armação%20Atacado." class="w3-card-4 suporte" id="suporte"><i class="fa fa-whatsapp"></i></a>
    <!-- <button class="w3-card-4 compartilhar" id="compartilhar" onclick="compartilhar(&#39;Minha Loja&#39;)"><i class="fa fa-share-alt"></i></button> -->
@@ -1473,7 +1472,33 @@
         $("#formAberto").css("display", "none");
     });
 
+    $(".addMinimo").on("click", function(){
+         var dado = document.getElementById("minimo");
+         fetch("/salvarminimo" , {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': {{ csrf_token()|tojson }},
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                'minimo': dado.value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
 
+            if(data["mensagem"] == true){
+                mensagemR("Alteração realizada com sucesso!")
+            }else{
+                mensagemR("Alteração não realizada!")
+            }
+
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    });
 
 
     $(document).ready(function(){
@@ -1712,6 +1737,30 @@
             } ,4000);
 
     }
+
+    function moeda3(element){
+        element.style.backgroundColor = "white";
+        element.addEventListener("input",function(e){
+            var val = this.value.replace(",", "").split("");
+            var s = "";
+            if(val[val.length - 1].search("[0-9]") != -1 ){
+                    if(val.length == 2){
+                        val.splice(val.length -1,0, ",");
+                    }else if( val.length > 2){
+                        val.splice(val.length -2,0, ",");
+                    }
+            }else{
+                  val.splice(val.length - 1,1);
+            }
+            for(var i = 0; i < val.length; i++){
+                s += val[i];
+
+            }
+            this.value = s;
+        });
+    }
+
+    moeda3(document.getElementById("minimo"))
 
 
 
