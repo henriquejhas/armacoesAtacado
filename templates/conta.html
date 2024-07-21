@@ -55,6 +55,9 @@
               {{ form.endereco.label(style="font-weight:900;") }}
               {{ form.endereco(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja", style="border-radius:6px;", disabled="true") }}
 
+              {{ form.cep.label(style="font-weight:900;") }}
+              {{ form.cep(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja", style="border-radius:6px;", disabled="true") }}
+
               {{ form.cnpj.label(style="font-weight:900;") }}
               {{ form.cnpj(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu CNPJ", style="border-radius:6px;", disabled="true") }}
 
@@ -161,6 +164,7 @@
     $("#nome").val("{{cadastro.dados.nome}}");
     $("#loja").val("{{cadastro.dados.loja}}");
     $("#endereco").val("{{cadastro.dados.endereco}}");
+    $("#cep").val("{{cadastro.dados.cep}}");
     $("#cnpj").val("{{cadastro.dados.cnpj}}");
     $("#celular").val("{{cadastro.dados.celular}}");
     $("#email").text("{{cadastro.dados.email}}");

@@ -32,10 +32,11 @@ def painel_catalogo():
     if cookie and mensagem == '':
         try:
             armacoes = []
-            produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
-            for produto in produtos:
-                armacao = produtos[produto]
-                armacoes.append((produto, armacao))
+            if ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
+                for produto in produtos:
+                    armacao = produtos[produto]
+                    armacoes.append((produto, armacao))
 
             loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
 
@@ -59,10 +60,11 @@ def catalogo(nome):
         cadastro = None
         try:
             armacoes = []
-            produtos = ref.child(f'estoques/{chave}/produtos').get()
-            for produto in produtos:
-                armacao = produtos[produto]
-                armacoes.append((produto, armacao))
+            if ref.child(f'estoques/{chave}/produtos').get():
+                produtos = ref.child(f'estoques/{chave}/produtos').get()
+                for produto in produtos:
+                    armacao = produtos[produto]
+                    armacoes.append((produto, armacao))
 
             loja = ref.child('estoques').child(f"{chave}").child('loja').get()
 
@@ -586,10 +588,12 @@ def novo_pedido():
         if request.method == 'GET':
             try:
                 loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
-                lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
                 produtos = []
-                for produto in lista:
-                    produtos.append(lista[produto]['codigo'])
+                if ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                    lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
+
+                    for produto in lista:
+                        produtos.append(lista[produto]['codigo'])
 
                 chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
                 cadastros = ref.child('cadastros').get()
@@ -624,13 +628,18 @@ def visualizar(chave):
     if cookie and mensagem == '':
 
         if request.method == 'GET':
+            pedido = None
             try:
                 loja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja').get()
-                pedido = ref.child(f'estoques/{cookie["uid"]}/pedidos').child(chave).get()
-                lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
+                if ref.child(f'estoques/{cookie["uid"]}/pedidos').child(chave).get():
+                    pedido = ref.child(f'estoques/{cookie["uid"]}/pedidos').child(chave).get()
+
                 produtos = []
-                for produto in lista:
-                    produtos.append(lista[produto]['codigo'])
+                if ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                    lista = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
+
+                    for produto in lista:
+                        produtos.append(lista[produto]['codigo'])
             except:
                 return render_template('visualizarPedido.html', pedido=[], mensagem='Erro ao ler os pedidos!')
 
@@ -768,12 +777,14 @@ def dar_baixa():
                     return jsonify({'mensagem': True, 'erro': 'Plano desativado.'})
                 '''
                 pedido['ativo'] = False
+                print(pedido)
                 for armacao in pedido['carrinho']:
-                    if armacao['chave'] in ref.child(f'estoques/{cookie["uid"]}/produtos').get():
-                        local = ref.child(f'estoques/{cookie["uid"]}/produtos/{armacao["chave"]}').child('cores')
-                        for cor in armacao['cores']:
-                            if armacao['cores'][cor][2] == True:
-                                local.update({cor: (local.child(cor).get() - armacao['cores'][cor][0])})
+                    if ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                        if armacao['chave'] in ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                            local = ref.child(f'estoques/{cookie["uid"]}/produtos/{armacao["chave"]}').child('cores')
+                            for cor in armacao['cores']:
+                                if armacao['cores'][cor][2] == True:
+                                    local.update({cor: (local.child(cor).get() - armacao['cores'][cor][0])})
                 if 'chave' in pedido:
                     ref.child(f'estoques/{cookie["uid"]}/pedidos/{pedido["chave"]}').update(pedido)
                 else:
@@ -1081,11 +1092,12 @@ def conta():
                 cadastros = ref.child('cadastros').get()
 
                 for chaveC in cadastros:
+                    print(chave,' - ', chaveC)
                     if check_password_hash(chave, chaveC):
                         cadastro = cadastros[chaveC]
 
             except:
-                return render_template('conta.html', mensagem='Erro ao ler dados da conta!')
+                return redirect(url_for('dashboard',mensagem='Erro ao ler dados da conta!'))
 
             else:
                 data_atual = datetime.date.today()
@@ -1118,6 +1130,7 @@ def alterar_dados():
                 nome = form.nome.data
                 loja = form.loja.data
                 endereco = form.endereco.data
+                cep = form.cep.data
                 cnpj = form.cnpj.data
                 celular = form.celular.data
                 nomeLoja = ref.child('estoques').child(f'{cookie["uid"]}').child('loja/nomeLoja').get()
@@ -1140,6 +1153,7 @@ def alterar_dados():
                                 'nome': nome,
                                 'loja': loja,
                                 'endereco': endereco,
+                                'cep':cep,
                                 'cnpj': cnpj,
                                 'celular': celular
 
@@ -1153,6 +1167,7 @@ def alterar_dados():
                         ref.child('lojas').update({f'{loja.lower().replace(" ", "")}':cookie["uid"]})
                         ref.child('estoques').child(f'{cookie["uid"]}').child('loja').update({'nomeLoja':loja.lower().replace(" ", "")})
 
+                    ref.child('estoques').child(f'{cookie["uid"]}').child('loja').update({'cep': cep})
                 except:
                     return redirect(url_for('conta', mensagem='Erro ao salvar alterações!'))
                 else:

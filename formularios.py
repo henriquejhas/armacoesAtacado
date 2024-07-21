@@ -11,6 +11,7 @@ class FormularioCadastro(FlaskForm):
     nome = StringField('Nome', [validators.DataRequired(), validators.length(min=1, max=40)])
     loja = StringField('Loja', [validators.DataRequired(), validators.length(min=1, max=20)])
     endereco = StringField('Endereço', [validators.DataRequired(), validators.length(min=1, max=100)])
+    cep = StringField('CEP', [validators.DataRequired(), validators.length(min=8, max=9)])
     cnpj = StringField('CPF/CNPJ', [validators.DataRequired(), validators.length(min=14, max=18)])
     celular = StringField('Celular', [validators.DataRequired(), validators.length(min=11, max=15, message="O número de celular deve ter 11 dígitos!")])
     email = EmailField('Email', [validators.DataRequired(), validators.Email()])
@@ -22,6 +23,7 @@ class FormularioCadastro2(FlaskForm):
     nome = StringField('Nome', [validators.DataRequired(), validators.length(min=1, max=40)])
     loja = StringField('Loja', [validators.DataRequired(), validators.length(min=1, max=20)])
     endereco = StringField('Endereço', [validators.DataRequired(), validators.length(min=1, max=100)])
+    cep = StringField('CEP', [validators.DataRequired(), validators.length(min=8, max=9)])
     cnpj = StringField('CPF/CNPJ', [validators.DataRequired(), validators.length(min=14, max=18)])
     celular = StringField('Celular', [validators.DataRequired(), validators.length(min=11, max=14, message="O número de celular deve ter 11 dígitos!")])
 

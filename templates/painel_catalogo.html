@@ -936,42 +936,43 @@
                 <h3><b>Novidades</b></h3>
                 <div class="row" style="font-size:13px !important;">
 
-                    {% for i in range(-1, -5, -1) %}
-
-                            <div class="column">
-                                <div class="card" style="border-radius:5px;">
-                                    <img class="myImg" src="{{ armacoes[i][1]['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
-                                    <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
-                                        <div style="font-zise:13px;">
-                                          <div style="padding:0 3px">
-                                              <p style="text-align:center;margin: 3px;">R$<b>{{ armacoes[i][1]['preco'] }}</b></p>
-                                              <p style="margin: 3px">Código: <b>{{ armacoes[i][1]['codigo'] }}</b></p>
-                                              <p style="margin: 3px">Dimensções <b>{{ armacoes[i][1]['dimensoes'] }}</b></p>
-                                              <p style="margin: 3px">Seção: <b>{{ armacoes[i][1]['secao'] }}</b></p>
-                                              <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacoes[i][1]['descricao'] }}</b></p>
-                                          </div>
-                                        </div>
-                                        <div  class="overlay" style="">
-                                            <p style="position:absolute; top:0; right:0;"><i onclick="fecharCores(this)" style="padding:0; margin: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
-                                            <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
-                                            <div class="row">
-                                                {%  for c in armacoes[i][1]['cores'] %}
-                                                    {% if 'C10' not in c %}
-                                                        <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">{{c}}:<b class="quant">{{armacoes[i][1]['cores'][c]}}</b></p>
+                        {% for i in range(-1, -5, -1) %}
+                            {% if armacoes[i] %}
+                                <div class="column">
+                                    <div class="card" style="border-radius:5px;">
+                                        <img class="myImg" src="{{ armacoes[i][1]['imagem'] }}" alt="John" style="width:100%" onclick="abrirImagem(this)">
+                                        <div style="font-zise:13px !important; position: absolute; height: 40%; width: 100%; text-align:left;" >
+                                            <div style="font-zise:13px;">
+                                              <div style="padding:0 3px">
+                                                  <p style="text-align:center;margin: 3px;">R$<b>{{ armacoes[i][1]['preco'] }}</b></p>
+                                                  <p style="margin: 3px">Código: <b>{{ armacoes[i][1]['codigo'] }}</b></p>
+                                                  <p style="margin: 3px">Dimensções <b>{{ armacoes[i][1]['dimensoes'] }}</b></p>
+                                                  <p style="margin: 3px">Seção: <b>{{ armacoes[i][1]['secao'] }}</b></p>
+                                                  <p style="font-size:13px;margin: 3px; text-align:justify;">Descrição: <b>{{ armacoes[i][1]['descricao'] }}</b></p>
+                                              </div>
+                                            </div>
+                                            <div  class="overlay" style="">
+                                                <p style="position:absolute; top:0; right:0;"><i onclick="fecharCores(this)" style="padding:0; margin: 0px;" class="w3-button fa fa-times fa-2x" aria-hidden="true"></i></p>
+                                                <p style="text-align:center; margin:5px 0 0;"><b>Quantidade em estoque</b></p>
+                                                <div class="row">
+                                                    {%  for c in armacoes[i][1]['cores'] %}
+                                                        {% if 'C10' not in c %}
+                                                            <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">{{c}}:<b class="quant">{{armacoes[i][1]['cores'][c]}}</b></p>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if 'C10' in armacoes[i][1]['cores'] %}
+                                                        <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">C10:<b class="quant">{{armacoes[i][1]['cores']['C10']}}</b></p>
                                                     {% endif %}
-                                                {% endfor %}
-                                                {% if 'C10' in armacoes[i][1]['cores'] %}
-                                                    <p class="column" style="text-align:center;width:50%; margin:3px 0 0;">C10:<b class="quant">{{armacoes[i][1]['cores']['C10']}}</b></p>
-                                                {% endif %}
-                                                <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                                    <p class="column" style="text-align:center;width:100%; margin:0;">Total:<b class="total"></b></p>
+                                                </div>
                                             </div>
                                         </div>
+                                        <button onclick="abrirCores(this)" style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
                                     </div>
-                                    <button onclick="abrirCores(this)" style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-green w3-padding w3-large">Escolher</button>
                                 </div>
-                            </div>
+                            {% endif %}
+                        {% endfor %}
 
-                    {% endfor %}
 
                 </div>
             </div>
@@ -1182,8 +1183,8 @@
                     <label class="fonte" style="color: #{{ loja.fonte }};">Cor das Letras: </label><input type="color" value="#{{loja.fonte}}" id="corFonte" name="corFonte"><br><br>
                 </div>
                 <div>
-                    <label style="color: #{{ loja.fonte }};">Compra mínima: </label>
-                    <input style="width:70%; padding-left:10px;" autocomplete="off" class="campoCaixa " id="minimo" maxlength="7" minlength="1" name="minimo" placeholder="Compra mínima" type="text" value="{{loja.minimo}}">
+                    <label style="color: #{{ loja.fonte }};">Compra mínima: </label><br>
+                    <input style="width:70%; max-width:200px; padding-left:10px;" autocomplete="off" class="campoCaixa " id="minimo" maxlength="7" minlength="1" name="minimo" placeholder="Compra mínima" type="text" value="{{loja.minimo}}">
                     <button style="font-size: 12px;" class="addMinimo editar">Salvar </button>
                 </div>
             </div>

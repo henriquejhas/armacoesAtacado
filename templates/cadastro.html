@@ -44,6 +44,9 @@
               {{ form.endereco.label(style="font-weight:900;") }}
               {{ form.endereco(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja", style="border-radius:6px;") }}
 
+              {{ form.cep.label(style="font-weight:900;") }}
+              {{ form.cep(class="w3-input w3-border w3-margin-bottom", placeholder="Digite o endereço da loja", style="border-radius:6px;") }}
+
               {{ form.cnpj.label(style="font-weight:900;") }}
               {{ form.cnpj(class="w3-input w3-border w3-margin-bottom", placeholder="Digite seu CNPJ", style="border-radius:6px;") }}
 
@@ -111,6 +114,27 @@
             });
         }
 
+        function cep(element){
+            element.style.backgroundColor = "white";
+            element.addEventListener("input",function(e){
+                var val = this.value.replace(",", "").split("");
+                var s = "";
+
+                if(val[val.length - 1].search("[0-9]") != -1 ){
+                        if( val.length == 6){
+                            val.splice(val.length -1,0, "-");
+                        }
+                }else{
+                      val.splice(val.length - 1,1);
+                }
+
+                for(var i = 0; i < val.length; i++){
+                    s += val[i];
+                }
+                this.value = s;
+            });
+        }
+
         function cpf(element){
             element.addEventListener("input",function(e){
                 var val = this.value.replace(/\./g, "").replace(/\-/g, "").replace(/\//g, "").split("");
@@ -148,6 +172,7 @@
             });
         }
 
+        cep(document.getElementById("cep"));
         cpf(document.getElementById("cnpj"));
         celular(document.getElementById("celular"));
 

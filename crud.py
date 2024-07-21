@@ -35,19 +35,23 @@ def dashboard():
                 if check_password_hash(chave, chaveC):
                     cadastro = cadastros[chaveC]
                     cadastroChave = chaveC
+            if ref.child(f'estoques/{cookie["uid"]}/pedidos').get():
+                pedidos = ref.child(f'estoques/{cookie["uid"]}/pedidos').get()
 
-            pedidos = ref.child(f'estoques/{cookie["uid"]}/pedidos').get()
-            produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
-            for pedido in pedidos:
+                for pedido in pedidos:
 
-                if pedido != 'contador' and pedidos[pedido]['ativo'] == True:
-                    pedidos[pedido]['total'] = locale.currency(pedidos[pedido]['total'], grouping=True, symbol=False)
-                    emProcesso.append([pedido, pedidos[pedido]])
-            for armacao in produtos:
-                for cor in produtos[armacao]['cores']:
-                    if produtos[armacao]['cores'][cor] <= 0:
-                        esgotados.append([armacao, produtos[armacao]])
-                        break
+                    if pedido != 'contador' and pedidos[pedido]['ativo'] == True:
+                        pedidos[pedido]['total'] = locale.currency(pedidos[pedido]['total'], grouping=True,
+                                                                   symbol=False)
+                        emProcesso.append([pedido, pedidos[pedido]])
+            if ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
+
+                for armacao in produtos:
+                    for cor in produtos[armacao]['cores']:
+                        if produtos[armacao]['cores'][cor] <= 0:
+                            esgotados.append([armacao, produtos[armacao]])
+                            break
 
             data_atual = datetime.date.today()
             data = data_atual.strftime("%d/%m/%Y").split("/")
@@ -114,7 +118,7 @@ def adicionar():
                     if check_password_hash(chave, chaveC):
                         cadastro = cadastros[chaveC]
             except:
-                return render_template('novo_pedido.html', mensagem='Erro ao carregar lista de produtos')
+                return render_template('adicionar.html', mensagem='Erro ao carregar dados')
             else:
                 mensagem = request.args.get('mensagem')
                 form = FormularioAdicionar()
@@ -201,7 +205,7 @@ def adicionar():
                                 imagem = imagem.resize((700, 700))
                                 imagem.save('somepic.jpg')
                                 timestamp = time.time()
-                                local = f'estoques/{usuario}/{timestamp}.jpg'
+                                local = f'estoques/{generate_password_hash(usuario).decode('utf-8')}/{timestamp}.jpg'
                                 blob = bucket.blob(local)
                                 print(blob.upload_from_filename('somepic.jpg', content_type='image/jpg'))
                                 url = firebase.storage().child(local).get_url(token)
@@ -243,9 +247,11 @@ def adicionar():
                     session['usuario_logado'] = None
                     return redirect(url_for('logout', mensagem='Sessão encerrada!'))
             else:
-                print('passou aqui deu ruim')
-
-                return render_template('adicionar.html', form=form, armacao=cores, mensagem='Há algum campo inválido!')
+                mensagem = ''
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        mensagem = f'{field}: inválido!'
+                return render_template('adicionar.html', form=form, armacao=cores, mensagem=mensagem)
 
 @app.route('/pesquisar', methods=['POST', 'GET'])
 def pesquisar():
@@ -287,15 +293,16 @@ def pesquisar():
                     busca = form.busca.data
                     tipo = request.form['tipo']
                     armacoes = []
-                    produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
-                    for produto in produtos:
-                        armacao = produtos[produto]
-                        if tipo != 'todos':
-                            if tipo in armacao:
-                                if busca in armacao[tipo]:
-                                    armacoes.append((produto, armacao))
-                        else:
-                            armacoes.append((produto, armacao))
+                    if ref.child(f'estoques/{cookie["uid"]}/produtos').get():
+                        produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
+                        for produto in produtos:
+                            armacao = produtos[produto]
+                            if tipo != 'todos':
+                                if tipo in armacao:
+                                    if busca in armacao[tipo]:
+                                        armacoes.append((produto, armacao))
+                            else:
+                                armacoes.append((produto, armacao))
 
                     armacoes.reverse()
                     return render_template('pesquisaResultado.html', cookie=cookie, form=form, armacoes=armacoes)
@@ -499,6 +506,8 @@ def salvar_rapido():
                 return jsonify({'mensagem': False})
     else:
         return redirect(url_for('logout', mensagem=mensagem))
+
+
 @app.route('/deletar')
 def deletar():
     chave = request.args.get('chave')
