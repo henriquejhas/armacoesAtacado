@@ -12,16 +12,47 @@
 
     }
 
-</style>
+    #loading {
+      position: fixed; /* Fixo na tela */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+      display: none; /* Alinha os elementos */
+      justify-content: center; /* Centraliza horizontalmente */
+      align-items: center; /* Centraliza verticalmente */
+      z-index: 100; /* Acima do conteúdo */
+    }
 
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 5px solid #ccc; /* Cor da borda */
+      border-color: #ccc transparent #ccc transparent; /* Cor da animação */
+      animation: spin 1.2s linear infinite; /* Animação de rotação */
+    }
+
+     @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+</style>
+<div id="loading">
+    <div class="loading-spinner"></div>
+</div>
 <div id="adicionar">
     <div  class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px; margin-bottom: 100px;border-radius:5px; margin-top: 40px;">
-        {% if plano.dias < -8 %}
-            <div class="w3-text-red" style="background-color: #00000080; position: absolute; width: 100%; height: 100%; z-index: 2; text-align: center; padding-top: 75px; font-size: 26px;">Desativado</div>
-    	{% endif %}
+        {% if plano%}
+            {% if plano.dias < -8 %}
+                <div class="w3-text-red" style="background-color: #00000080; position: absolute; width: 100%; height: 100%; z-index: 2; text-align: center; padding-top: 75px; font-size: 26px;">Desativado</div>
+            {% endif %}
+        {% endif %}
     	<h2 style="text-align:center; padding-top:10px;">Adicionar Armação</h2>
 
-       <form class="w3-container" method="POST" action="{{ url_for('adicionar')}}" enctype="multipart/form-data" onsubmit="preencher()">
+       <form class="w3-container" method="POST" action="{{ url_for('adicionar')}}" enctype="multipart/form-data" onsubmit="document.getElementById('loading').style.display = 'flex';">
            <figure style="text-align:center; overflow:hidden; padding-bottom:10px; margin:0px;">
                 <img style="height:300px;" src="{{ url_for('imagem', nome_arquivo='capa_padrao.jpg')}}">
                 <figcaption>

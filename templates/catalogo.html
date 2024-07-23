@@ -316,9 +316,16 @@
           padding: 0 8px;
         }
 
+        .social{
+            display:flex;
+            justify-content:center;
+        }
+
         .social div{
             display: inline;
             font-size: 30px;
+            text-align:center;
+            width:50px;
         }
 
         .social div a i{
@@ -628,7 +635,7 @@
             background-color: #fff;
             position: absolute;
             border-radius: 15px 0 0 15px;
-            height: 95%;
+            height: 89%;
             right: 0px;
             width: 0px;
             top:2.5%;
@@ -723,6 +730,9 @@
         }
 
 
+        .social__list__item{
+            text-indent:0px;
+        }
 
         @media  screen and (max-width: 550px) {
             aside.show {
@@ -804,13 +814,13 @@
                     </div>
 
                     <div class="w3-half" style="display: inline-block; text-align: center;">
-                        <h3 class="fonte" style="color: #{{ loja.fonte }};"><b>Contatos:</b></h3>
+                        <h3 class="fonte" style="color: #{{ loja.fonte }}; text-indent: 0px;"><b>Contatos:</b></h3>
                         <div style="text-align:left; display:inline-block;">
 
 
-                            <div class="fonte" style="color: #{{ loja.fonte }}; margin:15px 0;">Endereço: <p id="enderecoR" style="display:inline;">{{ loja.endereco }}</p></div>
+                            <div class="fonte" style="color: #{{ loja.fonte }}; margin:15px 0; text-indent: 0px;">Endereço: <p id="enderecoR" style="display:inline;">{{ loja.endereco }}</p></div>
 
-                            <div  class="fonte" style="color: #{{ loja.fonte }};  margin:15px 0;">Aberto: <p id="funcionamentoR" style="display:inline;">{{ loja.aberto}}</p></div>
+                            <div  class="fonte" style="color: #{{ loja.fonte }};  margin:15px 0; text-indent: 0px;">Aberto: <p id="funcionamentoR" style="display:inline;">{{ loja.aberto}}</p></div>
 
                             <div class="social">
                                 {% if loja.facebook != "" %}
@@ -821,6 +831,9 @@
                                 {% endif %}
                                 {% if loja.whatsapp != "" %}
                                     <div class="social__list__item"><a href="http://api.whatsapp.com/send?phone={{ loja.whatsapp }}" target="_blank" style="border-bottom: none; color:#34af23;"><i class="fa fa-whatsapp" aria-hidden="true"></i></a></div>
+                                {% endif %}
+                                {% if loja.youtube != "" %}
+                                    <div class="social__list__item"><a href="{{ loja.youtube }}" target="_blank" style="border-bottom: none; color:#c4302b;"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></div>
                                 {% endif %}
                             </div>
                         </div>

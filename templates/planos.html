@@ -5,6 +5,33 @@ iframe{
     position:fixed;
 }
 
+#loading {
+  position: fixed; /* Fixo na tela */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+  display: none; /* Alinha os elementos */
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  z-index: 100; /* Acima do conteúdo */
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 5px solid #ccc; /* Cor da borda */
+  border-color: #ccc transparent #ccc transparent; /* Cor da animação */
+  animation: spin 1.2s linear infinite; /* Animação de rotação */
+}
+
+ @keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .voltar{
   width: 50px;
   height: 50px;
@@ -131,6 +158,9 @@ iframe{
             // it will prevent loading time issues in the flow.
             var payment = new Boacompra.PaymentMethod();
         </script>
+<div id="loading">
+        <div class="loading-spinner"></div>
+    </div>
 <div id="planos" style="padding-bottom:1px;">
 
     <div style="display:flex; flex-wrap:wrap; justify-content:center;">
@@ -194,7 +224,7 @@ iframe{
                     <input type="hidden" class="cw3-border w3-margin-bottom" name="encriptedCard" id="encriptedCard">
                     <span style="display:none;" id="sitekey">6LdpoREqAAAAACdhkHz_ou9CGjEasooZo4yegM3t</span>
                     <label for="cardNumber">Número do Cartão</label>
-                    <input type="text" class="w3-border w3-margin-bottom" name="cardNumber" id="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" style="letter-spacing:2px; text-align:center; padding:4px 2px; border-radius:6px; width:100%;">
+                    <input type="text" class="w3-border w3-margin-bottom" name="cardNumber" id="cardNumber" maxlength="19" minlength="18" placeholder="XXXX XXXX XXXX XXXX" style="letter-spacing:2px; text-align:center; padding:4px 2px; border-radius:6px; width:100%;">
                     <label for="cardHolder">Nome do Titular</label>
                     <input type="text" class="w3-border w3-margin-bottom" name="cardHolder" id="cardHolder" maxlength="50" placeholder="Nome Completo" style=" padding:4px 2px; border-radius:6px; width:100%;"><br>
                     <div style="display: flex; justify-content: space-between;padding-right: 70px;">
@@ -232,15 +262,23 @@ iframe{
                 </div>
 
             </div>
+           <div style="text-align:center;">
+               <img style="height:40px; margin-bottom: 10px;" src="/uploads/cartoes.png">
+           </div>
+
        </form>
     </div>
     <a href="{{ url_for('conta')}}"><button class="w3-card-4 voltar" id="voltar" ><i class="fa fa-arrow-left" aria-hidden="true"></i></button></a>
 
 </div>
 
-    <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js"></script>
-    <script src = "https://www.google.com/recaptcha/api.js?render=6LdpoREqAAAAACdhkHz_ou9CGjEasooZo4yegM3t"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+<div id="msg2" style="margin: auto; left: 0; right: 0; z-index:1; opacity: 0; transition: 0.9s; text-align:center; width:90%; height:80px; position:fixed;bottom:10%; display:none;">
+    <div style="border-radius: 16px; display:inline-block; width:100%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+      <p id="mensagemR"></p>
+    </div>
+</div>
+
+
 
     <script>
         function mais(elemento){
@@ -305,7 +343,23 @@ iframe{
           anoSelect.appendChild(option);
         }
 
+        function mensagemR(msg){
+            document.getElementById("mensagemR").textContent = msg
+             $("#msg2").css("display", "flex");
+                $("#msg2").css("opacity", "1");
+                setTimeout(()=>{
+                   $("#msg2").css("opacity", "0");
+
+                   setTimeout(() => $("#msg2").css("display", "none"),1000);
+                } ,4000);
+
+        }
+
         numeros(document.getElementById("cardNumber"))
         numeros(document.getElementById("cardCVV"))
     </script>
+
+    <script src="https://assets.pagseguro.com.br/checkout-sdk-js/rc/dist/browser/pagseguro.min.js"></script>
+    <script src = "https://www.google.com/recaptcha/api.js?render=6LdpoREqAAAAACdhkHz_ou9CGjEasooZo4yegM3t"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
 {% endblock %}

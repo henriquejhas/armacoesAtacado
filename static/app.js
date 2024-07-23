@@ -17,13 +17,27 @@
             const hasErrors = card.hasErrors;
             const errors = card.errors;
             if(!hasErrors){
+                $("#loading").css("display", "flex")
                 doc.querySelector("#encriptedCard").value = encrypted;
                 formCard.submit();
             }
 
             console.log("encrypted: " + encrypted);
             console.log("hasErros: " + hasErrors);
-            console.log(errors);
+
+            console.log(errors[0]['code']);
+
+            if(errors[0]['code'] == 'INVALID_NUMBER'){
+                mensagemR("Número do cartão inválido");
+            }else if(errors[0]['code'] == 'INVALID_HOLDER'){
+                mensagemR("Nome do titular inválido");
+            }else if(errors[0]['code'] == 'INVALID_EXPIRATION_MONTH'){
+                mensagemR("Mês de validade inválido");
+            }else if(errors[0]['code'] == 'INVALID_EXPIRATION_YEAR'){
+                mensagemR("Ano de validade inválido");
+            }else if(errors[0]['code'] == 'INVALID_SECURITY_CODE'){
+                mensagemR("código de segurança CVV inválido");
+            }
         })
     }
 

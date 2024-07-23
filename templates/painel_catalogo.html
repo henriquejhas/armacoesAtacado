@@ -1474,8 +1474,8 @@
     });
 
     $(".addMinimo").on("click", function(){
-         var dado = document.getElementById("minimo");
-         fetch("/salvarminimo" , {
+        var dado = document.getElementById("minimo");
+        fetch("/salvarminimo" , {
             method: 'POST',
             headers: {
                 'X-CSRFToken': {{ csrf_token()|tojson }},

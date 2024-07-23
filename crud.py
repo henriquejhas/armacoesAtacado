@@ -572,7 +572,7 @@ def conferir_cookie():
             token = session['usuario_logado']
             cookie = auth.verify_session_cookie(token, clock_skew_seconds=5)
         else:
-            return 'Usuário não logado!'
+            return cookie, 'Usuário não logado!'
 
     except auth.ExpiredSessionCookieError:
 

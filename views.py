@@ -19,10 +19,13 @@ import time
 import re
 import locale
 from PIL import Image
+from googletrans import Translator
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 ALLOWED_EXTENSIONS2 = {'jpg', 'jpeg', 'png'}
 locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
+
+translator = Translator()
 
 @app.route('/painel/catalogo')
 def painel_catalogo():
@@ -920,38 +923,48 @@ def pagamento():
             else:
                 ok = True
                 cardNumber = request.form.get('cardNumber').replace(" ", "")
-                if not (len(cardNumber) == 16):
+                if not (len(cardNumber) == 16 or len(cardNumber) == 15):
                     print(cardNumber)
+                    mensagem = 'Número do cartão inválido'
                     ok = False
 
                 cardMonth = int(request.form.get('cardMonth'))
                 if not (12 >= int(cardMonth) >= 1):
                     print(cardMonth)
+                    mensagem = 'Mês de validade do cartão inválido'
                     ok = False
 
                 cardYear = request.form.get('cardYear')
                 if not (len(cardYear) == 4):
                     print(cardYear)
+                    mensagem = 'Ano de validade do cartão inválido'
                     ok = False
 
                 cardCVV = request.form.get('cardCVV')
                 if not (len(cardCVV) == 3):
                     print(cardCVV)
+                    mensagem = 'CVV do cartão inválido'
                     ok = False
 
                 cardHolder = request.form.get('cardHolder')
                 if not (len(cardHolder) <= 50):
                     print(cardHolder)
+                    mensagem = 'Nome do titular inválido'
                     ok = False
 
                 if not ok:
                     return redirect(
-                        url_for('planos', mensagem='Ops, parece que algo deu errado. Por favor, tente novamente.'))
+                        url_for('planos', mensagem=f'Ops, parece que algo deu errado({mensagem}). Por favor, tente novamente.'))
 
                 tipo = request.form.get('tipo')
                 valores = {'mensal': 11900, 'anual': 199000}
                 numeros = re.findall(r'\)\s*(\d+.*)', cadastro['dados']['celular'])[0]
                 numeros = re.sub(r'-', '', numeros)
+
+                cep = (cadastro['dados']['cnpj']).replace('.', '').replace('-', '').replace('/', '')
+
+                print(cep)
+
                 url = "https://sandbox.api.pagseguro.com/orders"
 
                 headers = {
@@ -965,7 +978,7 @@ def pagamento():
                     "customer": {
                         "name": cadastro['dados']['nome'],
                         "email": cadastro['dados']['email'],
-                        "tax_id": cadastro['dados']['cnpj'],
+                        "tax_id": cep,
                         "phones": [
                             {
                                 "country": "55",
@@ -1017,9 +1030,22 @@ def pagamento():
                 resposta = response.json()
                 print(resposta)
                 if 'error_messages' in resposta:
+                    descricao = ''
+                    if 'error' in resposta['error_messages'][0]:
+                        if resposta['error_messages'][0]['error'] == 'BRAND_NOT_FOUND':
+                            descricao = 'Bandeira não encontrada'
+                        else:
+                            descricao = (resposta['error_messages'][0]['error']).replace("_", " ")
+                    else:
+                        descricao = resposta['error_messages'][0]['description']
+                        try:
+                            descricao = translator.translate(descricao, dest='pt').text
+                        except:
+                            descricao = resposta['error_messages'][0]['description']
+
+                    print(descricao)
                     return redirect(
-                        url_for('planos',
-                                mensagem=f"Ops, parece que algo deu errado({resposta['error_messages'][0]['code']}). Por favor, tente novamente."))
+                        url_for('planos',mensagem=f"Ops, parece que algo deu errado({descricao})."))
                 else:
                     res = {}
                     if resposta['charges'][0]['status'] == 'AUTHORIZED' or resposta['charges'][0]['status'] == 'PAID':
@@ -1220,7 +1246,7 @@ def conferir_cookie():
             token = session['usuario_logado']
             cookie = auth.verify_session_cookie(token, clock_skew_seconds=5)
         else:
-            return 'Usuário não logado!'
+            return cookie, 'Usuário não logado!'
 
     except auth.ExpiredSessionCookieError:
 
