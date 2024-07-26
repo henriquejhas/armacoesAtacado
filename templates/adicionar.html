@@ -107,6 +107,12 @@
                     {% else %}
                         <option value="Solar">Solar</option>
                     {% endif%}
+
+                    {% if armacao['secao'] == 'Solar' %}
+                        <option selected value="Acessórios">Acessórios</option>
+                    {% else %}
+                        <option value="Acessórios">Acessórios</option>
+                    {% endif%}
                 </select>
 
                 {{ form.preco.label(style="font-weight:900;") }}

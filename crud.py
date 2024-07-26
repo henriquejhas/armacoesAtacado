@@ -11,12 +11,11 @@ from datetime import timedelta
 import datetime
 from flask_bcrypt import generate_password_hash, check_password_hash
 import time
-import locale
+from babel.numbers import format_currency
 from PIL import Image
 
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
-locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
 
 @app.route('/inicio')
 def dashboard():
@@ -30,20 +29,21 @@ def dashboard():
         try:
             chave = ref.child('estoques').child(f'{cookie["uid"]}').child('cadastro').get()
             cadastros = ref.child('cadastros').get()
-
+            print("ok1")
             for chaveC in cadastros:
                 if check_password_hash(chave, chaveC):
                     cadastro = cadastros[chaveC]
                     cadastroChave = chaveC
+            print("ok2")
             if ref.child(f'estoques/{cookie["uid"]}/pedidos').get():
                 pedidos = ref.child(f'estoques/{cookie["uid"]}/pedidos').get()
-
+                print("passou 1")
                 for pedido in pedidos:
-
+                    print("passou 1", pedido)
                     if pedido != 'contador' and pedidos[pedido]['ativo'] == True:
-                        pedidos[pedido]['total'] = locale.currency(pedidos[pedido]['total'], grouping=True,
-                                                                   symbol=False)
+                        pedidos[pedido]['total'] = format_currency(pedidos[pedido]['total'], 'BRL', locale='pt_BR')
                         emProcesso.append([pedido, pedidos[pedido]])
+            print("ok3")
             if ref.child(f'estoques/{cookie["uid"]}/produtos').get():
                 produtos = ref.child(f'estoques/{cookie["uid"]}/produtos').get()
 
@@ -52,7 +52,7 @@ def dashboard():
                         if produtos[armacao]['cores'][cor] <= 0:
                             esgotados.append([armacao, produtos[armacao]])
                             break
-
+            print("ok4")
             data_atual = datetime.date.today()
             data = data_atual.strftime("%d/%m/%Y").split("/")
             validade = str(cadastro['dados']['plano']['validade']).split("/")
@@ -66,9 +66,9 @@ def dashboard():
                             'ativo': False
                         })
 
-
-        except:
-            return render_template('dashboard.html',mensagem="Erro ao carregar dados!")
+            print("ok5")
+        except Exception as e:
+            return render_template('dashboard.html',mensagem=e)
         else:
             emProcesso.reverse()
             esgotados.reverse()
@@ -192,6 +192,11 @@ def adicionar():
 
                 cores['secao'] = secao
 
+                try:
+                    float(preco.replace(",", "."))
+                except:
+                    return render_template('adicionar.html',mensagem="Preço inválido!",form=form, armacao=cores)
+
                 usuario = cookie['uid']
                 if usuario:
 
@@ -205,7 +210,7 @@ def adicionar():
                                 imagem = imagem.resize((700, 700))
                                 imagem.save('somepic.jpg')
                                 timestamp = time.time()
-                                local = f'estoques/{generate_password_hash(usuario).decode('utf-8')}/{timestamp}.jpg'
+                                local = f'estoques/{generate_password_hash(usuario).decode("utf-8")}/{timestamp}.jpg'
                                 blob = bucket.blob(local)
                                 print(blob.upload_from_filename('somepic.jpg', content_type='image/jpg'))
                                 url = firebase.storage().child(local).get_url(token)
@@ -413,7 +418,7 @@ def editar():
                                 imagem = imagem.resize((700, 700))
                                 imagem.save('somepic.jpg')
                                 timestamp = time.time()
-                                local = f'estoques/{usuario}/{timestamp}.jpg'
+                                local = f'estoques/{generate_password_hash(usuario).decode("utf-8")}/{timestamp}.jpg'
                                 blob = bucket.blob(local)
                                 blob.upload_from_filename('somepic.jpg', content_type='image/jpg')
                                 url = firebase.storage().child(local).get_url(token)

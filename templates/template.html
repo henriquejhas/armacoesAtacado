@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-	<title>Estoque</title>
+	<title>Armações Atacado</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="Estoque de armações de óculos completo">
+	<meta name="description" content="Estoque de armações e catálogo online ">
 	<meta name="robots" content="index, follow">
 	<meta name="author" content="Jefferson Henrique">
-	<meta name="theme-color" content="#00008b">
+	<meta name="theme-color" content="#009c99">
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" href="/uploads/armaccaoatacado.png">
     <style>
         button {
             border-radius: 5px;
@@ -48,6 +49,25 @@
             margin: 10px 0px;
         }
 
+        #msg{
+            width:calc(100% - 250px);
+            margin-left:250px;
+        }
+
+        #msg div{
+            width:60%;
+        }
+
+        @media screen and (max-width: 990px) {
+            #msg div{
+                width:80%;
+            }
+
+            #msg{
+                width:100%;
+                margin-left:0;
+            }
+        }
 
     </style>
 </head>
@@ -150,8 +170,8 @@
     </script>
 
   {% if mensagem  %}
-      <div id="msg" style=" opacity: 0; transition: 0.9s; text-align:center; width:100%; height:80px; position:fixed;bottom:10%;">
-        <div style="border-radius: 16px; display:inline-block; width:80%; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
+      <div id="msg" style="text-align: center; opacity: 0; transition: 0.9s; text-align:center; height:80px; position:fixed;bottom:10%;">
+        <div style="border-radius: 16px; display:inline-block; margin:auto; background-color: #3d3d3de6; text-shadow: 1px 1px black; color:white;">
           <p>{{ mensagem }}</p>
           <script>
                 $("#msg").css("display", "flex");

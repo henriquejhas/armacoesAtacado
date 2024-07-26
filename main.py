@@ -82,7 +82,7 @@ def autenticar():
         usuario = auth.get_user(user["localId"])
         if usuario.email_verified:
             print("verificou")
-            session['usuario_logado'] = auth.create_session_cookie(user["idToken"], timedelta(minutes=180))
+            session['usuario_logado'] = auth.create_session_cookie(user["idToken"], timedelta(minutes=600))
             print(session['usuario_logado'])
             return redirect(url_for('dashboard'))
         else:

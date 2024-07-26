@@ -257,7 +257,7 @@
                         <p style="text-align:center; margin:0;"><b>{{ pedido.numero}}</b><br><span style="font-size:12px;">{{pedido.data}}</span></p>
                         <p><span>Nome: </span><b>{{pedido.cliente}}</b></p>
                         <p><span>Whatsapp: </span><b style="white-space: nowrap;">{{pedido.celular}}</b></p>
-                        <p><span>Valor: </span><b style="white-space: nowrap;">R$ {{pedido.total}}</b></p>
+                        <p><span>Valor: </span><b style="white-space: nowrap;"> {{pedido.total}}</b></p>
 
                         <a href="{{url_for('visualizar', chave=chave)}}"><button style="position: absolute; bottom: 0px; left:0px;" class="w3-button w3-block w3-blue  w3-large">Visualizar</button></a>
                     </div>

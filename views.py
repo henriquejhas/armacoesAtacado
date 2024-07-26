@@ -20,10 +20,11 @@ import re
 import locale
 from PIL import Image
 from googletrans import Translator
+from babel.numbers import format_currency
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 ALLOWED_EXTENSIONS2 = {'jpg', 'jpeg', 'png'}
-locale.setlocale(locale.LC_MONETARY, 'pt_BR.UTF-8')
+#locale.setlocale(locale.LC_MONETARY, 'pt_BR')
 
 translator = Translator()
 
@@ -348,7 +349,7 @@ def add_banner():
                     if allowed_file_jpg(file.filename):
                         imagem = Image.open(file)
                         print("ok1")
-                        imagem = imagem.resize((1000, 400))
+                        imagem = imagem.resize((1300, 520))
                         print("ok2")
                         imagem.save('somepic.jpg')
                         print("ok3")
@@ -570,7 +571,8 @@ def pedidos():
                     for chave in pedidos:
                         if chave != 'contador':
                             pedido = pedidos[chave]
-                            pedido['total'] = locale.currency(pedido['total'], grouping=True, symbol=False)
+                            pedido['total'] = format_currency(pedido['total'], 'BRL', locale='pt_BR')
+                            #pedido['total'] = locale.currency(pedido['total'], grouping=True, symbol=False)
                             listaPedidos.append((chave, pedido))
 
                 listaPedidos.reverse()
