@@ -210,7 +210,7 @@ def adicionar():
                                 imagem = imagem.resize((700, 700))
                                 imagem.save('somepic.jpg')
                                 timestamp = time.time()
-                                local = f'estoques/{generate_password_hash(usuario).decode("utf-8")}/{timestamp}.jpg'
+                                local = f'estoques/{usuario}/{timestamp}.jpg'
                                 blob = bucket.blob(local)
                                 print(blob.upload_from_filename('somepic.jpg', content_type='image/jpg'))
                                 url = firebase.storage().child(local).get_url(token)
@@ -418,7 +418,7 @@ def editar():
                                 imagem = imagem.resize((700, 700))
                                 imagem.save('somepic.jpg')
                                 timestamp = time.time()
-                                local = f'estoques/{generate_password_hash(usuario).decode("utf-8")}/{timestamp}.jpg'
+                                local = f'estoques/{usuario}/{timestamp}.jpg'
                                 blob = bucket.blob(local)
                                 blob.upload_from_filename('somepic.jpg', content_type='image/jpg')
                                 url = firebase.storage().child(local).get_url(token)

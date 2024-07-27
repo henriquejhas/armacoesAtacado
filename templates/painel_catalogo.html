@@ -707,7 +707,7 @@
             background-color: #305b37;
         }
 
-        #galeria1, #galeria2, #galeria3, #galeria4{
+        #galeria1, #galeria2, #galeria3, #galeria4, #galeria5{
             display: none;
             text-align: center;
         }
@@ -857,7 +857,7 @@
         <div class="cabecalho" style="background-color: #{{ loja.cor }};">
             <div class="logo-conteiner">
                 <div style="position: relative; display: inline-block; margin: auto; max-height: 100px; width:25%;">
-                    <img class="logo" src="{{ loja.logo }}">
+                    <img class="logo" src="{{ loja.logo }}" style="max-height: 100px;">
                     <button style="font-size: 12px;" class="addLogo editar ">Editar logo</button>
                 </div>
 
@@ -904,7 +904,7 @@
 
                     <div class="w3-half" style="display: inline-block; text-align: center;">
                         <h3 class="fonte" style="color: #{{ loja.fonte }};"><b>Contatos:</b></h3>
-                        <div style="text-align:left; display:inline-block;">
+                        <div style="text-align:left; display:inline-block; padding-left:20px;">
 
                             <p class="fonte" style="color: #{{ loja.fonte }};">Whatsapp:
                                 <a id="whatsappR" href="http://api.whatsapp.com/send?phone={{ loja.whatsapp }}" target="_blank"> {{ loja.whatsapp }}</a>
@@ -1336,13 +1336,13 @@
         <div class="modal" id="formHistoria">
             <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
                 <p>Adicionar História</p>
-                <form action="" method="post" id="historia" style="display:block;">
+                <form action="" method="post" id="historia" style="display:block;" onsubmit="return false;">
                     <div>
                         <label style="width: 49%;display: inline-block; text-align: left;">Sua história:</label>
                         <div style="width: 49%; display: inline-block;text-align: right;"> <div id="charCount" style="display:inline;">0</div> <p style="display:inline;">/500</p></div>
                     </div>
 
-                    <textarea onkeyup="updateCounter()" autocomplete="false"  class="campoCaixa nome6" id="hi" maxlength="500" minlength="1" name="sobre" placeholder="Fale um pouco sobre sua loja" required="" style="height: 200px;width: 507px;resize: none;"></textarea>
+                    <textarea onkeyup="updateCounter()" autocomplete="false"  class="campoCaixa nome6" id="hi" maxlength="500" minlength="1" name="sobre" placeholder="Fale um pouco sobre sua loja" required="" style="height: 200px;resize: none;"></textarea>
                     <div style="text-align: center; width: 100%;">
                     <span onclick="enviarDados('/historia','hi')" class="botaoCaixa bgVerde">Adicionar</span>
                     </div>
@@ -1354,9 +1354,9 @@
         <div class="modal" id="formWhatsapp">
             <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
                 <p>Adicionar Whatsapp</p>
-                <form action="" method="post" id="whatsapp">
+                <form action="" method="post" id="whatsapp" onsubmit="return false;">
                     <label> Número do Whatsapp:</label>
-                    <input autocomplete="false" class="campoCaixa nome6" id="wa" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+                    <input autocomplete="false" class="campoCaixa nome6" id="wa" maxlength="100" minlength="1" name="facebook" placeholder="Digite o seu whatsapp" required="" type="text" value="">
 
                     <div style="text-align: center; width: 100%;">
                     <span onclick="enviarDados('/whatsapp?what=','wa')" class="botaoCaixa bgVerde">Adicionar</span>
@@ -1369,9 +1369,9 @@
         <div class="modal" id="formInstagram">
             <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
                 <p>Adicionar Instagram</p>
-                <form action="" method="post" id="instagram">
+                <form action="" method="post" id="instagram" onsubmit="return false;">
                     <label>Link do Instagram:</label>
-                    <input autocomplete="false" class="campoCaixa nome6" id="in" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+                    <input autocomplete="false" class="campoCaixa nome6" id="in" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link instagram" required="" type="text" value="">
 
                     <div style="text-align: center; width: 100%;">
                     <span onclick="enviarDados('/instagram','in')" class="botaoCaixa bgVerde">Adicionar</span>
@@ -1384,7 +1384,7 @@
         <div class="modal" id="formFacebook">
             <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
                 <p>Adicionar Facebook</p>
-                <form action="" method="post" id="facebook">
+                <form action="" method="post" id="facebook" onsubmit="return false;">
                     <label>Link Facebook</label>
                     <input autocomplete="false" class="campoCaixa nome6" id="fc" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
 
@@ -1399,9 +1399,9 @@
         <div class="modal" id="formYoutube">
             <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
                 <p>Adicionar Youtube</p>
-                <form action="" method="post" id="youtube">
+                <form action="" method="post" id="youtube" onsubmit="return false;">
                     <label>Link do Youtube:</label>
-                    <input autocomplete="false" class="campoCaixa nome6" id="yo" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+                    <input autocomplete="false" class="campoCaixa nome6" id="yo" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link youtube" required="" type="text" value="">
 
                     <div style="text-align: center; width: 100%;">
                     <span onclick="enviarDados('/youtube?yout=','yo')" class="botaoCaixa bgVerde">Adicionar</span>
@@ -1414,9 +1414,9 @@
         <div class="modal" id="formEndereco">
             <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
                 <p>Adicionar Endereço</p>
-                <form action="" method="post" id="endereco">
+                <form action="" method="post" id="endereco" onsubmit="return false;">
                     <label>Endereço:</label>
-                    <input autocomplete="false" class="campoCaixa nome6" id="en" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+                    <input autocomplete="false" class="campoCaixa nome6" id="en" maxlength="100" minlength="1" name="facebook" placeholder="Digite o endereço" required="" type="text" value="">
 
                     <div style="text-align: center; width: 100%;">
                     <span onclick="enviarDados('/endereco?ende=','en')" class="botaoCaixa bgVerde">Adicionar</span>
@@ -1430,9 +1430,9 @@
         <div class="modal" id="formAberto">
             <div class="conteudo w3-container  w3-card-4 w3-animate-zoom w3-white f">
                 <p>Adicionar horário de funcionamento</p>
-                <form action="" method="post" id="aberto">
+                <form action="" method="post" id="aberto" onsubmit="return false;">
                     <label>Horário:</label>
-                    <input autocomplete="false" class="campoCaixa nome6" id="fu" maxlength="100" minlength="1" name="facebook" placeholder="Digite o link facebook" required="" type="text" value="">
+                    <input autocomplete="false" class="campoCaixa nome6" id="fu" maxlength="100" minlength="1" name="facebook" placeholder="Digite o horário de funcionamento" required="" type="text" value="">
 
                     <div style="text-align: center; width: 100%;">
                     <span onclick="enviarDados('/funcionamento?func=','fu')" class="botaoCaixa bgVerde">Adicionar</span>

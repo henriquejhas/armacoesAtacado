@@ -191,19 +191,19 @@ def cadastrar():
                         f'{usuario.uid}': {
                             "cadastro": generate_password_hash(chave.key).decode('utf-8'),
                             'loja': {
-                                "aberto": "de segunda a sexta, 24 horas",
-                                "banner": "https://firebasestorage.googleapis.com/v0/b/minhas-lojas.appspot.com/o/lojas%2FXRY5iXL2KUa0i1wgzDRiHiUen192%2Fbanner.webp?alt=media&token=d1db7a49-579b-4dce-a19a-e8efc46f8296",
+                                "aberto": "Segunda a sexta das 8h às 18h. Sábado das 8h às 12h",
+                                "banner": "https://firebasestorage.googleapis.com/v0/b/estoque-armacoes.appspot.com/o/bannersite.jpg?alt=media&token=6cb77f95-dd47-4790-b0fd-c992385ab1c7",
                                 "cep": cep,
-                                "cor": "305b37",
-                                "endereco": "Rua da minha super loja",
-                                "facebook": "",
+                                "cor": "009c99",
+                                "endereco": "Rua alexandrino da Silva 407 ",
+                                "facebook": "https://www.facebook.com/profile.php?id=61563400382967",
                                 "fonte": "ffffff",
-                                "foto": "https://firebasestorage.googleapis.com/v0/b/minhas-lojas.appspot.com/o/lojas%2FXRY5iXL2KUa0i1wgzDRiHiUen192%2Ffoto.webp?alt=media&token=8c6d54ce-b40e-49b5-94a5-fcaa97471b7d",
-                                "instagram": "https://www.instagram.com/siteminhaloja/",
-                                "logo": "https://firebasestorage.googleapis.com/v0/b/minhas-lojas.appspot.com/o/lojas%2FXRY5iXL2KUa0i1wgzDRiHiUen192%2Flogo.webp?alt=media&token=ba8f856a-1afb-49b3-9723-e50b9fc50579",
+                                "foto": "https://firebasestorage.googleapis.com/v0/b/estoque-armacoes.appspot.com/o/foto.jpg?alt=media&token=228fff58-7a5c-4734-8c71-73b274b9f55d",
+                                "instagram": " https://www.instagram.com/armacaoatacado_/",
+                                "logo": "https://firebasestorage.googleapis.com/v0/b/estoque-armacoes.appspot.com/o/armaccaoatacado.png?alt=media&token=78708bf7-211f-40a2-8b25-4b53b931361b",
                                 "minimo": 100,
                                 "nomeLoja": loja.lower().replace(" ", ""),
-                                "sobre": "A Minha Loja é um site focado na conexão entre clientes e vendedores. Fundada no início de 2022, a Minha Loja tem como objetivo, fazer com que as pessoas pesquisem um produto em toda a cidade e cidades vizinhas sem sair de casa, assim como facilitar as pessoas a divulgarem seus produtos e serviços. Ao se conectar com o site Minha Loja qualquer pessoa do Brasil e do mundo poderá encontrar sua loja. Seja bem vindo a Minha Loja.",
+                                "sobre": "Armação Atacado é uma loja online especializada em armações de óculos no atacado, com foco em oferecer produtos de alta qualidade a preços competitivos. Estamos no mercado há 2 anos, construindo uma reputação de confiança e excelência no atendimento. Nossa missão é Empoderar os nossos clientes com uma seleção diversificada de armações de óculos de alta qualidade, garantindo um atendimento personalizado e preços imbatíveis no atacado.",
                                 "whatsapp": "82987333558",
                                 "youtube": ""
                             }
