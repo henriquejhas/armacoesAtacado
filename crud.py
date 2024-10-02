@@ -207,7 +207,7 @@ def adicionar():
                         if str(arquivo.filename) != '' :
                             if allowed_file(arquivo.filename):
                                 imagem = Image.open(arquivo)
-                                imagem = imagem.resize((700, 700))
+                                imagem = imagem.resize((1100, 1100))
                                 imagem.save('somepic.jpg')
                                 timestamp = time.time()
                                 local = f'estoques/{usuario}/{timestamp}.jpg'
