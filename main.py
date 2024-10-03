@@ -247,4 +247,4 @@ from views import *
 if __name__ == '__main__':
     context = ('/etc/letsencrypt/live/jhas.armacaoatacado.com/fullchain.pem', '/etc/letsencrypt/live/jhas.armacaoatacado.com/privkey.pem')
     #app.run(ssl_context=context, host='0.0.0.0')
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
